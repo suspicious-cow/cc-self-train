@@ -9,7 +9,7 @@ A hands-on, project-based curriculum for mastering [Claude Code](https://docs.an
 npm install -g @anthropic-ai/claude-code
 
 # 2. Clone this repo
-git clone <this-repo-url>
+git clone https://github.com/suspicious-cow/cc-self-train.git
 cd cc-self-train
 
 # 3. Launch Claude Code
