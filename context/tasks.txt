@@ -1,0 +1,84 @@
+Today, we're upgrading Todos in Claude Code to Tasks. Tasks are a new primitive that help Claude Code track and complete more complicated projects and collaborate on them across multiple sessions or subagents.
+As model capabilities grow, one of the most important things we can do is “unhobble” Claude and allow it to use its new capabilities effectively. Compared to previous models, Opus 4.5 is able to run autonomously for longer and keep track of its state better. We found that the TodoWrite Tool was no longer necessary because Claude already knew what it needed to do for smaller tasks.
+At the same time, we found ourselves using Claude Code to complete longer projects, sometimes across multiple subagents, context windows or sessions. But projects are more complex, tasks have dependencies and blockers and require coordination when using it across sessions.
+It was clear we needed to evolve Todos to help Claude work on longer projects. This need was also emerging in the community and we took inspiration from projects like Beads by Steve Yegge.
+Tasks are our new abstraction for coordinating many pieces of work  across projects, Claude can create Tasks with dependencies on each other that are stored in the metadata, which mirrors more how projects work. Additionally, Tasks are stored in the file system so that multiple subagents or sessions can collaborate on them. When one session updates a Task, that is broadcasted to all sessions currently working on the same Task List.
+You can ask Claude to create tasks right now, it’s especially useful when creating when spinning up subagents. Tasks are stored in ~/.claude/tasks, you can use this to build additional utilities on top of tasks as well.
+To make sessions collaborate on a single Task List, you can set the TaskList as an environment variable and start Claude like so:
+CLAUDE_CODE_TASK_LIST_ID=groceries claude
+This also works for claude -p and the AgentSDK.
+Tasks are a key building block for allowing Claude to build more complex projects. We’re looking forward to seeing how you use it.
+
+Claude Code's 'Tasks' update lets agents work longer and coordinate across sessions
+One of the biggest constraints currently facing AI builders who want to deploy agents in service of their individual or enterprise goals is the "working memory" required to manage complex, multi-stage engineering projects.
+
+Typically, when a AI agent operates purely on a stream of text or voice-based conversation, it lacks the structural permanence to handle dependencies. It knows what to do, but it often forgets why it is doing it, or in what order.
+
+With the release of Tasks for Claude Code (introduced in v2.1.16) last week, Anthropic has introduced a solution that is less about "AI magic" and more about sound software engineering principles. 
+
+By moving from ephemeral "To-dos" to persistent "Tasks," the company is fundamentally re-architecting how the model interacts with time, complexity, and system resources.
+
+This update transforms the tool from a reactive coding assistant into a state-aware project manager, creating the infrastructure necessary to execute the sophisticated workflows outlined in Anthropic's just-released Best Practices guide, while recent changelog updates (v2.1.19) signal a focus on the stability required for enterprise adoption.
+
+The architecture of agency: from ephemeral to persistent
+To understand the significance of this release for engineering teams, we must look at the mechanical differences between the old "To-do" system and the new "Task" primitive.
+
+Previously, Claude Code utilized a "To-do" list—a lightweight, chat-resident checklist. 
+
+As Anthropic engineer Thariq Shihipar wrote in an article on X: "Todos (orange) = 'help Claude remember what to do'." These were effective for single-session scripts but fragile for actual engineering. If the session ended, the terminal crashed, or the context window drifted, the plan evaporated.
+
+Tasks (Green) introduce a new layer of abstraction designed for "coordinating work across sessions, subagents, and context windows." This is achieved through three key architectural decisions:
+
+Dependency Graphs vs. Linear Lists: Unlike a flat Todo list, Tasks support directed acyclic graphs (DAGs). A task can explicitly "block" another. As seen in community demonstrations, the system can determine that Task 3 (Run Tests) cannot start until Task 1 (Build API) and Task 2 (Configure Auth) are complete. This enforcement prevents the "hallucinated completion" errors common in LLM workflows, where a model attempts to test code it hasn't written yet.
+
+Filesystem Persistence & Durability: Anthropic chose a "UNIX-philosophy" approach to state management. Rather than locking project state inside a proprietary cloud database, Claude Code writes tasks directly to the user's local filesystem (~/.claude/tasks). This creates durable state. A developer can shut down their terminal, switch machines, or recover from a system crash, and the agent reloads the exact state of the project.  For enterprise teams, this persistence is critical—it means the "plan" is now an artifact that can be audited, backed up, or version-controlled, independent of the active session.
+
+Orchestration via Environment Variables: The most potent technical unlock is the ability to share state across sessions. By setting the CLAUDE_CODE_TASK_LIST_ID environment variable, developers can point multiple instances of Claude at the same task list. This allows updates to be "broadcast" to all active sessions, enabling a level of coordination that was previously impossible without external orchestration tools.
+
+Enabling the 'swarm': parallelism and subagents
+The release of Tasks makes the "Parallel Sessions" described in Anthropic's Best Practices guide practical. The documentation suggests a Writer/Reviewer pattern that leverages this shared state:
+
+Session A (Writer) picks up Task #1 ("Implement Rate Limiter").
+
+Session A marks it complete.
+
+Session B (Reviewer), observing the shared state update, sees Task #2 ("Review Rate Limiter") is now unblocked.
+
+Session B begins the review in a clean context, unbiased by the generation process.
+
+This aligns with the guide's advice to "fan out" work across files, using scripts to loop through tasks and call Claude in parallel. Crucially, patch v2.1.17 fixed "out-of-memory crashes when resuming sessions with heavy subagent usage," indicating that Anthropic is actively optimizing the runtime for these high-load, multi-agent scenarios.
+
+Enterprise readiness: stability, CI/CD, and control
+For decision-makers evaluating Claude Code for production pipelines, the recent changelogs (v2.1.16–v2.1.19) reveal a focus on reliability and integration.
+
+The Best Practices guide explicitly endorses running Claude in Headless Mode (claude -p). This allows engineering teams to integrate the agent into CI/CD pipelines, pre-commit hooks, or data processing scripts.
+
+For example, a nightly cron job could instantiate a Claude session to "Analyze the day's log files for anomalies," using a Task list to track progress through different log shards.
+
+The move to autonomous agents introduces new failure modes, which recent patches have addressed:
+
+Dangling Processes: v2.1.19 fixed an issue where Claude Code processes would hang when the terminal closed; the system now catches EIO errors and ensures a clean exit (using SIGKILL as a fallback).
+
+Hardware Compatibility: Fixes for crashes on processors without AVX support ensure broader deployment compatibility.
+
+Git Worktrees: Fixes for resume functionality when working across different directories or git worktrees ensure that the "state" follows the code, not just the shell session.
+
+Recognizing that enterprise workflows cannot turn on a dime, Anthropic introduced the CLAUDE_CODE_ENABLE_TASKS environment variable (v2.1.19). Setting this to false allows teams to opt-out of the new system temporarily, preserving existing workflows while they migrate to the Task-based architecture.
+
+The builder's workflow: managing the context economy
+For the individual developer, the Task system solves the "context economy" problem. Anthropic's documentation warns that "Claude's context window... is the most important resource to manage," and that performance degrades as it fills.
+
+Before Tasks, clearing the context was dangerous—you wiped the agent's memory of the overall plan. Now, because the plan is stored on disk, users can follow the best practice of "aggressive context management." Developers can run /clear or /compact to free up tokens for the model's reasoning, without losing the project roadmap.
+
+The changelog also highlights quality-of-life improvements for power users building complex scripts:
+
+Shorthand Arguments: Users can now access custom command arguments via $0, $1, etc., making it easier to script reusable "Skills" (e.g., a /refactor command that takes a filename as an argument).
+
+Keybindings: Fully customizable keyboard shortcuts (/keybindings) allow for faster interaction loops.
+
+What Tasks means for Claude Code users
+With the introduction of Tasks, Anthropic is signaling that the future of coding agents is a project management.
+
+By giving Claude Code a persistent memory, a way to understand dependency, and the stability fixes required for long-running processes, they have moved the tool from a "copilot" that sits next to you to a "subagent" that can be trusted to run in the background — especially when powered by Anthropic's most performant model, Claude Opus 4.5.
+
+It is a technical evolution that acknowledges a simple truth: in the enterprise, the code is cheap; it is the context, the plan, and the reliability that are precious.

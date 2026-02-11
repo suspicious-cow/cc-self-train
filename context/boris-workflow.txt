@@ -1,0 +1,48 @@
+
+Boris Cherny
+@bcherny
+I'm Boris and I created Claude Code. Lots of people have asked how I use Claude Code, so I wanted to show off my setup a bit.
+
+My setup might be surprisingly vanilla! Claude Code works great out of the box, so I personally don't customize it much. There is no one correct way to use Claude Code: we intentionally build it in a way that you can use it, customize it, and hack it however you like. Each person on the Claude Code team uses it very differently.
+
+So, here goes.
+1:58 PM · Jan 2, 2026
+·
+7.6M
+ Views
+
+Boris Cherny
+@bcherny
+·
+Jan 2
+1/ I run 5 Claudes in parallel in my terminal. I number my tabs 1-5, and use system notifications to know when a Claude needs input https://code.claude.com/docs/en/terminal-config#iterm-2-system-notifications
+Boris Cherny
+@bcherny
+·
+Jan 2
+2/ I also run 5-10 Claudes on http://claude.ai/code, in parallel with my local Claudes. As I code in my terminal, I will often hand off local sessions to web (using &), or manually kick off sessions in Chrome, and sometimes I will --teleport back and forth. I also start a few
+Show more
+Boris Cherny
+@bcherny
+·
+Jan 2
+3/ I use Opus 4.5 with thinking for everything. It's the best coding model I've ever used, and even though it's bigger & slower than Sonnet, since you have to steer it less and it's better at tool use, it is almost always faster than using a smaller model in the end.
+Boris Cherny
+@bcherny
+·
+Jan 2
+4/ Our team shares a single http://CLAUDE.md for the Claude Code repo. We check it into git, and the whole team contributes multiple times a week. Anytime we see Claude do something incorrectly we add it to the http://CLAUDE.md, so Claude knows not to do it next
+Show more
+Boris Cherny
+@bcherny
+·
+Jan 2
+5/ During code review, I will often tag @.claude on my coworkers' PRs to add something to the http://CLAUDE.md as part of the PR. We use the Claude Code Github action (/install-github-action) for this. It's our version of 
+@danshipper
+'s Compounding Engineering
+Boris Cherny
+@bcherny
+·
+Jan 2
+6/ Most sessions start in Plan mode (shift+tab twice). If my goal is to write a Pull Request, I will use Plan mode, and go back and forth with Claude until I like its plan. From there, I switch into auto-accept edits mode and Claude can usually 1-shot it. A good plan is really
+Show more
