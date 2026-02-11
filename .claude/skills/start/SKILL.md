@@ -40,8 +40,8 @@ Also verify:
 
 If anything is missing, help them install it. Refer to the detailed setup instructions in the project's README under "Set Up Your Dev Environment" for comprehensive installation guides.
 
-For Nexus (Project 2), also check: `sqlite3 --version`
-For Sentinel (Project 3), also mention they will need a coverage tool for their language (they can install it later).
+For Nexus, also check: `sqlite3 --version`
+For Sentinel, also mention they will need a coverage tool for their language (they can install it later).
 
 ## Step 4: Scaffold the Project
 

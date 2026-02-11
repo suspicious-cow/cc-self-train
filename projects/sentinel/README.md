@@ -1474,7 +1474,7 @@ You have now used every major Claude Code feature. Here are paths forward:
 
 **Extend Sentinel.** Add support for more languages, more rules, a web dashboard, CI integration, or GitHub PR comments via MCP.
 
-**Try Project 5: Architect.** The capstone project takes parallel development, multi-agent orchestration, and plugins to their full potential by building a tool that generates entire applications from a spec.
+**Try another project:** [Forge](../forge/) if you want to build a personal dev toolkit, or [Nexus](../nexus/) if you want to build a local API gateway. Both cover the same CC features through different domains.
 
 **Build your own tools.** Take the patterns you learned -- skills, subagents, hooks, MCP, tasks -- and apply them to your real projects. Start with a CLAUDE.md and a few rules, then add skills and hooks as your workflow matures.
 

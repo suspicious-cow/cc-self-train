@@ -1516,4 +1516,4 @@ You have built a full-featured local API gateway and mastered every major Claude
 
 **Go deeper with Claude Code:** Explore the `context/` directory in cc-self-train for advanced patterns. Build your own MCP server. Create and distribute plugins. Set up CI/CD pipelines using `claude -p` (headless mode).
 
-**Next project:** Project 4 (Sentinel) goes deeper into subagents, tasks, TDD, parallel agents, and context engineering. Project 5 (Architect) covers full advanced workflows: worktrees, multi-agent orchestration, plugins, evaluation, and continuous learning.
+**Try another project:** [Forge](../forge/) if you want to build a personal dev toolkit, or [Sentinel](../sentinel/) if you want to build a code analyzer and test generator. Both cover the same CC features through different domains.
