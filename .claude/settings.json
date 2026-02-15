@@ -13,7 +13,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/scripts/check-updates.py\"",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/scripts/check-updates.sh\"",
             "timeout": 10
           }
         ]
