@@ -15,11 +15,17 @@ cd cc-self-train
 # 3. Launch Claude Code
 claude
 
-# 4. Type this when Claude starts:
+# 4. When prompted to trust project hooks, approve them
+#    (use /hooks to review — they show a welcome banner
+#     and check GitHub for CC updates, nothing else)
+
+# 5. Type this when Claude starts:
 /start
 ```
 
 That's it. Claude will walk you through picking a project, checking your dev environment, and scaffolding everything. You'll need an [Anthropic API key](https://console.anthropic.com/) or a Max subscription.
+
+> **What are those hooks?** This repo includes two small SessionStart hooks. The first shows the welcome banner above. The second pings GitHub to check if new Claude Code releases or reference material have dropped since this repo was last updated — if so, it feeds that info to Claude so your session always has the latest guidance. Both are read-only, open source, and visible in `.claude/scripts/`.
 
 ## Who This Is For
 

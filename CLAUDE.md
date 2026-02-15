@@ -10,10 +10,12 @@ cc-self-train/
 ├── CLAUDE.md                    # This file — project conventions for Claude
 ├── .claude/
 │   ├── skills/start/SKILL.md    # /start onboarding skill — the entry point
-│   ├── scripts/welcome.sh       # SessionStart hook — prints welcome message
-│   └── settings.json            # Hook configuration (SessionStart welcome)
+│   ├── scripts/welcome.sh       # SessionStart hook — prints welcome banner
+│   ├── scripts/check-updates.py # SessionStart hook — checks GitHub for new CC releases
+│   ├── last-synced.json         # Cutoff markers for the update checker
+│   └── settings.json            # Hook configuration (welcome + update checker)
 ├── context/                     # Reference documentation for all CC features
-│   ├── changelog-cc.txt         # Claude Code changelog (v2.0.0 — v2.1.39)
+│   ├── changelog-cc.txt         # Claude Code changelog (v2.0.0 — v2.1.42)
 │   ├── claudemd.txt             # CLAUDE.md hierarchy, @imports, rules
 │   ├── skillsmd.txt             # Skills system (SKILL.md, frontmatter)
 │   ├── hooks.txt                # Hook lifecycle, events, scripting
@@ -35,9 +37,11 @@ cc-self-train/
 ## Onboarding Flow
 
 When a user runs `claude` in this repo:
-1. The SessionStart hook runs `.claude/scripts/welcome.sh`, which prints a welcome banner telling them to type `/start`
-2. The `/start` skill walks them through: pick a project (Forge, Nexus, or Sentinel), pick a language, verify environment, scaffold project directory
-3. They get directed to their project guide and open Claude Code in a new project directory
+1. Claude Code detects two project hooks in `.claude/settings.json` and prompts the user to trust them. The user can review them with `/hooks` — they should approve both (they are read-only and safe).
+2. **Hook 1 — welcome.sh**: Prints a welcome banner telling them to type `/start` and explains the hooks.
+3. **Hook 2 — check-updates.py**: Pings GitHub to check for new Claude Code releases (after v2.1.42) and new commits on affaan-m/everything-claude-code. If anything is found, it injects a summary into your context so you can factor it into guidance. Fails silently if offline.
+4. The `/start` skill walks them through: pick a project (Forge, Nexus, or Sentinel), pick a language, verify environment, scaffold project directory.
+5. They get directed to their project guide and open Claude Code in a new project directory.
 
 ## Conventions
 
