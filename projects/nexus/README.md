@@ -64,6 +64,10 @@ rustc --version && cargo --version
 cargo new nexus-gateway && cd nexus-gateway
 ```
 
+### Environment Isolation
+
+**Environment isolation:** If you chose an environment during `/start` (venv, conda, or Docker), it's already set up in your project directory. If you skipped it and want to add one later, ask Claude: "Help me set up [venv/conda/Docker] for this project."
+
 ### SQLite Setup
 
 This project uses SQLite for caching from Module 6 onward. Install it now.

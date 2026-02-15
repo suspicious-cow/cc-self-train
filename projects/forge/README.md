@@ -67,6 +67,10 @@ Create the project directory and set up your language toolchain. Examples:
 | **Rust** | `cargo new forge-toolkit && cd forge-toolkit` |
 | **Docker** | Any project can be done in a container -- ask Claude to generate a Dockerfile |
 
+### Environment Isolation
+
+**Environment isolation:** If you chose an environment during `/start` (venv, conda, or Docker), it's already set up in your project directory. If you skipped it and want to add one later, ask Claude: "Help me set up [venv/conda/Docker] for this project."
+
 ### Verify Everything
 
 Run these checks before continuing:

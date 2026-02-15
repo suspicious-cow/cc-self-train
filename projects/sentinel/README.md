@@ -49,6 +49,10 @@ Before starting Module 1, make sure your language toolchain is ready. Sentinel w
 
 Install links: [Python](https://python.org) | [Node.js](https://nodejs.org) | [Go](https://go.dev/dl/) | [Rust](https://rustup.rs)
 
+### Environment Isolation
+
+**Environment isolation:** If you chose an environment during `/start` (venv, conda, or Docker), it's already set up in your project directory. If you skipped it and want to add one later, ask Claude: "Help me set up [venv/conda/Docker] for this project."
+
 ### Git
 
 ```
