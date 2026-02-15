@@ -47,6 +47,16 @@ When a user runs `claude` in this repo:
 - **Hands-on:** Every module ends with verification. Users should be doing, not just reading.
 - **Each project is a separate repo:** Users create a NEW directory and git repo for each project. They do NOT build inside cc-self-train.
 
+## First Message Behavior
+
+When a user starts a session in this repo, ALWAYS greet them warmly and direct them to get started. If they send a vague first message (like "hi", "hello", "help", "what is this", or anything that suggests they're new), respond with:
+
+1. A brief welcome explaining this is a hands-on Claude Code learning repo
+2. The 3 project choices: Forge (Personal Dev Toolkit), Nexus (Local API Gateway), Sentinel (Code Analyzer)
+3. Tell them to type `/start` to begin the guided onboarding (picks project, picks language, verifies environment, scaffolds project)
+
+This is critical — new users must not land in a blank, confusing session. Always orient them.
+
 ## When Helping Users
 
 - Ask what language they're using before giving code examples
