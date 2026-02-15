@@ -16,8 +16,8 @@ cd cc-self-train
 claude
 
 # 4. When prompted to trust project hooks, approve them
-#    (use /hooks to review — they show a welcome banner
-#     and check GitHub for CC updates, nothing else)
+#    (they show a welcome banner and check GitHub for
+#     CC updates, nothing else — /hooks to review if curious)
 
 # 5. Type this when Claude starts:
 /start

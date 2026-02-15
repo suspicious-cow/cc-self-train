@@ -37,7 +37,7 @@ cc-self-train/
 ## Onboarding Flow
 
 When a user runs `claude` in this repo:
-1. Claude Code detects two project hooks in `.claude/settings.json` and prompts the user to trust them. The user can review them with `/hooks` — they should approve both (they are read-only and safe).
+1. Claude Code detects two project hooks in `.claude/settings.json` and prompts the user to trust them. They should approve both — they are read-only and safe. Users can review them with `/hooks` if they want to.
 2. **Hook 1 — welcome.sh**: Prints a welcome banner telling them to type `/start` and explains the hooks.
 3. **Hook 2 — check-updates.py**: Pings GitHub to check for new Claude Code releases (after v2.1.42) and new commits on affaan-m/everything-claude-code. If anything is found, it injects a summary into your context so you can factor it into guidance. Fails silently if offline.
 4. The `/start` skill walks them through: pick a project (Forge, Nexus, or Sentinel), pick a language, verify environment, scaffold project directory.
