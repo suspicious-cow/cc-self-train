@@ -8,6 +8,15 @@
             "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/scripts/welcome.sh\""
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$CLAUDE_PROJECT_DIR/.claude/scripts/check-updates.py\"",
+            "timeout": 10
+          }
+        ]
       }
     ]
   }
