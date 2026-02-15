@@ -21,7 +21,7 @@ An intermediate Claude Code project where you build an HTTP gateway with routing
 | 9 | Tasks, dependencies, TDD, SubagentStop | Middleware system |
 | 10 | Worktrees, plugins, evaluation | Parallel dev + packaging |
 
-**Prerequisites:** Completion of Projects 1 and 2 (or equivalent familiarity with CLAUDE.md, plan mode, git, skills, and rules).
+**Prerequisites:** None — all 3 projects are independent. Pick based on what sounds fun to build.
 
 ---
 

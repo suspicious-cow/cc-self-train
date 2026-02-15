@@ -159,7 +159,7 @@ The `context/` folder contains detailed reference documentation for every CC fea
 | `context/skills-plus-mcp.txt` | Combining skills with MCP tools |
 | `context/interactive-mode.txt` | Keyboard shortcuts, vim mode |
 | `context/boris-workflow.txt` | Real-world patterns, parallel Claude workflows |
-| `context/changelog-cc.txt` | Claude Code changelog (v2.0.0 — v2.1.39) |
+| `context/changelog-cc.txt` | Claude Code changelog (v2.0.0 — v2.1.42) |
 
 ## Design Principles
 
