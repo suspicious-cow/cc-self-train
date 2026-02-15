@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/scripts/welcome.js\""
+            "command": "node .claude/scripts/welcome.js"
           }
         ]
       },
@@ -13,8 +13,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/scripts/check-updates.js\"",
-            "timeout": 10
+            "command": "node .claude/scripts/check-updates.js",
+            "timeout": 15
           }
         ]
       }
