@@ -12,7 +12,6 @@ cc-self-train/
 │   ├── skills/start/SKILL.md    # /start onboarding skill — the entry point
 │   ├── scripts/welcome.sh       # SessionStart hook — prints welcome banner
 │   ├── scripts/check-updates.js # SessionStart hook — checks for newer CC versions
-│   ├── last-synced.json         # Cutoff markers for the update checker
 │   └── settings.json            # Hook configuration (welcome + update checker)
 ├── context/                     # Reference documentation for all CC features
 │   ├── changelog-cc.txt         # Claude Code changelog (v2.0.0 — v2.1.42)

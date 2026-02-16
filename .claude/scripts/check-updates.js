@@ -1,39 +1,30 @@
 #!/usr/bin/env node
 // SessionStart hook — checks if a newer Claude Code version is available.
 //
-// Reads .claude/last-synced.json for the last known version, queries GitHub
-// for newer releases, and if any exist, tells Claude to ask the user to update.
+// Runs `claude --version` to get the installed version, queries GitHub for
+// the latest release, and shows a banner if an update is available.
 // Fails silently on network errors so offline users aren't blocked.
 //
 // No dependencies beyond Node.js (which Claude Code requires).
 
 const https = require("https");
-const fs = require("fs");
-const path = require("path");
+const { execSync } = require("child_process");
 
 const TIMEOUT_MS = 8000;
 
 // ---------------------------------------------------------------------------
-// Resolve paths
+// Get the currently installed version
 // ---------------------------------------------------------------------------
-const projectDir =
-  process.env.CLAUDE_PROJECT_DIR ||
-  path.resolve(__dirname, "..", "..");
-
-const syncFile = path.join(projectDir, ".claude", "last-synced.json");
-
-// Bail silently if no sync file
-if (!fs.existsSync(syncFile)) process.exit(0);
-
-let sync;
+let installedVersion;
 try {
-  sync = JSON.parse(fs.readFileSync(syncFile, "utf-8"));
+  const output = execSync("claude --version", { encoding: "utf-8", timeout: 5000 }).trim();
+  // Output is like "2.1.44" or "Claude Code v2.1.44" — extract the version
+  const match = output.match(/(\d+\.\d+\.\d+)/);
+  if (!match) process.exit(0);
+  installedVersion = match[1]; // e.g. "2.1.44"
 } catch {
-  process.exit(0); // corrupt or unreadable — skip
+  process.exit(0); // can't determine version — skip
 }
-
-const lastVersion = (sync.changelog && sync.changelog.last_version) || "";
-if (!lastVersion) process.exit(0);
 
 // ---------------------------------------------------------------------------
 // Minimal GitHub API helper (uses built-in https module)
@@ -50,7 +41,6 @@ function ghApi(apiPath) {
       timeout: TIMEOUT_MS,
     };
 
-    // Use a GH token if available (avoids rate limits)
     const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
     if (token) options.headers.Authorization = `Bearer ${token}`;
 
@@ -79,30 +69,37 @@ function ghApi(apiPath) {
 }
 
 // ---------------------------------------------------------------------------
+// Compare semver strings (returns true if a > b)
+// ---------------------------------------------------------------------------
+function isNewer(a, b) {
+  const pa = a.split(".").map(Number);
+  const pb = b.split(".").map(Number);
+  for (let i = 0; i < 3; i++) {
+    if ((pa[i] || 0) > (pb[i] || 0)) return true;
+    if ((pa[i] || 0) < (pb[i] || 0)) return false;
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
 // Main — check for newer CC releases
 // ---------------------------------------------------------------------------
 async function main() {
   const releases = await ghApi(
-    "/repos/anthropics/claude-code/releases?per_page=5"
+    "/repos/anthropics/claude-code/releases?per_page=1"
   );
 
-  // Find releases newer than our last known version
-  const newerVersions = [];
-  for (const rel of releases) {
-    const tag = rel.tag_name || "";
-    if (tag === lastVersion) break; // newest-first; stop at known version
-    newerVersions.push(tag);
-  }
+  if (!Array.isArray(releases) || releases.length === 0) process.exit(0);
 
-  if (newerVersions.length === 0) process.exit(0);
+  const latestTag = (releases[0].tag_name || "").replace(/^v/, "");
+  if (!latestTag || !isNewer(latestTag, installedVersion)) process.exit(0);
 
-  const latest = newerVersions[0];
   const message =
     `\n========================================\n` +
     `  Update Available\n` +
     `========================================\n\n` +
-    `  Claude Code ${latest} is out\n` +
-    `  (you have ${lastVersion}).\n\n` +
+    `  Claude Code v${latestTag} is out\n` +
+    `  (you have v${installedVersion}).\n\n` +
     `  Run: claude update\n\n` +
     `========================================`;
 
