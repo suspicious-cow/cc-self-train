@@ -33,7 +33,7 @@ Before starting, set up your language toolchain and SQLite. Pick any language yo
 
 ```
 python --version          # 3.10+
-mkdir nexus-gateway && cd nexus-gateway
+mkdir -p workspace/nexus-gateway && cd workspace/nexus-gateway
 python -m venv .venv
 # Windows: .venv\Scripts\activate | macOS/Linux: source .venv/bin/activate
 pip install pytest
@@ -43,7 +43,7 @@ pip install pytest
 
 ```
 node --version            # 18+
-mkdir nexus-gateway && cd nexus-gateway
+mkdir -p workspace/nexus-gateway && cd workspace/nexus-gateway
 npm init -y
 npm install --save-dev typescript @types/node ts-node jest @types/jest ts-jest
 npx tsc --init
@@ -53,7 +53,7 @@ npx tsc --init
 
 ```
 go version                # 1.21+
-mkdir nexus-gateway && cd nexus-gateway
+mkdir -p workspace/nexus-gateway && cd workspace/nexus-gateway
 go mod init nexus-gateway
 ```
 
@@ -61,7 +61,7 @@ go mod init nexus-gateway
 
 ```
 rustc --version && cargo --version
-cargo new nexus-gateway && cd nexus-gateway
+cargo new workspace/nexus-gateway && cd workspace/nexus-gateway
 ```
 
 ### Environment Isolation
@@ -99,13 +99,15 @@ Run `<language> --version`, `git --version`, `sqlite3 --version`, and `claude --
 
 **CC features:** CLAUDE.md, /init, /memory, interactive mode, keyboard shortcuts
 
+> **Used `/start`?** Module 1 was completed during onboarding. Jump to [Module 2 -- Blueprint & Build](#module-2--blueprint--build).
+
 ### Step 1: Create Your Project
 
-Open your terminal and create a fresh project directory. Each project in this curriculum gets its own repository.
+Open a terminal in the cc-self-train directory and create the project under `workspace/`:
 
 ```
-mkdir nexus-gateway
-cd nexus-gateway
+mkdir -p workspace/nexus-gateway
+cd workspace/nexus-gateway
 git init
 ```
 
@@ -162,7 +164,7 @@ Verify Claude explains: CLAUDE.md (project) > CLAUDE.local.md (local/personal) >
 
 ### Checkpoint
 
-- [ ] `nexus-gateway/` directory exists with `git init` completed
+- [ ] `workspace/nexus-gateway/` directory exists with `git init` completed
 - [ ] CLAUDE.md exists with project overview content
 - [ ] You ran `/init` successfully
 - [ ] You can use `Shift+Tab` to toggle plan mode

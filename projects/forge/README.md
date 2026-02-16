@@ -61,10 +61,10 @@ Create the project directory and set up your language toolchain. Examples:
 
 | Language | Init Commands |
 |----------|--------------|
-| **Python** | `mkdir forge-toolkit && cd forge-toolkit && python -m venv .venv` then activate the venv |
-| **TypeScript** | `mkdir forge-toolkit && cd forge-toolkit && npm init -y && npm i typescript @types/node -D` |
-| **Go** | `mkdir forge-toolkit && cd forge-toolkit && go mod init forge-toolkit` |
-| **Rust** | `cargo new forge-toolkit && cd forge-toolkit` |
+| **Python** | `mkdir -p workspace/forge-toolkit && cd workspace/forge-toolkit && python -m venv .venv` then activate the venv |
+| **TypeScript** | `mkdir -p workspace/forge-toolkit && cd workspace/forge-toolkit && npm init -y && npm i typescript @types/node -D` |
+| **Go** | `mkdir -p workspace/forge-toolkit && cd workspace/forge-toolkit && go mod init forge-toolkit` |
+| **Rust** | `cargo new workspace/forge-toolkit && cd workspace/forge-toolkit` |
 | **Docker** | Any project can be done in a container -- ask Claude to generate a Dockerfile |
 
 ### Environment Isolation
@@ -78,7 +78,7 @@ Run these checks before continuing:
 - [ ] `claude --version` prints a version number
 - [ ] `git --version` prints a version number
 - [ ] Your language toolchain runs (compiler/interpreter version check passes)
-- [ ] You can create and enter the `forge-toolkit` directory
+- [ ] You can create and enter the `workspace/forge-toolkit` directory
 
 ---
 
@@ -87,13 +87,15 @@ Run these checks before continuing:
 **CC features:** CLAUDE.md, `/init`, `/memory`, interactive mode, keyboard
 shortcuts
 
+> **Used `/start`?** Module 1 was completed during onboarding. Jump to [Module 2 -- Blueprint and Build](#module-2--blueprint-and-build).
+
 ### 1.1 Create Your Project
 
-Open a terminal and create the project:
+Open a terminal in the cc-self-train directory and create the project:
 
 ```
-mkdir forge-toolkit
-cd forge-toolkit
+mkdir -p workspace/forge-toolkit
+cd workspace/forge-toolkit
 git init
 ```
 
@@ -208,7 +210,7 @@ Review Claude's suggestions. Apply at least one of them by editing `CLAUDE.md`.
 
 ### Checkpoint
 
-- [ ] `forge-toolkit/` directory exists with `git init` completed
+- [ ] `workspace/forge-toolkit/` directory exists with `git init` completed
 - [ ] `CLAUDE.md` exists and describes the project
 - [ ] You ran `/init` and `/memory` successfully
 - [ ] You tried all keyboard shortcuts from the table above

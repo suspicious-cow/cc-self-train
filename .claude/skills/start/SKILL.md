@@ -72,22 +72,22 @@ For Sentinel, also mention they will need a coverage tool for their language (th
 
 ## Step 5: Scaffold the Project
 
-Create the project directory OUTSIDE of this repo (sibling directory) and initialize it:
+Create the project directory inside this repository under `workspace/` and initialize it:
 
 ```
-# Create sibling to cc-self-train
-cd ..
-mkdir <project-name>
-cd <project-name>
+mkdir -p workspace/<project-name>
+cd workspace/<project-name>
 git init
 ```
 
 Suggested directory names by project:
-- Forge: `forge-toolkit`
-- Nexus: `nexus-gateway`
-- Sentinel: `sentinel`
+- Forge: `workspace/forge-toolkit`
+- Nexus: `workspace/nexus-gateway`
+- Sentinel: `workspace/sentinel`
 
 If their language needs a project file (package.json, go.mod, Cargo.toml, pyproject.toml, etc.), create it.
+
+Create a `.gitignore` in the project directory appropriate for the chosen language (e.g., `__pycache__/`, `node_modules/`, `target/`, `.venv/`, etc.).
 
 Based on the environment choice from Step 3, also scaffold environment files:
 
@@ -118,22 +118,94 @@ Based on the environment choice from Step 3, also scaffold environment files:
 
 **If they chose Local:** No extra files needed.
 
-## Step 6: Hand Off
+## Step 6: Module 1 — Setup & First Contact
 
-Tell them:
-1. If they set up an environment (venv/conda/Docker), remind them to activate it before launching Claude Code
-2. Open a new terminal in their project directory
-3. Run `claude` to start Claude Code there
-4. Run `/init` as their first command
-5. Follow the guide at `projects/<name>/README.md` starting from Module 1
+Now deliver Module 1 inline. Do NOT tell the user to open a new terminal or switch sessions. Everything happens right here in the current session.
 
-Print the full path to their project guide so they can reference it.
+### 6.1 Create CLAUDE.md in the Project Directory
 
-Remind them: this repo (cc-self-train) is their reference library. The `context/` folder has detailed docs on every CC feature. They can always come back here and ask questions.
+Create a `CLAUDE.md` file in `workspace/<project>/` with:
+
+- A project description based on their chosen project (Forge/Nexus/Sentinel)
+- The chosen programming language
+- Placeholder build, test, and lint commands
+- A pointer to the project guide: `See ../../projects/<name>/README.md for the full module guide.`
+- A pointer to reference docs: `See ../../context/ for detailed Claude Code feature documentation.`
+
+### 6.2 Create CLAUDE.local.md in the cc-self-train Root
+
+Create a `CLAUDE.local.md` file in the cc-self-train root directory (NOT inside workspace/) with this content:
+
+```
+# Active Project
+Project: <project> | Language: <language> | Directory: workspace/<project-dir> | Current Module: 1
+
+When the user starts a session, greet them and offer to continue where they left off.
+When the user says "next module" or asks for the next module, read projects/<name>/README.md and walk them through the next module.
+
+@import workspace/<project-dir>/CLAUDE.md
+```
+
+### 6.3 Initial Git Commit
+
+Make an initial git commit inside the project directory (`workspace/<project>/`):
+
+```
+cd workspace/<project>
+git add -A
+git commit -m "Initial project setup with CLAUDE.md"
+```
+
+### 6.4 Explain CLAUDE.md
+
+Explain to the user:
+
+- What CLAUDE.md is and why it matters — it's Claude's persistent memory for your project, loaded at the start of every session
+- The memory hierarchy: managed policy > project CLAUDE.md > .claude/rules/ > user ~/.claude/CLAUDE.md > CLAUDE.local.md
+- How it's loaded automatically — anything you put there, Claude reads every session
+- The difference between project memory (shared via git) and local memory (personal, not committed)
+
+### 6.5 Show Keyboard Shortcuts
+
+Present the full keyboard shortcuts table:
+
+| Shortcut | What It Does |
+|----------|-------------|
+| `Tab` | Accept suggestion or autocomplete |
+| `Shift+Tab` | Toggle between normal mode, plan mode, and auto-accept mode |
+| `Ctrl+C` | Cancel current input or generation |
+| `Ctrl+L` | Clear terminal screen (keeps conversation history) |
+| `@` | File path mention — trigger file autocomplete |
+| `!` | Bash mode — run a shell command directly |
+| `Shift+Enter` | Multiline input (or `\` + `Enter` in any terminal) |
+| `Esc Esc` | Rewind conversation/code to a previous point |
+| `Ctrl+O` | Toggle verbose output |
+| `Ctrl+R` | Reverse search command history |
+| `/` | Start a command or skill |
+
+Encourage them to try a few right now: `@` to browse files, `! git status`, and `Shift+Tab` to see mode switching.
+
+### 6.6 Interactive Exercise
+
+Ask the user to review the CLAUDE.md you just created and suggest improvements. Suggest three improvements yourself and let them pick one (or they can suggest their own). Apply the chosen improvement, then commit:
+
+```
+cd workspace/<project>
+git add CLAUDE.md
+git commit -m "Improve CLAUDE.md based on review"
+```
+
+### 6.7 Transition
+
+Tell the user:
+
+> **Module 1 complete!** You've set up your project, created CLAUDE.md, learned the keyboard shortcuts, and made your first commits.
+>
+> When you're ready, say **"next module"** or **"let's do Module 2"** and I'll walk you through it right here — no terminal switching needed.
 
 ## Important
 
-- Do NOT build their project inside cc-self-train. Each project gets its own repo.
+- Build the project in `workspace/<name>/` inside this repo. The `workspace/` directory is gitignored by cc-self-train.
 - Ask what language they want — never assume.
 - Be encouraging. This is their first time with Claude Code for many users.
 - If they already have a project in mind that doesn't match the 3 listed, that's fine — help them pick the project guide that teaches the CC features most relevant to what they want to build.

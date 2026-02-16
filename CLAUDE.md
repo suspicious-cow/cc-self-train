@@ -28,10 +28,12 @@ cc-self-train/
 │   ├── interactive-mode.txt     # Keyboard shortcuts, vim mode
 │   ├── boris-workflow.txt       # Real-world workflow patterns
 │   └── ...                      # Additional reference docs
-└── projects/
-    ├── forge/README.md          # Personal Dev Toolkit (10 modules)
-    ├── nexus/README.md          # Local API Gateway (10 modules)
-    └── sentinel/README.md       # Code Analyzer & Test Generator (10 modules)
+├── projects/
+│   ├── forge/README.md          # Personal Dev Toolkit (10 modules)
+│   ├── nexus/README.md          # Local API Gateway (10 modules)
+│   └── sentinel/README.md       # Code Analyzer & Test Generator (10 modules)
+└── workspace/                   # User project directories (gitignored)
+    └── <project-name>/          # Scaffolded by /start, has its own git repo
 ```
 
 ## Onboarding Flow
@@ -40,8 +42,8 @@ When a user runs `claude` in this repo:
 1. Claude Code detects two project hooks in `.claude/settings.json` and prompts the user to trust them. They should approve both — they are read-only and safe. Users can review them with `/hooks` if they want to.
 2. **Hook 1 — welcome.sh**: Prints a welcome banner telling them to type `/start` and explains the hooks.
 3. **Hook 2 — check-updates.py**: Pings GitHub to check for new Claude Code releases (after v2.1.42) and new commits on affaan-m/everything-claude-code. If anything is found, it injects a summary into your context so you can factor it into guidance. Fails silently if offline.
-4. The `/start` skill walks them through: pick a project (Forge, Nexus, or Sentinel), pick a language, optionally choose an environment (venv/conda/Docker — language-aware options), verify environment, scaffold project directory.
-5. They get directed to their project guide and open Claude Code in a new project directory.
+4. The `/start` skill walks them through: pick a project (Forge, Nexus, or Sentinel), pick a language, optionally choose an environment (venv/conda/Docker — language-aware options), verify environment, scaffold project in `workspace/<name>/`, then deliver Module 1 inline.
+5. From there, users say "next module" to continue through Modules 2-10. Claude reads the project guide from `projects/<name>/README.md` and walks them through each module — all within the same cc-self-train session. No terminal switching needed.
 
 ## Conventions
 
@@ -49,11 +51,15 @@ When a user runs `claude` in this repo:
 - **Local-only:** No cloud services required. All projects work with local files, local git, and local tools.
 - **Same curriculum, different domains:** All 3 projects cover the same 10 modules and the same CC features. The user picks based on what they want to build, not difficulty.
 - **Hands-on:** Every module ends with verification. Users should be doing, not just reading.
-- **Each project is a separate repo:** Users create a NEW directory and git repo for each project. They do NOT build inside cc-self-train.
+- **Subdirectory projects:** Each project lives in `workspace/<name>/` with its own nested git repo. The `workspace/` directory is gitignored by cc-self-train. Users stay in the cc-self-train session for all modules.
 
 ## First Message Behavior
 
-When a user starts a session in this repo, ALWAYS greet them warmly and direct them to get started. If they send a vague first message (like "hi", "hello", "help", "what is this", or anything that suggests they're new), respond with:
+When a user starts a session in this repo, ALWAYS greet them warmly and direct them to get started.
+
+**If `CLAUDE.local.md` exists with an active project**, greet the user and offer to continue (e.g., "Welcome back! You're on Module 3 of Forge. Say 'next module' when you're ready to continue."). Read `CLAUDE.local.md` for the project name, language, directory, and current module.
+
+**If `CLAUDE.local.md` does not exist** (new user), and they send a vague first message (like "hi", "hello", "help", "what is this", or anything that suggests they're new), respond with:
 
 1. A brief welcome explaining this is a hands-on Claude Code learning repo
 2. The 3 project choices: Forge (Personal Dev Toolkit), Nexus (Local API Gateway), Sentinel (Code Analyzer)
@@ -68,6 +74,7 @@ This is critical — new users must not land in a blank, confusing session. Alwa
 - If they're stuck on environment setup, help them get their toolchain working first
 - Encourage the build→test→fix→commit cycle from Module 2 onward
 - Keep suggestions practical and incremental, not theoretical
+- When the user says "next module", read `projects/<name>/README.md` (from `CLAUDE.local.md`) and walk them through the next module. Update `Current Module` in `CLAUDE.local.md` after completion.
 
 ## The 10 Modules (Same for All 3 Projects)
 

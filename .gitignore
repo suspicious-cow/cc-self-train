@@ -1,3 +1,5 @@
 nul
 .claude/settings.local.json
 __pycache__/
+workspace/
+CLAUDE.local.md
