@@ -98,9 +98,7 @@ async function main() {
 
   const latest = newerVersions[0];
   const message =
-    `A newer version of Claude Code is available (${latest}, you have ${lastVersion}). ` +
-    `Tell the user: "A Claude Code update is available (${latest}). Run \`claude update\` to get the latest version." ` +
-    `Keep it brief — just the one-liner above. Do not dump changelogs.`;
+    `Update available: Claude Code ${latest} (you have ${lastVersion}). Run \`claude update\` to get it.`;
 
   process.stdout.write(JSON.stringify({ systemMessage: message }));
 }

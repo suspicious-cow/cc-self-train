@@ -6,23 +6,10 @@ const message = `
   Learn Claude Code by Doing
 ========================================
 
-  3 projects, pick your language,
+  4 projects, pick your language,
   master every CC feature hands-on.
 
   Type /start to get going.
-
-  ----------------------------------------
-  NOTE: This repo uses two SessionStart
-  hooks (welcome banner + update checker).
-  If prompted to trust them, approve them
-  — they are safe. You can review anytime
-  with /hooks if you want to.
-  The update checker pings GitHub to see
-  if new CC releases or reference material
-  have been published since this repo was
-  last updated, so your session is always
-  working with the latest info.
-  ----------------------------------------
 
 ========================================`;
 
