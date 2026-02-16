@@ -297,57 +297,27 @@ After committing, mention: "If Claude ever makes a change you don't like, press 
 
 ---
 
-### 6.6 Keyboard Shortcuts — Group 1
+### 6.6 Keyboard Shortcuts — Look Them Up Live
 
-Introduce shortcuts: "Claude Code has keyboard shortcuts that make you faster. I'll teach them in small groups so it's not overwhelming."
+Introduce shortcuts with a teaching moment: "Claude Code has keyboard shortcuts that make you faster. Instead of me listing them from memory, let me show you something useful — Claude can search the web for up-to-date information."
 
-**On macOS**, add a note: "Since Claude Code runs in the terminal, shortcuts use `Ctrl`, not `Cmd` — even on Mac. This catches a lot of people off guard."
+**Use the WebSearch tool** to search for the current Claude Code keyboard shortcuts for the user's detected OS. A good query: `"Claude Code keyboard shortcuts [macOS/Windows/Linux]"` (use their actual OS).
 
-**Group 1 — Basics:**
+Present the results as a clean table, filtered to the shortcuts most relevant for beginners. Organize into three groups and **only show the shortcuts for their OS** (some keys differ between macOS and Windows/Linux):
 
-| Shortcut | What It Does |
-|---|---|
-| `Shift+Enter` | Type multiple lines before sending |
-| `Ctrl+C` | Stop Claude mid-response (not `Cmd+C` on Mac) |
-| `/` | Open the commands menu |
-| `Tab` | Accept a suggestion or autocomplete |
+**Group 1 — Basics:** How to send messages, stop responses, open menus, accept suggestions.
 
-Only include the "(not `Cmd+C` on Mac)" note if the user is on macOS. On Windows/Linux, just show `Ctrl+C` without the parenthetical.
+**Group 2 — Working with files:** How to mention files (`@`), run terminal commands (`!`).
 
-Suggest they try: "Type `/` to see available commands, then `Ctrl+C` to close the menu."
+**Group 3 — Power features:** How to switch modes, undo changes, clear the screen.
 
-**STOP. Do not continue. Wait for the user to try and respond.**
+After presenting all three groups, suggest they try a few:
+- "Type `/` to see available commands, then close the menu"
+- "Type `@` and look for the CLAUDE.md you created"
+- "Try `! git log --oneline` to see your commit"
+- "Press the mode-switch shortcut a couple times and watch the indicator at the bottom change — we'll cover plan mode in detail in Module 2"
 
----
-
-### 6.6b Keyboard Shortcuts — Group 2
-
-**Working with files:**
-
-| Shortcut | What It Does |
-|---|---|
-| `@` | Mention a file so Claude can read it |
-| `!` | Run a terminal command without leaving Claude |
-
-Suggest they try: "Type `@` and look for the CLAUDE.md you created. Then try `! git log --oneline` to see your commit."
-
-**STOP. Do not continue. Wait for the user to try and respond.**
-
----
-
-### 6.6c Keyboard Shortcuts — Group 3
-
-**Power features (you'll use these a lot):**
-
-| Shortcut | What It Does |
-|---|---|
-| `Shift+Tab` | Switch between modes (normal / plan / auto-accept) |
-| `Esc Esc` | Undo Claude's last changes |
-| `Ctrl+L` | Clear the screen (keeps your conversation) |
-
-On macOS, remind them again: "`Ctrl+L`, not `Cmd+L` — terminal shortcuts always use Ctrl." Skip this reminder on Windows/Linux.
-
-Suggest they try: "Press `Shift+Tab` a couple times and watch the indicator at the bottom change. We'll cover plan mode in detail in Module 2."
+**Why teach it this way:** This shows the user that Claude can look things up in real time — they don't need to memorize everything. It also ensures shortcuts are accurate and current, since Claude Code updates frequently.
 
 **STOP. Do not continue to 6.7. Wait for the user to respond.**
 
