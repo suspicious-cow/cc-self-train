@@ -29,9 +29,9 @@ That's it. Claude will walk you through picking a project, checking your dev env
 
 ## Who This Is For
 
-You've installed Claude Code and maybe run `/init`. Now what? Pick one of 3 projects and work through 10 progressive modules that take you from "first session" to "multi-agent orchestration." Every project teaches every CC feature — you choose based on what you want to build.
+You've installed Claude Code and maybe run `/init`. Now what? Pick one of 4 projects and work through 10 progressive modules that take you from "first session" to "multi-agent orchestration." Every project teaches every CC feature — you choose based on what you want to build.
 
-**No specific language required.** Every project describes *what* to build, not *how*. You choose Python, TypeScript, Go, Rust, or whatever you're comfortable with.
+**No specific language required.** Forge, Nexus, and Sentinel describe *what* to build, not *how*. You choose Python, TypeScript, Go, Rust, or whatever you're comfortable with. Canvas uses plain HTML/CSS/JS — no build tools needed.
 
 ## Manual Setup (if you prefer)
 
@@ -73,7 +73,15 @@ Each project covers all 10 modules. Pick based on what sounds fun to build.
 
 </details>
 
-## The 3 Projects
+## The 4 Projects
+
+### [Canvas — Personal Portfolio Site](projects/canvas/README.md) ⭐ Recommended for first-timers
+
+Build a multi-page portfolio site with responsive design, a blog, and a contact form using plain HTML, CSS, and JavaScript. No build tools needed — just open it in your browser.
+
+**Best for:** Anyone who wants the simplest setup to focus purely on learning CC
+
+---
 
 ### [Forge — Personal Dev Toolkit](projects/forge/README.md)
 
@@ -99,7 +107,7 @@ Build a tool that scans code for issues, generates tests, and tracks coverage, g
 
 ---
 
-All three projects are **language-agnostic**, **local-only**, and **genuinely useful**. They all teach the same CC features through the same 10 modules — pick based on interest, not difficulty.
+All four projects are **local-only** and **genuinely useful**. Canvas uses HTML/CSS/JS (no setup needed); Forge, Nexus, and Sentinel are **language-agnostic** — you choose. They all teach the same CC features through the same 10 modules — pick based on interest, not difficulty.
 
 ## The 10 Modules
 
@@ -120,33 +128,33 @@ Every project follows this same progression:
 
 ## Feature Coverage Matrix
 
-Every major CC feature is taught in all 3 projects:
+Every major CC feature is taught in all 4 projects:
 
-| Feature | Forge | Nexus | Sentinel | Module |
-|---------|:-----:|:-----:|:--------:|:------:|
-| CLAUDE.md, /init, /memory | x | x | x | 1 |
-| Interactive mode (shortcuts, @, /, !) | x | x | x | 1 |
-| Plan mode | x | x | x | 2 |
-| Git integration | x | x | x | 2 |
-| .claude/rules/ (path-scoped) | x | x | x | 3 |
-| CLAUDE.local.md, memory hierarchy | x | x | x | 3 |
-| @imports, /context, /compact | x | x | x | 3 |
-| Skills (SKILL.md, frontmatter, hot-reload) | x | x | x | 4 |
-| Custom slash commands ($0, $1) | x | x | x | 4 |
-| Hooks (SessionStart, PostToolUse, Stop) | x | x | x | 5 |
-| Hook scripting (matchers, timeouts) | x | x | x | 5 |
-| MCP servers (.mcp.json, scopes) | x | x | x | 6 |
-| Skills + MCP integration | x | x | x | 6 |
-| PreToolUse, hook decision control | x | x | x | 7 |
-| Prompt-based hooks (LLM quality gates) | x | x | x | 7 |
-| Subagents (.claude/agents/) | x | x | x | 8 |
-| Subagent chaining, parallel, background | x | x | x | 8 |
-| Tasks system (dependencies, cross-session) | x | x | x | 9 |
-| TDD & verification loops | x | x | x | 9 |
-| Git worktrees, parallel dev | x | x | x | 10 |
-| Plugins (bundling everything) | x | x | x | 10 |
-| Evaluation framework | x | x | x | 10 |
-| Continuous learning patterns | x | x | x | 10 |
+| Feature | Canvas | Forge | Nexus | Sentinel | Module |
+|---------|:------:|:-----:|:-----:|:--------:|:------:|
+| CLAUDE.md, /init, /memory | x | x | x | x | 1 |
+| Interactive mode (shortcuts, @, /, !) | x | x | x | x | 1 |
+| Plan mode | x | x | x | x | 2 |
+| Git integration | x | x | x | x | 2 |
+| .claude/rules/ (path-scoped) | x | x | x | x | 3 |
+| CLAUDE.local.md, memory hierarchy | x | x | x | x | 3 |
+| @imports, /context, /compact | x | x | x | x | 3 |
+| Skills (SKILL.md, frontmatter, hot-reload) | x | x | x | x | 4 |
+| Custom slash commands ($0, $1) | x | x | x | x | 4 |
+| Hooks (SessionStart, PostToolUse, Stop) | x | x | x | x | 5 |
+| Hook scripting (matchers, timeouts) | x | x | x | x | 5 |
+| MCP servers (.mcp.json, scopes) | x | x | x | x | 6 |
+| Skills + MCP integration | x | x | x | x | 6 |
+| PreToolUse, hook decision control | x | x | x | x | 7 |
+| Prompt-based hooks (LLM quality gates) | x | x | x | x | 7 |
+| Subagents (.claude/agents/) | x | x | x | x | 8 |
+| Subagent chaining, parallel, background | x | x | x | x | 8 |
+| Tasks system (dependencies, cross-session) | x | x | x | x | 9 |
+| TDD & verification loops | x | x | x | x | 9 |
+| Git worktrees, parallel dev | x | x | x | x | 10 |
+| Plugins (bundling everything) | x | x | x | x | 10 |
+| Evaluation framework | x | x | x | x | 10 |
+| Continuous learning patterns | x | x | x | x | 10 |
 
 ## Reference Docs
 

@@ -13,21 +13,26 @@ You are the onboarding guide for this repository. Walk the user through getting 
 
 If the user passed a project number as $0, use that. Otherwise, ask them to pick one using AskUserQuestion with these options:
 
-1. **Forge** — Personal Dev Toolkit. Build a CLI for notes, snippets, bookmarks, and templates that grows into a searchable, pluggable knowledge base with API. Best if you like building tools you will actually use.
-2. **Nexus** — Local API Gateway. Build an HTTP gateway with routing, rate limiting, SQLite caching, and health checks that grows into a full-featured service mesh. Best if you like backend and service development.
-3. **Sentinel** — Code Analyzer & Test Generator. Build a tool that scans code for issues, generates tests, and tracks coverage, growing into a full quality dashboard. Best if you like meta-tools and code quality.
+1. **Canvas** — Personal Portfolio Site. Build a multi-page portfolio with responsive design, a blog, and a contact form using plain HTML, CSS, and JavaScript. No build tools needed — just open it in your browser. Best if you want the simplest possible setup to focus purely on learning Claude Code. **(Recommended for first time through)**
+2. **Forge** — Personal Dev Toolkit. Build a CLI for notes, snippets, bookmarks, and templates that grows into a searchable, pluggable knowledge base with API. Best if you like building tools you will actually use.
+3. **Nexus** — Local API Gateway. Build an HTTP gateway with routing, rate limiting, SQLite caching, and health checks that grows into a full-featured service mesh. Best if you like backend and service development.
+4. **Sentinel** — Code Analyzer & Test Generator. Build a tool that scans code for issues, generates tests, and tracks coverage, growing into a full quality dashboard. Best if you like meta-tools and code quality.
 
-All three projects teach every Claude Code feature through 10 progressive modules. Pick based on what sounds fun to build — the CC learning is the same.
+All four projects teach every Claude Code feature through 10 progressive modules. Pick based on what sounds fun to build — the CC learning is the same.
 
-Present all three options equally — do NOT mark any as recommended. If the user explicitly says they can't decide, then suggest Forge as a good starting point since it's the most broadly useful.
+Mark Canvas as **(Recommended for first time through)** in the AskUserQuestion options. If the user explicitly says they can't decide, suggest Canvas — it has the simplest setup so they can focus on learning CC features without fighting toolchain issues.
 
 ## Step 2: Pick a Language
 
-Ask them what programming language they want to use. Common choices: Python, TypeScript/JavaScript, Go, Rust. Any language works.
+**If the user chose Canvas, skip this step** — the project uses HTML, CSS, and JavaScript. No language choice needed.
+
+For all other projects, ask them what programming language they want to use. Common choices: Python, TypeScript/JavaScript, Go, Rust. Any language works.
 
 ## Step 3: Environment (Optional)
 
-Ask the user if they want to set up an isolated environment for their project. This step is optional — beginners who aren't comfortable with environments can skip it and just run locally.
+**If the user chose Canvas, skip this step** — no environment isolation needed. HTML/CSS/JS runs directly in the browser.
+
+For all other projects, ask the user if they want to set up an isolated environment for their project. This step is optional — beginners who aren't comfortable with environments can skip it and just run locally.
 
 Use AskUserQuestion with **language-aware options**:
 
@@ -49,7 +54,13 @@ Remember their choice — it affects the verify and scaffold steps below.
 
 ## Step 4: Verify Their Environment
 
-Based on their chosen language, check that their toolchain is ready. Run the appropriate version check commands:
+**If the user chose Canvas**, the verification is simple — just check:
+- `git --version`
+- Confirm they have a web browser (they almost certainly do — just mention they'll open HTML files in it)
+
+That's it for Canvas. No language toolchain, no package managers, no extra tools.
+
+**For all other projects**, check that their toolchain is ready. Run the appropriate version check commands:
 
 - **Python:** `python --version` (need 3.10+), check for pip/conda/uv
 - **TypeScript/Node:** `node --version` (need 18+), `npm --version`
@@ -81,11 +92,21 @@ git init
 ```
 
 Suggested directory names by project:
+- Canvas: `workspace/canvas-site`
 - Forge: `workspace/forge-toolkit`
 - Nexus: `workspace/nexus-gateway`
 - Sentinel: `workspace/sentinel`
 
-If their language needs a project file (package.json, go.mod, Cargo.toml, pyproject.toml, etc.), create it.
+**If the user chose Canvas**, scaffold these files (no language project file needed):
+
+- `index.html` — Basic HTML5 boilerplate with a "Hello, Canvas!" heading and a link to `styles/main.css` and `scripts/main.js`
+- `styles/main.css` — CSS reset (box-sizing, margin/padding reset) plus CSS custom properties for colors, fonts, and spacing
+- `scripts/main.js` — Empty file with a comment: `// Canvas — main JavaScript file`
+- `.gitignore` — Minimal: `.DS_Store`, `Thumbs.db`, `*.swp`
+
+That's all Canvas needs. No package.json, no build config, no dependencies. Tell the user to open `index.html` in their browser to see it working.
+
+**For all other projects**, if their language needs a project file (package.json, go.mod, Cargo.toml, pyproject.toml, etc.), create it.
 
 Create a `.gitignore` in the project directory appropriate for the chosen language (e.g., `__pycache__/`, `node_modules/`, `target/`, `.venv/`, etc.).
 
@@ -151,9 +172,9 @@ Now create the `CLAUDE.md` file in `workspace/<project>/`, but **walk through ea
 - "Finally, **pointers to the guide and reference docs** — so Claude can look up features when you ask about them. Think of these as Claude's bookmarks."
 
 The file should include:
-- A project description based on their chosen project (Forge/Nexus/Sentinel)
-- The chosen programming language
-- Placeholder build, test, and lint commands appropriate for their language
+- A project description based on their chosen project (Canvas/Forge/Nexus/Sentinel)
+- The chosen programming language (for Canvas: "HTML, CSS, and JavaScript — no build tools or frameworks")
+- Placeholder build, test, and lint commands appropriate for their language (for Canvas: "Open index.html in browser" for build, note that formal testing comes in Module 9)
 - A pointer to the project guide: `See ../../projects/<name>/README.md for the full module guide.`
 - A pointer to reference docs: `See ../../context/ for detailed Claude Code feature documentation.`
 
@@ -308,6 +329,6 @@ Don't just say "Module 1 done." Recap the **concepts** they now understand:
 ## Important
 
 - Build the project in `workspace/<name>/` inside this repo. The `workspace/` directory is gitignored by cc-self-train.
-- Ask what language they want — never assume.
+- Ask what language they want — never assume (except Canvas, which is always HTML/CSS/JS).
 - Be encouraging. This is their first time with Claude Code for many users.
-- If they already have a project in mind that doesn't match the 3 listed, that's fine — help them pick the project guide that teaches the CC features most relevant to what they want to build.
+- If they already have a project in mind that doesn't match the 4 listed, that's fine — help them pick the project guide that teaches the CC features most relevant to what they want to build.
