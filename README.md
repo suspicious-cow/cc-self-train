@@ -77,9 +77,11 @@ Each project covers all 10 modules. Pick based on what sounds fun to build.
 
 ### [Canvas — Personal Portfolio Site](projects/canvas/README.md) ⭐ Recommended for first-timers
 
-Build a multi-page portfolio site with responsive design, a blog, and a contact form using plain HTML, CSS, and JavaScript. No build tools needed — just open it in your browser.
+Build a multi-page portfolio site with responsive design, a blog, and a contact form using plain HTML, CSS, and JavaScript.
 
-**Best for:** Anyone who wants the simplest setup to focus purely on learning CC
+**Why this project?** Every developer needs a portfolio site but never gets around to building one. Canvas uses zero build tools — no npm, no frameworks, no compilers. Just open `index.html` in your browser. That means you spend 100% of your time learning Claude Code instead of fighting your toolchain. You'll walk away with a real, deployable site *and* mastery of every CC feature.
+
+**Best for:** First-timers, anyone who wants the fastest path to learning CC
 
 ---
 
@@ -87,7 +89,9 @@ Build a multi-page portfolio site with responsive design, a blog, and a contact 
 
 Build a CLI for notes, snippets, bookmarks, and templates that grows into a searchable, pluggable knowledge base with API.
 
-**Best for:** Tool builders, "I want something I'll actually use"
+**Why this project?** Most tutorials build throwaway apps you'll never open again. Forge builds something you'll actually use every day — a personal command-line tool that organizes your dev life. Notes from meetings, code snippets you keep re-Googling, project templates you set up the same way every time. By the end, you'll have a tool that saves you time *and* deep expertise in Claude Code.
+
+**Best for:** Tool builders, "I want something I'll actually use after this course"
 
 ---
 
@@ -95,7 +99,9 @@ Build a CLI for notes, snippets, bookmarks, and templates that grows into a sear
 
 Build an HTTP gateway with routing, rate limiting, SQLite caching, and health checks that grows into a full-featured service mesh.
 
-**Best for:** Backend and service builders
+**Why this project?** Every production system has an API gateway, but most developers treat it as a black box. By building one from scratch — routing, rate limiting, caching, health checks — you'll understand how services actually talk to each other at a level most developers never reach. If you've ever wondered how Nginx, Kong, or AWS API Gateway work under the hood, this is your chance to find out by building it yourself.
+
+**Best for:** Backend devs, anyone curious about infrastructure and how services connect
 
 ---
 
@@ -103,7 +109,9 @@ Build an HTTP gateway with routing, rate limiting, SQLite caching, and health ch
 
 Build a tool that scans code for issues, generates tests, and tracks coverage, growing into a full quality dashboard with CI integration.
 
-**Best for:** Quality-focused devs, "meta-tool" appeal
+**Why this project?** Sentinel is a tool that makes your *other* code better. It scans for problems, generates test suites, and tracks quality metrics — essentially building your own mini-SonarQube or Codecov. If you care about code quality, this project teaches you how to enforce it automatically. It's the "meta-tool" — a program that improves every other program you write.
+
+**Best for:** Quality-focused devs, "I want to build a tool that levels up everything else I write"
 
 ---
 

@@ -15,12 +15,19 @@ You are the onboarding guide for this repository. Walk the user through getting 
 
 If the user passed a project number as $0, use that. Otherwise, ask them to pick one using AskUserQuestion with these options:
 
-1. **Canvas** — Personal Portfolio Site. Build a multi-page portfolio with responsive design, a blog, and a contact form using plain HTML, CSS, and JavaScript. No build tools needed — just open it in your browser. Best if you want the simplest possible setup to focus purely on learning Claude Code. **(Recommended for first time through)**
-2. **Forge** — Personal Dev Toolkit. Build a CLI for notes, snippets, bookmarks, and templates that grows into a searchable, pluggable knowledge base with API. Best if you like building tools you will actually use.
-3. **Nexus** — Local API Gateway. Build an HTTP gateway with routing, rate limiting, SQLite caching, and health checks that grows into a full-featured service mesh. Best if you like backend and service development.
-4. **Sentinel** — Code Analyzer & Test Generator. Build a tool that scans code for issues, generates tests, and tracks coverage, growing into a full quality dashboard. Best if you like meta-tools and code quality.
+1. **Canvas** — Personal Portfolio Site. **(Recommended for first time through)**
+   Every developer needs a portfolio but never gets around to building one. Plain HTML, CSS, and JavaScript — no build tools, no frameworks. Just open `index.html` in your browser. You spend 100% of your time learning Claude Code instead of fighting your toolchain, and you walk away with a real, deployable site.
 
-All four projects teach every Claude Code feature through 10 progressive modules. Pick based on what sounds fun to build — the CC learning is the same.
+2. **Forge** — Personal Dev Toolkit.
+   Most tutorials build throwaway apps. Forge builds something you'll actually use every day — a CLI for notes, snippets, bookmarks, and templates. By the end, you'll have a tool that saves you time *and* deep expertise in Claude Code.
+
+3. **Nexus** — Local API Gateway.
+   Every production system has an API gateway, but most developers treat it as a black box. Build one from scratch — routing, rate limiting, caching, health checks — and understand how services actually talk to each other at a level most developers never reach.
+
+4. **Sentinel** — Code Analyzer & Test Generator.
+   A tool that makes your *other* code better. Scans for issues, generates tests, tracks coverage. If you care about code quality, this teaches you how to enforce it automatically. It's the "meta-tool" — a program that improves every other program you write.
+
+All four projects teach every Claude Code feature through 10 progressive modules. They all cover the same CC skills — pick based on what sounds fun to build.
 
 Mark Canvas as **(Recommended for first time through)** in the AskUserQuestion options. If the user explicitly says they can't decide, suggest Canvas — it has the simplest setup so they can focus on learning CC features without fighting toolchain issues.
 
