@@ -31,6 +31,24 @@ All four projects teach every Claude Code feature through 10 progressive modules
 
 Mark Canvas as **(Recommended for first time through)** in the AskUserQuestion options. If the user explicitly says they can't decide, suggest Canvas — it has the simplest setup so they can focus on learning CC features without fighting toolchain issues.
 
+## Step 1b: Detect Their Operating System
+
+Auto-detect the user's OS — do NOT ask them. Run a quick check:
+
+```bash
+uname -s 2>/dev/null || echo "Windows"
+```
+
+Or use the platform info already available in your system context. Classify into one of three:
+
+- **Windows** — uses `cmd` or PowerShell, backslash paths, `start` to open files, `.venv\Scripts\activate` for venv
+- **macOS** — uses zsh/bash, forward-slash paths, `open` to open files, `source .venv/bin/activate` for venv
+- **Linux** — uses bash, forward-slash paths, `xdg-open` to open files, `source .venv/bin/activate` for venv
+
+Briefly confirm to the user: "I see you're on **[OS]** — I'll tailor all commands and paths for your system."
+
+Remember the OS for all subsequent steps. Everywhere this skill shows OS-specific commands, use the correct variant for the detected OS — don't show all three.
+
 ## Step 2: Pick a Language
 
 **If the user chose Canvas, skip this step** — the project uses HTML, CSS, and JavaScript. No language choice needed.
@@ -71,7 +89,7 @@ That's it for Canvas. No language toolchain, no package managers, no extra tools
 
 **For all other projects**, check that their toolchain is ready. Run the appropriate version check commands:
 
-- **Python:** `python --version` (need 3.10+), check for pip/conda/uv
+- **Python:** `python3 --version` on macOS/Linux or `python --version` on Windows (need 3.10+), check for pip/conda/uv
 - **TypeScript/Node:** `node --version` (need 18+), `npm --version`
 - **Go:** `go version` (need 1.21+)
 - **Rust:** `rustc --version`, `cargo --version`
@@ -92,13 +110,12 @@ For Sentinel, also mention they will need a coverage tool for their language (th
 
 ## Step 5: Scaffold the Project
 
-Create the project directory inside this repository under `workspace/` and initialize it:
+Create the project directory inside this repository under `workspace/` and initialize it. Use OS-appropriate commands:
 
-```
-mkdir -p workspace/<project-name>
-cd workspace/<project-name>
-git init
-```
+- **macOS/Linux:** `mkdir -p workspace/<project-name> && cd workspace/<project-name> && git init`
+- **Windows:** `mkdir workspace\<project-name> && cd workspace\<project-name> && git init`
+
+Only show the command for their detected OS.
 
 Suggested directory names by project:
 - Canvas: `workspace/canvas-site`
@@ -113,9 +130,14 @@ Suggested directory names by project:
 - `scripts/main.js` — Empty file with a comment: `// Canvas — main JavaScript file`
 - `.gitignore` — Minimal: `.DS_Store`, `Thumbs.db`, `*.swp`
 
-That's all Canvas needs. No package.json, no build config, no dependencies. Tell the user to open `index.html` in their browser to see it working.
+That's all Canvas needs. No package.json, no build config, no dependencies. Tell the user to open `index.html` in their browser using the OS-appropriate command:
+- **macOS:** `open index.html`
+- **Windows:** `start index.html`
+- **Linux:** `xdg-open index.html`
 
-After scaffolding, pause and let the user know what you just created. Confirm they can see the files (for Canvas, suggest opening `index.html` in their browser). Do NOT immediately continue into Module 1 — wait for the user to respond first.
+Only show the command for their detected OS — don't list all three.
+
+After scaffolding, pause and let the user know what you just created. Confirm they can see the files. Do NOT immediately continue into Module 1 — wait for the user to respond first.
 
 **For all other projects**, if their language needs a project file (package.json, go.mod, Cargo.toml, pyproject.toml, etc.), create it.
 
@@ -124,8 +146,11 @@ Create a `.gitignore` in the project directory appropriate for the chosen langua
 Based on the environment choice from Step 3, also scaffold environment files:
 
 **If they chose venv:**
-- Run `python -m venv .venv` in the project directory
-- Tell them how to activate: `source .venv/bin/activate` (macOS/Linux) or `.venv\Scripts\activate` (Windows)
+- Run `python -m venv .venv` (or `python3 -m venv .venv` on macOS/Linux) in the project directory
+- Tell them how to activate using their OS-specific command:
+  - **macOS/Linux:** `source .venv/bin/activate`
+  - **Windows:** `.venv\Scripts\activate`
+  Only show the one that matches their detected OS.
 - Create an empty `requirements.txt` with a comment: `# Add your project dependencies here`
 
 **If they chose conda:**
@@ -230,17 +255,18 @@ Create `CLAUDE.local.md` in the **cc-self-train root directory** (NOT inside wor
 
 ```
 # Active Project
-Project: <project> | Language: <language> | Directory: workspace/<project-dir> | Current Module: 1
+Project: <project> | Language: <language> | OS: <detected-os> | Directory: workspace/<project-dir> | Current Module: 1
 
 When the user starts a session, greet them and offer to continue where they left off.
 When the user says "next module" or asks for the next module, read projects/<name>/README.md and walk them through the next module.
+Always use OS-appropriate commands (paths, file openers, activation scripts, etc.).
 
 @import workspace/<project-dir>/CLAUDE.md
 ```
 
 Briefly explain each line:
-- Progress tracker (project, language, module number)
-- Instructions for Claude on how to greet you next time
+- Progress tracker (project, language, OS, module number)
+- Instructions for Claude on how to greet you next time and use the right commands for your OS
 - The `@import` pulls your project's CLAUDE.md into this context automatically
 
 **STOP. Do not continue to 6.5. Wait for the user to respond.**
@@ -360,5 +386,6 @@ Recap what they learned (concepts, not steps):
 
 - Build the project in `workspace/<name>/` inside this repo. The `workspace/` directory is gitignored by cc-self-train.
 - Ask what language they want — never assume (except Canvas, which is always HTML/CSS/JS).
+- **OS-aware commands:** Always use the detected OS from Step 1b. Never show commands for all three operating systems — only show the one that matches the user's system. This includes paths (forward vs backslash), file-opening commands (`open`/`start`/`xdg-open`), shell syntax, activation scripts, and the Python executable name (`python` vs `python3`).
 - Be encouraging. This is their first time with Claude Code for many users.
 - If they already have a project in mind that doesn't match the 4 listed, that's fine — help them pick the project guide that teaches the CC features most relevant to what they want to build.
