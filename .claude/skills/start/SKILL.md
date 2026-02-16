@@ -19,7 +19,7 @@ If the user passed a project number as $0, use that. Otherwise, ask them to pick
 
 All three projects teach every Claude Code feature through 10 progressive modules. Pick based on what sounds fun to build — the CC learning is the same.
 
-If they're unsure, recommend Forge (it is the most broadly useful).
+Present all three options equally — do NOT mark any as recommended. If the user explicitly says they can't decide, then suggest Forge as a good starting point since it's the most broadly useful.
 
 ## Step 2: Pick a Language
 
