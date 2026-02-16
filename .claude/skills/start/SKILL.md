@@ -226,7 +226,9 @@ The file should include:
 - Pointer to project guide: `See ../../projects/<name>/README.md for the full module guide.`
 - Pointer to reference docs: `See ../../context/ for detailed Claude Code feature documentation.`
 
-After creating the file, ask: "Does that make sense? Any sections you'd want to change?"
+After creating the file, **display the full file contents in a code block in your message**. The Write tool only previews the first few lines, so the user can't see everything — especially the pointers at the bottom. Show the complete file so they can see all sections.
+
+Then ask: "Does that make sense? Any sections you'd want to change?"
 
 **STOP. Do not continue to 6.3. Wait for the user to respond.**
 
