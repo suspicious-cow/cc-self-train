@@ -11,11 +11,6 @@ const message = `
 
   Type /start to get going.
 
-  Or jump straight to a project:
-    /start 1  -- Forge (Personal Dev Toolkit)
-    /start 2  -- Nexus (Local API Gateway)
-    /start 3  -- Sentinel (Code Analyzer)
-
   ----------------------------------------
   NOTE: This repo uses two SessionStart
   hooks (welcome banner + update checker).
