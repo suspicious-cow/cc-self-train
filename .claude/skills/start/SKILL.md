@@ -301,14 +301,18 @@ After committing, mention: "If Claude ever makes a change you don't like, press 
 
 Introduce shortcuts: "Claude Code has keyboard shortcuts that make you faster. I'll teach them in small groups so it's not overwhelming."
 
+**On macOS**, add a note: "Since Claude Code runs in the terminal, shortcuts use `Ctrl`, not `Cmd` — even on Mac. This catches a lot of people off guard."
+
 **Group 1 — Basics:**
 
 | Shortcut | What It Does |
 |---|---|
 | `Shift+Enter` | Type multiple lines before sending |
-| `Ctrl+C` | Stop Claude mid-response |
+| `Ctrl+C` | Stop Claude mid-response (not `Cmd+C` on Mac) |
 | `/` | Open the commands menu |
 | `Tab` | Accept a suggestion or autocomplete |
+
+Only include the "(not `Cmd+C` on Mac)" note if the user is on macOS. On Windows/Linux, just show `Ctrl+C` without the parenthetical.
 
 Suggest they try: "Type `/` to see available commands, then `Ctrl+C` to close the menu."
 
@@ -340,6 +344,8 @@ Suggest they try: "Type `@` and look for the CLAUDE.md you created. Then try `! 
 | `Shift+Tab` | Switch between modes (normal / plan / auto-accept) |
 | `Esc Esc` | Undo Claude's last changes |
 | `Ctrl+L` | Clear the screen (keeps your conversation) |
+
+On macOS, remind them again: "`Ctrl+L`, not `Cmd+L` — terminal shortcuts always use Ctrl." Skip this reminder on Windows/Linux.
 
 Suggest they try: "Press `Shift+Tab` a couple times and watch the indicator at the bottom change. We'll cover plan mode in detail in Module 2."
 
