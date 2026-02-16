@@ -19,13 +19,13 @@ If the user passed a project number as $0, use that. Otherwise, ask them to pick
    Every developer needs a portfolio but never gets around to building one. Plain HTML, CSS, and JavaScript — no build tools, no frameworks. Just open `index.html` in your browser. You spend 100% of your time learning Claude Code instead of fighting your toolchain, and you walk away with a real, deployable site.
 
 2. **Forge** — Personal Dev Toolkit.
-   Most tutorials build throwaway apps. Forge builds something you'll actually use every day — a CLI for notes, snippets, bookmarks, and templates. By the end, you'll have a tool that saves you time *and* deep expertise in Claude Code.
+   Most tutorials build throwaway apps. Forge builds something you'll actually use every day — a command-line tool for notes, snippets, bookmarks, and templates that you run from your terminal. By the end, you'll have a tool that saves you time *and* deep expertise in Claude Code.
 
 3. **Nexus** — Local API Gateway.
-   Every production system has an API gateway, but most developers treat it as a black box. Build one from scratch — routing, rate limiting, caching, health checks — and understand how services actually talk to each other at a level most developers never reach.
+   Every production system has a gateway that manages traffic between services, but most developers treat it as a black box. Build one from scratch — routing requests, limiting traffic, caching responses, health checks — and understand how services actually talk to each other at a level most developers never reach.
 
 4. **Sentinel** — Code Analyzer & Test Generator.
-   A tool that makes your *other* code better. Scans for issues, generates tests, tracks coverage. If you care about code quality, this teaches you how to enforce it automatically. It's the "meta-tool" — a program that improves every other program you write.
+   A tool that makes your *other* code better. Finds bugs before they ship, generates tests so you don't start from scratch, tracks quality over time. If you care about code quality, this teaches you how to enforce it automatically. It's the "meta-tool" — a program that improves every other program you write.
 
 All four projects teach every Claude Code feature through 10 progressive modules. They all cover the same CC skills — pick based on what sounds fun to build.
 
