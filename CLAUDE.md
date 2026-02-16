@@ -11,7 +11,7 @@ cc-self-train/
 ├── .claude/
 │   ├── skills/start/SKILL.md    # /start onboarding skill — the entry point
 │   ├── scripts/welcome.sh       # SessionStart hook — prints welcome banner
-│   ├── scripts/check-updates.py # SessionStart hook — checks GitHub for new CC releases
+│   ├── scripts/check-updates.js # SessionStart hook — checks for newer CC versions
 │   ├── last-synced.json         # Cutoff markers for the update checker
 │   └── settings.json            # Hook configuration (welcome + update checker)
 ├── context/                     # Reference documentation for all CC features
@@ -42,7 +42,7 @@ cc-self-train/
 When a user runs `claude` in this repo:
 1. Claude Code detects two project hooks in `.claude/settings.json` and prompts the user to trust them. They should approve both — they are read-only and safe. Users can review them with `/hooks` if they want to.
 2. **Hook 1 — welcome.sh**: Prints a welcome banner telling them to type `/start` and explains the hooks.
-3. **Hook 2 — check-updates.py**: Pings GitHub to check for new Claude Code releases (after v2.1.42) and new commits on affaan-m/everything-claude-code. If anything is found, it injects a summary into your context so you can factor it into guidance. Fails silently if offline.
+3. **Hook 2 — check-updates.js**: Pings GitHub to check if a newer version of Claude Code is available. If so, it tells the user to run `claude update`. Fails silently if offline.
 4. The `/start` skill walks them through: pick a project (Canvas, Forge, Nexus, or Sentinel), pick a language (skipped for Canvas), optionally choose an environment (skipped for Canvas; venv/conda/Docker for others), verify environment, scaffold project in `workspace/<name>/`, then deliver Module 1 inline.
 5. From there, users say "next module" to continue through Modules 2-10. Claude reads the project guide from `projects/<name>/README.md` and walks them through each module — all within the same cc-self-train session. No terminal switching needed.
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// SessionStart hook — checks for new CC releases and inspiration repo updates.
+// SessionStart hook — checks if a newer Claude Code version is available.
 //
-// Reads .claude/last-synced.json for the cutoff date, queries GitHub, and
-// outputs a systemMessage if anything new is found. Fails silently on network
-// errors so offline users aren't blocked.
+// Reads .claude/last-synced.json for the last known version, queries GitHub
+// for newer releases, and if any exist, tells Claude to ask the user to update.
+// Fails silently on network errors so offline users aren't blocked.
 //
 // No dependencies beyond Node.js (which Claude Code requires).
 
@@ -34,9 +34,6 @@ try {
 
 const lastVersion = (sync.changelog && sync.changelog.last_version) || "";
 if (!lastVersion) process.exit(0);
-
-const inspirationInfo = sync.inspiration_repo || {};
-const inspirationSince = inspirationInfo.last_checked || "";
 
 // ---------------------------------------------------------------------------
 // Minimal GitHub API helper (uses built-in https module)
@@ -82,99 +79,28 @@ function ghApi(apiPath) {
 }
 
 // ---------------------------------------------------------------------------
-// Check for new Claude Code releases
+// Main — check for newer CC releases
 // ---------------------------------------------------------------------------
-async function checkChangelog() {
+async function main() {
   const releases = await ghApi(
-    "/repos/anthropics/claude-code/releases?per_page=10"
+    "/repos/anthropics/claude-code/releases?per_page=5"
   );
 
-  const newReleases = [];
+  // Find releases newer than our last known version
+  const newerVersions = [];
   for (const rel of releases) {
     const tag = rel.tag_name || "";
     if (tag === lastVersion) break; // newest-first; stop at known version
-    const published = (rel.published_at || "").slice(0, 10);
-    let body = (rel.body || "").trim();
-    if (body.length > 800) body = body.slice(0, 800) + "...";
-    newReleases.push(`### ${tag} (${published})\n${body}`);
+    newerVersions.push(tag);
   }
 
-  return newReleases;
-}
+  if (newerVersions.length === 0) process.exit(0);
 
-// ---------------------------------------------------------------------------
-// Check for new commits on inspiration repo
-// ---------------------------------------------------------------------------
-async function checkInspiration() {
-  if (!inspirationSince) return [];
-
-  const owner = inspirationInfo.owner || "affaan-m";
-  const repo = inspirationInfo.repo || "everything-claude-code";
-  // Ensure ISO format for the API
-  const since = inspirationSince.includes("T")
-    ? inspirationSince
-    : `${inspirationSince}T23:59:59Z`;
-
-  const commits = await ghApi(
-    `/repos/${owner}/${repo}/commits?since=${encodeURIComponent(since)}&per_page=20`
-  );
-
-  if (!Array.isArray(commits) || commits.length === 0) return [];
-
-  return commits.map((c) => {
-    const sha = (c.sha || "").slice(0, 7);
-    const date = ((c.commit && c.commit.committer && c.commit.committer.date) || "").slice(0, 10);
-    const msg = ((c.commit && c.commit.message) || "").split("\n")[0];
-    return `- \`${sha}\` (${date}) ${msg}`;
-  });
-}
-
-// ---------------------------------------------------------------------------
-// Main
-// ---------------------------------------------------------------------------
-async function main() {
-  const sections = [];
-
-  try {
-    const newReleases = await checkChangelog();
-    if (newReleases.length > 0) {
-      sections.push(
-        `## New Claude Code Releases (since ${lastVersion})\n\n` +
-          "The following releases came out AFTER the content in context/changelog-cc.txt was last updated. " +
-          "Review these changes and factor them into any guidance you give the user — especially if new CC " +
-          "features were added that should be incorporated into the project modules.\n\n" +
-          newReleases.join("\n\n")
-      );
-    }
-  } catch {
-    // offline or rate-limited — skip
-  }
-
-  try {
-    const newCommits = await checkInspiration();
-    if (newCommits.length > 0) {
-      sections.push(
-        `## New Commits in affaan-m/everything-claude-code (since ${inspirationSince})\n\n` +
-          "The inspiration repo has new activity. Review for patterns, techniques, or examples " +
-          "that could improve our project guides.\n\n" +
-          newCommits.join("\n")
-      );
-    }
-  } catch {
-    // offline or rate-limited — skip
-  }
-
-  if (sections.length === 0) process.exit(0);
-
+  const latest = newerVersions[0];
   const message =
-    "\n========================================\n" +
-    "  Upstream Updates Detected\n" +
-    "========================================\n\n" +
-    sections.join("\n\n") +
-    "\n\n" +
-    "NOTE TO CLAUDE: If any new CC features above are relevant to the module the user is working on, " +
-    "mention them. If a new release introduces breaking changes or deprecations, warn the user. " +
-    "Do NOT overwhelm the user with raw changelogs — summarize what matters for their current task.";
+    `A newer version of Claude Code is available (${latest}, you have ${lastVersion}). ` +
+    `Tell the user: "A Claude Code update is available (${latest}). Run \`claude update\` to get the latest version." ` +
+    `Keep it brief — just the one-liner above. Do not dump changelogs.`;
 
   process.stdout.write(JSON.stringify({ systemMessage: message }));
 }
