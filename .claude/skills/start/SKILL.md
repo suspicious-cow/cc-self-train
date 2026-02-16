@@ -137,7 +137,7 @@ That's all Canvas needs. No package.json, no build config, no dependencies. Tell
 
 Only show the command for their detected OS — don't list all three.
 
-After scaffolding, pause and let the user know what you just created. Confirm they can see the files. Do NOT immediately continue into Module 1 — wait for the user to respond first.
+After scaffolding, **list every file you created with a one-line description of each** (the Write tool truncates previews, so the user may not have seen the full contents). For Canvas, also show how to open the site in their browser using the OS-appropriate command. Do NOT immediately continue into Module 1 — wait for the user to respond first.
 
 **For all other projects**, if their language needs a project file (package.json, go.mod, Cargo.toml, pyproject.toml, etc.), create it.
 
@@ -175,7 +175,7 @@ Based on the environment choice from Step 3, also scaffold environment files:
 
 **If they chose Local:** No extra files needed.
 
-After scaffolding (for all projects), tell the user what you created and confirm they can see their files. **STOP and wait for the user to respond before starting Module 1.**
+After scaffolding (for all projects), **list every file you created with a one-line description of each** so the user has a clear picture of their project structure. **STOP and wait for the user to respond before starting Module 1.**
 
 ## Step 6: Module 1 — Setup & First Contact
 
@@ -266,7 +266,7 @@ Always use OS-appropriate commands (paths, file openers, activation scripts, etc
 @import workspace/<project-dir>/CLAUDE.md
 ```
 
-Briefly explain each line:
+**Display the full file contents in a code block** (the Write tool truncates previews). Then briefly explain each line:
 - Progress tracker (project, language, OS, module number)
 - Instructions for Claude on how to greet you next time and use the right commands for your OS
 - The `@import` pulls your project's CLAUDE.md into this context automatically
