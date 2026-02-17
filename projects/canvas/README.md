@@ -232,6 +232,8 @@ Open `index.html` in your browser to verify it works.
 
 ### 2.1 Enter Plan Mode
 
+> **Why this step:** Plan mode is one of Claude Code's most important features. It lets you think through architecture *with* Claude before any code gets written. This prevents the "just start coding" trap that leads to messy rewrites later.
+
 Press `Shift+Tab` to switch to plan mode. You will see the mode indicator
 change. In plan mode, Claude analyzes and plans without making changes. This
 is where you design before you build.
@@ -278,6 +280,8 @@ Should the blog use separate HTML files per post or a single page with anchors?
 
 Refine the plan until you are satisfied.
 
+> **STOP -- What you just did:** You used plan mode to design your entire site architecture before writing a single line of code. This is a pattern you will use constantly: plan first, then build. The back-and-forth questioning in step 2.3 is how you pressure-test a design. Claude does not get defensive about its plans -- ask hard questions and it will revise.
+
 ### 2.4 Exit Plan Mode and Execute
 
 Press `Shift+Tab` to return to normal mode. Now tell Claude to build:
@@ -293,7 +297,17 @@ Do NOT build the other pages yet -- just the home page and shared components.
 
 Let Claude create the files. Open `index.html` in your browser to check it.
 
+> **STOP -- What you just did:** You went from plan mode to normal mode and gave Claude a focused, scoped instruction. Notice that you told Claude what to build *and* what NOT to build yet ("Do NOT build the other pages yet"). Constraining scope is a key prompting skill -- it keeps Claude focused and prevents runaway file creation.
+
+> **Quick check before continuing:**
+> - [ ] Your site plan covers all 5 pages (home, about, projects, blog, contact)
+> - [ ] Claude created the shared nav, footer, home page, and CSS design system
+> - [ ] You opened `index.html` in your browser and it renders correctly
+> - [ ] You are back in normal mode (check the mode indicator)
+
 ### 2.5 Create a Feature Branch
+
+> **Why this step:** Feature branches keep your experiments separate from working code. If something goes wrong, you can throw away the branch without affecting main. This is also how real teams work -- every feature gets its own branch.
 
 ```
 ! git checkout -b feature/core-pages
@@ -322,6 +336,8 @@ Create projects.html with:
 
 Open each page in your browser. Test the navigation links between pages.
 
+> **STOP -- What you just did:** You gave Claude two separate, focused prompts to build two pages. Notice the pattern: each prompt specified the page structure, the content sections, and the CSS approach. The more specific your prompt, the closer the result matches what you want. You also tested in the browser after each page -- always verify Claude's output visually.
+
 ### 2.8 Manual Testing
 
 Test your site by opening each page and checking:
@@ -337,6 +353,8 @@ Test your site by opening each page and checking:
 Fix anything broken.
 
 ### 2.9 Commit and Merge
+
+> **Why this step:** Committing through Claude Code (using `!` prefix for shell commands) keeps everything in one place. You do not need to switch terminals. The merge back to main means your feature branch work is now part of your stable codebase.
 
 ```
 ! git add -A
@@ -364,6 +382,8 @@ Fix anything broken.
 `/compact`, memory hierarchy, `/cost`
 
 ### 3.1 Create Project Rules
+
+> **Why this step:** Rules are how you teach Claude your project's standards permanently. Instead of repeating "use semantic HTML" every session, you write it once in a rule file and Claude follows it automatically. Path-scoped rules only activate when Claude works on matching files, keeping context lean.
 
 Create the rules directory in your project:
 
@@ -443,6 +463,8 @@ paths:
 - Handle errors explicitly -- no silent catch blocks
 ```
 
+> **STOP -- What you just did:** You created three rule files, each scoped to specific file types using YAML frontmatter. When Claude edits an `.html` file, it loads `html-rules.md` automatically. When it edits `.css`, it loads `css-rules.md`. This is how you enforce coding standards without repeating yourself -- and unlike CLAUDE.md instructions, path-scoped rules only consume context when relevant files are being worked on.
+
 ### 3.3 Create CLAUDE.local.md
 
 Create a personal, non-committed preferences file:
@@ -463,6 +485,8 @@ Verify it was added to `.gitignore`:
 
 If `CLAUDE.local.md` is not listed, add it.
 
+> **STOP -- What you just did:** You created a personal preferences file that is not committed to git. This is the split between team standards (rules, CLAUDE.md) and personal preferences (CLAUDE.local.md). On a real team, everyone shares the same rules but can have different personal preferences -- like which browser they test in or what commit message style they prefer.
+
 ### 3.4 Understand the Memory Hierarchy
 
 Ask Claude:
@@ -479,6 +503,11 @@ The hierarchy from highest to lowest precedence:
 3. Project rules (`.claude/rules/*.md`)
 4. User memory (`~/.claude/CLAUDE.md`)
 5. Project local (`./CLAUDE.local.md`)
+
+> **Quick check before continuing:**
+> - [ ] `.claude/rules/` contains three rule files with path-scoped frontmatter
+> - [ ] `CLAUDE.local.md` exists and is listed in `.gitignore`
+> - [ ] You can explain the five levels of the memory hierarchy
 
 ### 3.5 Modularize CLAUDE.md with @imports
 
@@ -499,6 +528,8 @@ Then add @imports to CLAUDE.md:
 
 The `@path` syntax tells Claude Code to load those files as additional context
 when needed. Both relative and absolute paths work.
+
+> **Why this step:** As your CLAUDE.md grows, it eats into your available context window. The `@import` pattern keeps CLAUDE.md concise while making detailed documentation available on demand. Think of it like splitting a large function into smaller helpers -- same information, better organized.
 
 ### 3.6 /context Deep Dive
 
@@ -526,6 +557,8 @@ When context gets large, use `/compact` to summarize the conversation:
 
 The argument tells Claude what to prioritize when compacting. Without it,
 Claude uses its own judgment.
+
+> **STOP -- What you just did:** You used `/context` to see how your session's context is distributed, then `/compact` to reclaim space. Context management is a real skill -- long sessions accumulate history, and eventually Claude "forgets" earlier details. Using `/compact` with a focus argument lets you control what survives the compression. You will use this pattern whenever a session gets long or sluggish.
 
 ### 3.8 /cost Tracking
 
@@ -576,6 +609,8 @@ argument substitution, `disable-model-invocation`
 
 ### 4.1 Create the Skills Directory
 
+> **Why this step:** Skills are reusable, parameterized workflows you invoke with a slash command. Instead of typing the same multi-step prompt every time you need a new page, you write it once as a skill and invoke it with `/new-page faq`. Skills are the difference between using Claude Code casually and using it like a power tool.
+
 ```
 ! mkdir -p .claude/skills/new-page
 ! mkdir -p .claude/skills/component
@@ -603,6 +638,8 @@ Also create .claude/skills/new-page/page-template.md with the HTML5
 boilerplate template showing the expected structure of every page.
 ```
 
+> **STOP -- What you just did:** You created a skill with a supporting file. The `SKILL.md` is the instruction template -- it tells Claude what to do when you invoke `/new-page`. The `page-template.md` is a reference document the skill can read for the HTML boilerplate. This pattern (instruction + reference files) is how you build skills that produce consistent, high-quality output every time.
+
 ### 4.3 Create the "component" Skill
 
 ```
@@ -621,6 +658,11 @@ Also create .claude/skills/component/component-templates.md with example
 HTML and CSS for each component type (card, button, hero, form-group,
 timeline, skill-badge, tag) showing the expected markup and class names.
 ```
+
+> **Quick check before continuing:**
+> - [ ] `.claude/skills/new-page/SKILL.md` exists with frontmatter and a supporting template file
+> - [ ] `.claude/skills/component/SKILL.md` exists with a component templates reference
+> - [ ] Both skills use `$0` for argument substitution
 
 ### 4.4 Create the "check-site" Skill
 
@@ -641,6 +683,8 @@ Create .claude/skills/check-site/SKILL.md that:
 
 Notice `disable-model-invocation: true` -- this skill can only be triggered
 by you typing `/check-site`. Claude will not invoke it automatically.
+
+> **STOP -- What you just did:** You created three skills with different purposes: `new-page` generates files, `component` creates CSS, and `check-site` validates without modifying anything. The `disable-model-invocation: true` flag on `check-site` is important -- it means Claude will never run this validation on its own, only when you explicitly ask. You will use this flag whenever a skill should be user-triggered only (like destructive operations or expensive checks).
 
 ### 4.5 Test Your Skills
 
@@ -673,6 +717,8 @@ Skills support these substitution variables:
 
 ### 4.7 Hot-Reload
 
+> **Why this step:** Hot-reload means you can iterate on your skills without restarting Claude Code. This makes skill development fast -- edit, save, test, repeat. No restart cycle.
+
 With Claude Code still running, open `.claude/skills/check-site/SKILL.md` in a
 separate editor and add a line to the checks:
 
@@ -696,6 +742,8 @@ Design Notes.
 
 Test it: `/page-brief "Services"`
 
+> **STOP -- What you just did:** You now have four custom skills that extend Claude Code's capabilities specifically for your portfolio project. The `new-page` and `component` skills are productivity multipliers -- what used to be a multi-paragraph prompt is now a single slash command. The `check-site` skill is a quality gate. The `page-brief` skill outputs raw text without Claude processing it (because of `disable-model-invocation`). Together, these skills form a custom toolkit tailored to your project.
+
 ### Checkpoint
 
 - [ ] `.claude/skills/new-page/SKILL.md` exists with frontmatter and supporting files
@@ -714,6 +762,8 @@ Test it: `/page-brief "Services"`
 scripting, settings.json
 
 ### 5.1 Hook Lifecycle Overview
+
+> **Why this step:** Hooks are Claude Code's automation layer. While skills require you to type a command, hooks fire automatically at specific moments -- when a session starts, after a file is written, when Claude finishes responding. This is how you build guardrails and quality gates that work without you remembering to invoke them.
 
 Hooks fire at specific points during a Claude Code session:
 
@@ -771,6 +821,8 @@ For SessionStart hooks, stdout is added to Claude's context automatically.
 Restart Claude Code (exit and re-launch `claude`) to test it. You should see
 the stats injected on startup.
 
+> **STOP -- What you just did:** You created your first hook -- a SessionStart hook that runs a Python script every time Claude Code launches. The script counts your site's pages and injects a summary into Claude's context. This means Claude always knows the current state of your site without you having to explain it. SessionStart hooks are perfect for injecting project status, environment info, or reminders.
+
 ### 5.3 Create a PostToolUse Hook
 
 This hook validates HTML structure after Claude writes or edits an HTML file.
@@ -791,6 +843,13 @@ Add a PostToolUse hook to .claude/settings.json with matcher "Write|Edit"
 that runs the validator.
 ```
 
+> **STOP -- What you just did:** You created a PostToolUse hook with a matcher. The matcher `"Write|Edit"` ensures this hook only fires when Claude writes or edits a file -- not on every tool call. PostToolUse hooks cannot block actions (the file is already written), but they give Claude immediate feedback. If the validator finds issues, Claude sees them in its next response and can fix them automatically.
+
+> **Quick check before continuing:**
+> - [ ] `.claude/settings.json` has both SessionStart and PostToolUse hooks configured
+> - [ ] `.claude/hooks/` contains `site-summary.py` and `validate-html.py`
+> - [ ] You restarted Claude Code and saw the site summary on startup
+
 ### 5.4 Create a Stop Hook
 
 This hook checks all internal links before Claude stops to catch broken links.
@@ -807,6 +866,8 @@ Create .claude/hooks/check-links.py that:
 
 Add a Stop hook to .claude/settings.json to run it.
 ```
+
+> **Why this step:** Stop hooks are different from PostToolUse hooks -- they run once when Claude finishes its entire response, not after each individual tool call. A Stop hook with exit code 2 is *blocking*: it forces Claude to address the issue before moving on. This makes Stop hooks ideal for final validation checks like broken link detection.
 
 ### 5.5 Matchers, Timeouts, and Scripting
 
@@ -833,6 +894,8 @@ communicate (0 = success, 2 = blocking error), and can access
 
 Use `Ctrl+O` (verbose mode) to see hook execution details.
 
+> **STOP -- What you just did:** You built a three-layer hook system: SessionStart injects context at launch, PostToolUse validates individual file writes, and Stop performs a final quality check when Claude finishes. These layers work together without you doing anything -- they are the automated quality gates that catch mistakes before they accumulate. This is how professional teams use Claude Code: automate the boring checks so you can focus on the creative work.
+
 ### Checkpoint
 
 - [ ] `.claude/settings.json` exists with hook configuration
@@ -849,6 +912,8 @@ Use `Ctrl+O` (verbose mode) to see hook execution details.
 **CC features:** MCP servers, `.mcp.json`, scopes, skills+MCP, `claude mcp add`
 
 ### 6.1 What Is MCP
+
+> **Why this step:** Until now, Claude Code has only worked with local files and shell commands. MCP (Model Context Protocol) servers extend Claude's reach to external systems -- file servers, web APIs, databases, and more. This is what turns Claude Code from a code assistant into an integration platform.
 
 MCP (Model Context Protocol) is an open standard for connecting AI tools to
 external data sources and APIs. MCP servers give Claude Code access to
@@ -877,6 +942,8 @@ After adding, check the status:
 ```
 
 You should see `canvas-fs` listed and connected.
+
+> **STOP -- What you just did:** You connected your first MCP server and verified it with `/mcp`. The filesystem MCP server gives Claude enhanced file operations beyond the built-in Read/Write tools. The key command pattern is `claude mcp add --transport stdio <name> -- <command>`. You will use this same pattern to add any MCP server.
 
 ### 6.3 Add a Fetch MCP Server
 
@@ -919,6 +986,13 @@ provide and convert it to an HTML blog entry for the site.
 This shows all connected servers, their status, and available tools. You
 should see both `canvas-fs` and `canvas-fetch`.
 
+> **STOP -- What you just did:** You used the Fetch MCP server to pull real data from the web into your portfolio. This is a powerful pattern: instead of manually copying content, Claude can fetch, parse, and integrate external data directly. You used a natural language prompt ("fetch my GitHub profile") and Claude handled the MCP tool calls behind the scenes.
+
+> **Quick check before continuing:**
+> - [ ] `/mcp` shows both `canvas-fs` and `canvas-fetch` as connected
+> - [ ] You used the Fetch server to pull real content into your site
+> - [ ] The content rendered correctly in your browser
+
 ### 6.5 Create .mcp.json for Team Sharing
 
 To share MCP configuration with your team, use the project scope:
@@ -951,6 +1025,8 @@ Commit this file so teammates get the same MCP setup.
 | **project** | `.mcp.json` in project root | Everyone (via version control) |
 | **user** | `~/.claude.json` | Only you, all projects |
 
+> **Why this step:** The three scopes (local, project, user) control who sees an MCP configuration. The `project` scope creates `.mcp.json` which gets committed to git -- every teammate who clones the repo gets the same MCP servers automatically. This is how you standardize a team's tool setup.
+
 ### 6.7 Create a Skill That Orchestrates MCP Tools
 
 Create a "publish" skill that validates and packages the site for deployment:
@@ -970,6 +1046,8 @@ Create .claude/skills/publish/SKILL.md with:
 
 Test it: `/publish`
 
+> **STOP -- What you just did:** You created a skill that combines MCP tools with built-in tools into a single workflow. The `allowed-tools` frontmatter field (`mcp__canvas-fs__*`) grants the skill access to MCP server tools using the naming pattern `mcp__<server-name>__<tool-name>`. This is the Skills + MCP integration pattern -- your most powerful automation combines custom skills with external data sources.
+
 ### Checkpoint
 
 - [ ] Filesystem MCP server is connected (`/mcp` shows it active)
@@ -988,6 +1066,8 @@ Test it: `/publish`
 `permissionDecision`, `additionalContext`, `updatedInput`
 
 ### 7.1 PreToolUse Hooks with Decision Control
+
+> **Why this step:** In Module 5 you built hooks that observe and report. PreToolUse hooks are fundamentally different -- they can *intercept and change* what Claude does before it happens. This is the most powerful hook type because it lets you enforce rules at the tool level, not just detect violations after the fact.
 
 PreToolUse hooks intercept tool calls before they execute. They can:
 - **Allow:** bypass the permission system entirely
@@ -1012,6 +1092,8 @@ Add a PreToolUse hook to .claude/settings.json with matcher "Write" that
 runs the enforcer.
 ```
 
+> **STOP -- What you just did:** You created a guard that *prevents* Claude from writing inaccessible HTML. Unlike the PostToolUse validator from Module 5 that reports issues after the file is already written, this PreToolUse hook blocks the write entirely. Claude receives the denial reason and must fix the content before trying again. This is the difference between detection and prevention -- and prevention is always better.
+
 ### 7.3 Guard: Context Injection for HTML Files
 
 Create a hook that adds context when Claude reads HTML files:
@@ -1027,6 +1109,8 @@ Add a PreToolUse hook with matcher "Read" to run it.
 
 The key is `hookSpecificOutput.additionalContext` -- it injects a string into
 Claude's context before the tool executes.
+
+> **STOP -- What you just did:** You created a hook that does not block or modify anything -- it injects *extra context* before Claude reads a file. This is a subtle but powerful pattern: you are nudging Claude's behavior by giving it reminders at the exact moment they are relevant. The `additionalContext` field appears in Claude's context alongside the file contents, making it much more likely Claude will follow those guidelines.
 
 ### 7.4 Guard: Auto-Add Meta Tags
 
@@ -1047,6 +1131,13 @@ Add a PreToolUse hook with matcher "Write" to run it.
 The key is `hookSpecificOutput.updatedInput` -- it replaces the tool's input
 parameters before execution.
 
+> **STOP -- What you just did:** You created a hook that silently modifies Claude's output before it is written to disk. The `updatedInput` field replaces the tool's input parameters -- in this case, injecting missing meta tags into the HTML content. Claude does not even know the modification happened. This is the most advanced hook pattern: invisible, automatic correction. Use it carefully -- it is powerful but can be confusing to debug if overused.
+
+> **Quick check before continuing:**
+> - [ ] You have three different PreToolUse hooks using three different mechanisms: `permissionDecision` (deny), `additionalContext` (inject), `updatedInput` (modify)
+> - [ ] You understand the difference between these three approaches
+> - [ ] All hooks are configured in `.claude/settings.json` with appropriate matchers
+
 ### 7.5 Prompt-Based Quality Gate
 
 Add a Stop hook with `"type": "prompt"` instead of `"type": "command"`. The
@@ -1065,6 +1156,8 @@ and ARIA landmarks.
 Prompt-based hooks use a fast LLM (Haiku) to evaluate context and return a
 structured decision. They are powerful for nuanced, context-aware checks.
 
+> **Why this step:** Prompt-based hooks are a leap beyond script-based hooks. A Python script can check for a missing `alt` attribute with string matching, but it cannot evaluate whether an `alt` attribute is *descriptive enough*. A prompt-based hook uses an LLM to make nuanced judgments -- exactly the kind of check that is hard to write as code.
+
 ### 7.6 Test Each Guard
 
 1. **Accessibility enforcer:** Ask Claude to write an HTML file with an
@@ -1075,6 +1168,8 @@ structured decision. They are powerful for nuanced, context-aware checks.
    Verify they were auto-added.
 4. **Quality gate:** Ask Claude to add images without alt text and let it stop.
    Verify the stop hook catches it.
+
+> **STOP -- What you just did:** You tested all four guard patterns: deny, inject context, modify input, and prompt-based evaluation. Together, these form a comprehensive guard rail system. The deny hook catches hard errors (missing alt text). The context hook nudges Claude toward good practices. The input modifier silently fixes common omissions. The prompt hook handles nuanced quality checks. In real projects, you will mix these patterns based on how strict the enforcement needs to be.
 
 ### Checkpoint
 
@@ -1093,6 +1188,8 @@ structured decision. They are powerful for nuanced, context-aware checks.
 background (`Ctrl+B`), resuming
 
 ### 8.1 What Are Subagents
+
+> **Why this step:** Until now, everything has happened in your main Claude Code conversation. Subagents are separate AI assistants that work in their own context windows. This is important because your main conversation has limited context space -- heavy analysis (like scanning every HTML file for accessibility issues) fills it up fast. Subagents do the heavy lifting in their own space and return just the results.
 
 Subagents are specialized AI assistants with their own context windows, system
 prompts, tool access, and permissions. When Claude encounters a task matching
@@ -1127,6 +1224,8 @@ Create .claude/agents/accessibility-agent.md with:
   by severity (Critical, Warning, Info) with file name and line reference.
 ```
 
+> **STOP -- What you just did:** You created a subagent with constrained tools (`Read, Grep, Glob` -- no `Write` or `Edit`) and a cheaper model (`haiku`). This is intentional: the accessibility agent only needs to *read and report*, not modify files. Using haiku instead of the default model saves tokens on a task that does not need the most powerful reasoning. Matching the model to the task complexity is a key cost optimization pattern.
+
 ### 8.4 Create: design-agent
 
 ```
@@ -1156,6 +1255,14 @@ Create .claude/agents/content-agent.md with:
 ```
 
 Note `permissionMode: plan` -- this agent is read-only.
+
+> **STOP -- What you just did:** You created three agents with different specializations, tool access, and models. Notice the design: accessibility-agent uses haiku (cheap, fast scans), design-agent uses haiku (CSS analysis does not need heavy reasoning), and content-agent uses sonnet with `permissionMode: plan` (it needs stronger reasoning for content quality but should not modify files). Each agent is tuned for its specific job.
+
+> **Quick check before continuing:**
+> - [ ] `.claude/agents/` contains three agent files
+> - [ ] Each agent has `name`, `description`, `tools`, and `model` in frontmatter
+> - [ ] content-agent has `permissionMode: plan` (read-only)
+> - [ ] accessibility-agent and design-agent use `haiku` model
 
 ### 8.6 Subagent Frontmatter Reference
 
@@ -1192,6 +1299,8 @@ Check my portfolio for accessibility problems
 
 Claude may route this to the accessibility-agent on its own.
 
+> **Why this step:** You can invoke subagents explicitly ("Use the accessibility-agent") or let Claude auto-delegate based on the task description. Auto-delegation works because Claude reads the agent's `description` field and matches it to your request. Writing clear, specific descriptions in your agent frontmatter makes auto-delegation more reliable.
+
 ### 8.8 Patterns: Chain, Parallel, Resume
 
 **Chaining:** Connect agents in sequence:
@@ -1225,6 +1334,8 @@ for keyboard navigation issues
 
 Claude resumes the previous agent with its full context preserved.
 
+> **STOP -- What you just did:** You learned the three core subagent patterns. Chaining connects agents in sequence (accessibility finds issues, then design suggests fixes). Parallel runs agents simultaneously with `Ctrl+B` -- both work at the same time without blocking each other. Resuming continues a completed agent's work without losing its context. In real projects, you will use parallel agents for comprehensive code reviews (run accessibility + design + content checks simultaneously) and chaining for multi-step workflows.
+
 ### Checkpoint
 
 - [ ] `.claude/agents/` contains `accessibility-agent.md`, `design-agent.md`, `content-agent.md`
@@ -1242,6 +1353,8 @@ Claude resumes the previous agent with its full context preserved.
 cross-session persistence, TDD loops, SubagentStop
 
 ### 9.1 Tasks System Overview
+
+> **Why this step:** Tasks give Claude Code a built-in project management system. Instead of keeping a mental checklist of what needs to happen, you define tasks with explicit dependencies -- task B cannot start until task A finishes. This prevents Claude from jumping ahead or working on things out of order, which is especially important for multi-step features like building a contact form.
 
 Tasks replace the old TODO system. They provide:
 - Dependency graphs (task A blocks task B)
@@ -1262,6 +1375,8 @@ CLAUDE_CODE_TASK_LIST_ID=canvas-contact claude
 Any session started with this ID shares the same task list. This enables
 multiple Claude instances to coordinate work.
 
+> **Why this step:** Cross-session persistence means you can close Claude Code, come back tomorrow, and your task list is still there. It also means multiple Claude instances can share the same task list -- you will use this in Module 10 for parallel development with git worktrees.
+
 ### 9.3 Build a Multi-Step Pipeline
 
 Create a task chain for building the contact form end-to-end:
@@ -1281,6 +1396,14 @@ Use TaskCreate with blockedBy dependencies.
 Press `Ctrl+T` to see tasks in the status area. Then:
 
 `Execute the contact form pipeline. Work through each task in order.`
+
+> **STOP -- What you just did:** You created a dependency graph where each task explicitly blocks the next. Task 3 ("Style form with CSS") cannot start until task 2 ("Create HTML form") is complete. Claude respects these dependencies automatically -- it will not jump to styling before the HTML exists. Press `Ctrl+T` to see the task list update in real time as each task completes. This is how you manage complex, multi-step features without losing track of progress.
+
+> **Quick check before continuing:**
+> - [ ] All 6 contact form tasks were created with `blockedBy` dependencies
+> - [ ] `Ctrl+T` shows the task list in the terminal status area
+> - [ ] Tasks executed in order (no blocked task ran before its dependency completed)
+> - [ ] The contact form page exists with HTML, CSS, and basic structure
 
 ### 9.4 TDD Workflow: Build with Tests First
 
@@ -1322,6 +1445,10 @@ Let Claude work through the TDD cycle. For each test:
 
 This enforces disciplined development and gives you a solid test suite.
 
+> **STOP -- What you just did:** You used TDD (test-driven development) with Claude Code. The discipline is critical: write the test *first*, see it fail, *then* write the minimum code to pass. This prevents Claude from writing a monolithic validation function and then backfilling tests. The browser-based test runner (`test.html`) is your verification -- you can see red/green status with every refresh. TDD with Claude Code is one of the most effective development patterns because it forces both you and Claude to think about behavior before implementation.
+
+> **Why this step (for the next section):** SubagentStop hooks verify that subagents actually completed their work properly. Without this check, a subagent could fail silently or return incomplete results, and you might not notice.
+
 ### 9.5 Stop and SubagentStop Hooks for Verification
 
 Add a SubagentStop hook that verifies subagent output:
@@ -1333,6 +1460,8 @@ Were there errors? Is it complete? Respond ok: true or ok: false with reason.
 ```
 
 This ensures subagents finish their work properly before returning results.
+
+> **STOP -- What you just did:** You added a SubagentStop hook that acts as a quality gate for subagent output. This is a prompt-based hook (using an LLM to evaluate) rather than a script-based hook -- because determining whether a subagent "completed its task" requires judgment, not just string matching. This closes the loop on subagent reliability: you delegate work to a subagent, and the hook verifies the work was actually done.
 
 ### Checkpoint
 
@@ -1353,6 +1482,8 @@ continuous learning
 
 ### 10.1 Git Worktrees for Parallel Development
 
+> **Why this step:** Until now, you have worked on one feature at a time. Git worktrees let you have multiple branches checked out simultaneously in different directories -- each with its own Claude Code session. This is how you do true parallel development: two features being built at the same time by two Claude instances that can even share a task list.
+
 Git worktrees let you work on multiple branches simultaneously without
 switching. Each worktree is a separate directory pointing to the same repo.
 
@@ -1367,6 +1498,8 @@ Now you have three directories:
 - `canvas-site/` -- main branch
 - `../canvas-dark/` -- feature/dark-mode branch
 - `../canvas-blog/` -- feature/blog-engine branch
+
+> **STOP -- What you just did:** You created two separate working directories from the same git repository. Each worktree is a full checkout of a different branch. They share the same git history, but files in one worktree do not affect the other. This is fundamentally different from `git stash` or `git checkout` -- you do not lose any work when switching between features because they live in separate directories.
 
 ### 10.2 Feature: Dark Mode (Worktree 1)
 
@@ -1397,6 +1530,12 @@ Add a blog engine:
 - Previous/Next navigation between posts
 ```
 
+> **Quick check before continuing:**
+> - [ ] `../canvas-dark/` directory exists with the feature/dark-mode branch checked out
+> - [ ] `../canvas-blog/` directory exists with the feature/blog-engine branch checked out
+> - [ ] You can open files in each worktree independently without affecting the other
+> - [ ] Dark mode and blog engine features are defined but may not be fully built yet
+
 ### 10.4 Run Parallel Claude Instances
 
 Open separate terminals. Share a task list across both:
@@ -1416,7 +1555,11 @@ page, tag filtering).
 
 Both sessions see all tasks. When one completes a task, the other is notified.
 
+> **STOP -- What you just did:** You ran two Claude Code instances simultaneously, each in its own worktree with its own branch, sharing a single task list via `CLAUDE_CODE_TASK_LIST_ID`. This is the most powerful development pattern in Claude Code: parallel feature development with coordination. Each instance works independently but can see the other's progress. In a real team workflow, you might have three or four worktrees running simultaneously -- one per feature.
+
 ### 10.5 Plugin Creation
+
+> **Why this step:** Plugins let you package everything you have built -- skills, agents, hooks -- into a single distributable unit. Instead of every new project needing to recreate these tools from scratch, you bundle them once and reuse them anywhere. This is how you go from "project-specific tooling" to "reusable toolkit."
 
 Package everything you have built into a reusable plugin.
 
@@ -1456,7 +1599,17 @@ Verify everything works:
 Note the namespacing: plugin skills are prefixed with the plugin name to
 prevent conflicts.
 
+> **STOP -- What you just did:** You packaged your skills, agents, and hooks into a plugin and tested it with `--plugin-dir`. Notice the namespacing: when loaded as a plugin, `/new-page` becomes `/web-dev:new-page`. This prevents conflicts when multiple plugins provide skills with similar names. The plugin directory structure (`.claude-plugin/plugin.json` at root, `skills/` and `agents/` alongside it) is the standard layout Claude Code expects.
+
+> **Quick check before continuing:**
+> - [ ] `web-dev-plugin/.claude-plugin/plugin.json` exists with name and version
+> - [ ] `web-dev-plugin/skills/` contains your skills (not nested inside `.claude-plugin/`)
+> - [ ] `web-dev-plugin/agents/` contains your agents
+> - [ ] `--plugin-dir` loaded the plugin and skills work with the `web-dev:` prefix
+
 ### 10.7 Evaluation
+
+> **Why this step:** Building skills and agents is only half the job -- you need to verify they work correctly across different inputs. Evaluation suites test your tools systematically: does the `new-page` skill handle an empty name gracefully? Does the accessibility agent catch a missing alt attribute? This is how you catch regressions and build confidence in your toolkit.
 
 Write test specs to evaluate your skills and agents:
 
@@ -1472,6 +1625,8 @@ define test cases with input, expected output, and scoring criteria:
 Write a script that runs each test and reports pass/fail.
 ```
 
+> **STOP -- What you just did:** You wrote evaluation test specs for your skills and agents. Each test case defines an input, expected output, and scoring criteria. This is the same pattern used in professional software testing -- define expectations, run the tool, compare results. The evaluation script gives you a pass/fail report you can run any time you change a skill or agent.
+
 ### 10.8 PermissionRequest Hooks for Eval Automation
 
 During evaluation, auto-approve safe operations to avoid prompt fatigue:
@@ -1484,6 +1639,8 @@ hookSpecificOutput.decision.behavior: "allow" to auto-approve.
 
 Keep this in `settings.local.json` (not committed) and use only during eval.
 
+> **STOP -- What you just did:** You created a PermissionRequest hook that auto-approves safe, read-only operations during evaluation runs. Without this, every `Read` and `Grep` call would prompt you for permission -- making automated evaluation tedious and slow. The key safety decision: this lives in `settings.local.json` (not committed to git) and only covers read-only tools. You would never auto-approve `Write` or `Bash` in production.
+
 ### 10.9 Continuous Learning
 
 Reflect on the full project and update your configuration:
@@ -1495,6 +1652,8 @@ missing edge cases, hook interaction notes.
 ```
 
 This is the continuous learning cycle: build, reflect, refine, repeat.
+
+> **STOP -- What you just did:** You completed the full loop: build tools, use them, evaluate them, then refine them based on what you learned. This is the most important pattern in all of Claude Code -- your CLAUDE.md, rules, skills, agents, and hooks are living documents. Every project teaches you something, and updating your configuration captures that knowledge for future sessions. The best Claude Code users are the ones who continuously refine their setup.
 
 ### Checkpoint
 

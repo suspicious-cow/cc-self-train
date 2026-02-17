@@ -200,6 +200,8 @@ In this module you design Sentinel's architecture in plan mode, then switch to e
 
 ### Step 1: Enter plan mode
 
+> **Why this step:** Plan mode is Claude Code's "think before you build" feature. Instead of jumping straight into generating files, you get to explore architecture decisions with Claude while it is prevented from changing anything. This is where you catch design mistakes cheaply -- before they are baked into code.
+
 Press `Shift+Tab` until you see the mode indicator switch to **Plan Mode**. In plan mode, Claude reasons about architecture and design without making any file changes. This is read-only exploration.
 
 Alternatively, type:
@@ -236,6 +238,8 @@ Show me a directory structure and explain how the components connect.
 
 Claude will produce a detailed plan. Read through it carefully.
 
+> **STOP -- What you just did:** You used plan mode to design your analyzer before writing a single line of code. This is one of Claude Code's most powerful patterns: you can think through complex decisions *with* Claude before committing to an approach. Plan mode prevents the "just start coding" trap that leads to rewrites. You will use this pattern whenever you face a non-trivial feature -- sketch the design first, then build.
+
 ### Step 3: Iterate on the plan
 
 Ask follow-up questions while still in plan mode:
@@ -254,6 +258,8 @@ findings? Should it stream results or batch them?
 
 ### Step 4: Exit plan mode and execute
 
+> **Why this step:** Switching from plan mode to normal mode is the moment you go from "thinking" to "doing." Claude will now create real files based on the architecture you just agreed on. Starting with stubs (empty functions with docstrings) lets you verify the structure is right before filling in logic.
+
 Press `Shift+Tab` to switch back to normal mode. Now tell Claude to build:
 
 ```
@@ -264,6 +270,8 @@ full logic yet -- just the skeleton.
 ```
 
 Claude will create files. Review each one before accepting.
+
+> **STOP -- What you just did:** You went through the full plan-then-build cycle. Claude designed the architecture in plan mode, you asked questions to refine it, then you switched to normal mode and Claude created the project skeleton. Notice how you reviewed each file before accepting -- that review step is critical. Claude is a collaborator, not an autopilot.
 
 ### Step 5: Create a feature branch
 
@@ -278,6 +286,8 @@ Or ask Claude to do it:
 ```
 Create a feature branch called feature/core and commit the project skeleton.
 ```
+
+> **Why this step:** Feature branches keep your experiments separate from working code. If something goes wrong while building the scanner or rule engine, you can throw away the branch without affecting main. Claude can handle all the git operations for you -- branching, committing, merging -- so you stay in the flow.
 
 ### Step 6: Implement the file scanner and basic rule engine
 
@@ -295,6 +305,11 @@ Then implement a basic rule engine with at least two rules:
 - A "missing docstring" rule that flags public functions without documentation
 ```
 
+> **Quick check before continuing:**
+> - [ ] Your project has a clear directory structure with separate modules
+> - [ ] The file scanner and at least two rules are implemented
+> - [ ] You are on the feature/core branch (not main)
+
 ### Step 7: Write and run tests
 
 ```
@@ -310,6 +325,8 @@ Then run the tests.
 ```
 
 Watch Claude write tests, execute them with `!`, fix failures, and re-run. This is the build-test-fix-commit cycle.
+
+> **STOP -- What you just did:** You just experienced the build-test-fix loop that will be your primary workflow for the rest of this project. Claude wrote tests, ran them, saw failures, fixed the code, and re-ran until everything passed. This tight feedback loop is why Claude Code is so effective -- Claude gets concrete error messages and fixes them immediately, rather than guessing.
 
 ### Step 8: Implement the CLI
 
@@ -329,6 +346,8 @@ and rule engine we just built.
 ```
 
 Or the equivalent command for your language. Scan the sentinel project itself and see what the analyzer finds.
+
+> **STOP -- What you just did:** You wired together the scanner, rule engine, and CLI into a working tool, then tested it on its own source code. Sentinel can now analyze real code. Running your analyzer on itself ("dog-fooding") is a great way to find gaps -- if Sentinel misses obvious issues in its own code, it needs better rules.
 
 ### Step 10: Commit and merge
 
@@ -355,6 +374,8 @@ Commit all changes on feature/core, then merge back to main.
 In this module you learn how to give Claude structured, persistent instructions that apply to specific parts of your codebase.
 
 ### Step 1: Create path-scoped rules
+
+> **Why this step:** Path-scoped rules let you give Claude different instructions for different parts of your codebase. Instead of one giant instruction file, you can say "when working on analyzers, follow these conventions" and "when working on tests, follow these conventions." Claude automatically loads only the rules relevant to the files it is touching.
 
 Create the `.claude/rules/` directory in your sentinel project:
 
@@ -392,7 +413,11 @@ Create a .claude/rules/ directory with these rule files:
    should test exactly one module."
 ```
 
+> **STOP -- What you just did:** You created targeted instructions that Claude loads based on file paths. Now when Claude edits an analyzer file, it knows analyzers must be stateless and return structured Issue objects. When it writes tests, it knows to use fixture files. This is far more effective than dumping all conventions into a single file -- Claude gets precisely the context it needs, when it needs it.
+
 ### Step 2: Create CLAUDE.local.md
+
+> **Why this step:** CLAUDE.local.md is your *personal* memory file -- it stores preferences that should not be shared with the team (like your preferred output format or local file paths). It is automatically gitignored, so it never gets committed.
 
 Create a `CLAUDE.local.md` file in the project root. This file is for your personal preferences and is automatically added to .gitignore:
 
@@ -414,7 +439,11 @@ in what order, and which ones take precedence?
 
 Claude should describe: managed policy (if any) -> user memory (~/.claude/CLAUDE.md) -> project memory (CLAUDE.md) -> project rules (.claude/rules/*.md) -> local project memory (CLAUDE.local.md).
 
+> **STOP -- What you just did:** You explored the full memory hierarchy -- from global user settings down to local project preferences. Understanding this hierarchy matters because it determines what Claude knows and when. Managed policy overrides everything, then user memory, then project memory, then rules, then local memory. When Claude does something unexpected, checking which memory files are loaded is the first debugging step.
+
 ### Step 4: Use @imports
+
+> **Why this step:** @imports let CLAUDE.md reference other files without copying their contents inline. This keeps CLAUDE.md concise while giving Claude access to detailed documentation. When the imported file changes, Claude automatically picks up the latest version.
 
 Create documentation files that CLAUDE.md will import:
 
@@ -428,6 +457,11 @@ Then update CLAUDE.md to import both files using @-syntax:
   See @docs/rule-format.md for the rule definition format.
   See @docs/architecture.md for the system architecture.
 ```
+
+> **Quick check before continuing:**
+> - [ ] `.claude/rules/` has at least 3 path-scoped rule files with frontmatter
+> - [ ] `CLAUDE.local.md` exists in the project root
+> - [ ] `CLAUDE.md` uses @imports to reference your docs files
 
 ### Step 5: Check context usage with /context
 
@@ -454,6 +488,8 @@ This compacts the conversation, keeping the parts most relevant to your focus in
 ```
 
 This shows your token usage statistics for the current session. Get in the habit of checking this periodically.
+
+> **STOP -- What you just did:** You learned the three context management commands: `/context` shows how full your context window is, `/compact` compresses conversation history to free up space, and `/cost` shows your token usage. These are essential for long sessions -- if Claude starts forgetting things or giving vague answers, your context window is probably full. Use `/compact` with a focus instruction to keep the most relevant context and discard the rest.
 
 ### Step 8: Build a new rule using these tools
 
@@ -489,6 +525,8 @@ In this module you create reusable skills that extend what Claude can do in your
 
 ### Step 1: Create the "analyze" skill
 
+> **Why this step:** Skills turn multi-step workflows into single slash commands. Instead of typing a long prompt every time you want to analyze code, you type `/analyze src/` and Claude follows the same steps every time. Skills are reusable, shareable, and version-controlled -- they become part of your project's toolbox.
+
 ```
 Create a skill at .claude/skills/analyze/SKILL.md with this content:
 
@@ -512,6 +550,8 @@ Test it:
 ```
 /analyze src/
 ```
+
+> **STOP -- What you just did:** You created your first custom skill and tested it with a path argument. The `$ARGUMENTS` placeholder captured everything after `/analyze`, so `/analyze src/` passed `src/` to the skill. This is the foundation -- you will build several more skills that become your daily shortcuts for working with Sentinel.
 
 ### Step 2: Create the "generate-tests" skill
 
@@ -537,7 +577,9 @@ Generate comprehensive tests for the file: $ARGUMENTS
 5. Run the tests to verify they pass
 ```
 
-Notice `context: fork` -- this skill runs in a subagent so it does not clutter your main conversation. Test it:
+> **Why this step:** Notice `context: fork` in the frontmatter -- this skill runs in a separate subagent so test generation output does not clutter your main conversation. Forked context is ideal for verbose operations where you want the result but not the noise.
+
+Test it:
 
 ```
 /generate-tests src/rules/complexity.py
@@ -569,6 +611,13 @@ Generate a comprehensive quality report for the Sentinel project:
 
 Notice `disable-model-invocation: true` -- this skill only runs when you explicitly type `/quality-report`. Claude will not trigger it automatically.
 
+> **STOP -- What you just did:** You created three skills with different behaviors: `/analyze` runs in your main conversation, `/generate-tests` forks into a subagent, and `/quality-report` uses `disable-model-invocation: true` so it only runs when you explicitly call it. These three patterns cover most skill use cases you will encounter.
+
+> **Quick check before continuing:**
+> - [ ] `/analyze src/` runs and produces output
+> - [ ] `/generate-tests` runs in a forked context (you should see subagent output)
+> - [ ] `/quality-report` exists with disable-model-invocation: true
+
 ### Step 4: Use custom slash commands with arguments
 
 Test argument substitution:
@@ -588,6 +637,8 @@ Test argument substitution:
 The `$ARGUMENTS` placeholder captures everything after the skill name. You can also use positional arguments like `$0`, `$1` for more structured inputs.
 
 ### Step 5: Hot-reload skills
+
+> **Why this step:** Hot-reload means you can iterate on skills without restarting Claude Code. This makes skill development fast -- edit, test, edit, test -- just like editing code with a live-reloading server.
 
 Edit one of your SKILL.md files (add a new step or change the description). You do not need to restart Claude Code -- skills are reloaded when invoked. Test by modifying the analyze skill and running `/analyze src/` again.
 
@@ -613,6 +664,8 @@ This skill just executes a shell command. No AI processing needed. Test it:
 /list-rules
 ```
 
+> **STOP -- What you just did:** You built a no-AI skill -- a slash command that runs a shell command directly without invoking the model. This is useful for quick reference commands where you do not need Claude to interpret the output. Between `/analyze`, `/generate-tests`, `/quality-report`, and `/list-rules`, you now have a custom command palette tailored to Sentinel. In real projects, you will accumulate skills like these over time until your most common workflows are all one-command operations.
+
 ### Checkpoint
 
 - [ ] `/analyze` skill exists and works with path arguments
@@ -631,6 +684,8 @@ This skill just executes a shell command. No AI processing needed. Test it:
 In this module you add automation that fires at key moments during your Claude Code session.
 
 ### Step 1: Understand the hook lifecycle
+
+> **Why this step:** Hooks are the automation layer of Claude Code. They let you run scripts at specific moments -- when a session starts, after a file is written, when Claude finishes a task. Understanding the lifecycle is essential because each hook event fires at a different moment and has different capabilities (some can block actions, others can only observe).
 
 Ask Claude:
 
@@ -687,6 +742,8 @@ The configuration should look like:
 
 Restart Claude Code and verify you see the summary injected at session start.
 
+> **STOP -- What you just did:** You created your first hook -- a SessionStart script that gives you a project health snapshot every time you open Claude Code. The key insight is that SessionStart hook stdout is automatically injected into Claude's context. This means Claude *starts every session knowing* the current state of your codebase. You will use this pattern whenever you want Claude to have up-to-date project awareness from the first prompt.
+
 ### Step 3: Create a PostToolUse hook
 
 This hook auto-validates rule configuration files after Claude writes them:
@@ -723,7 +780,16 @@ The settings.json entry:
 }
 ```
 
+> **STOP -- What you just did:** You created a PostToolUse hook with a matcher. The matcher `"Write|Edit"` means this hook only fires when Claude uses the Write or Edit tool -- it ignores Bash, Read, and other tools. The hook validates rule files automatically, so if Claude writes a malformed rule definition, the validation catches it immediately and Claude sees the error. This is quality automation -- you never have to manually check rule file structure again.
+
+> **Quick check before continuing:**
+> - [ ] SessionStart hook script exists and is executable
+> - [ ] `.claude/settings.json` has both SessionStart and PostToolUse hooks configured
+> - [ ] You restarted Claude Code and saw the session summary appear
+
 ### Step 4: Create a Stop hook
+
+> **Why this step:** Stop hooks fire when Claude finishes responding. They act as a final quality gate -- you can check whether Claude did what it should have (like updating tests when it changed code) before the task is considered "done." If the hook returns failure, Claude gets the feedback and can continue working.
 
 This hook checks whether tests were updated when code changes were made:
 
@@ -743,6 +809,8 @@ Restart Claude Code (to load the hooks). Then:
 1. Verify SessionStart hook prints the quality summary
 2. Ask Claude to create a new analysis rule -- verify the PostToolUse hook validates it
 3. Ask Claude to modify some code -- verify the Stop hook checks for tests
+
+> **STOP -- What you just did:** You tested the three hook types that cover the most common automation needs: SessionStart (inject context at startup), PostToolUse (validate after actions), and Stop (quality gate at the end). Together, these hooks form an invisible safety net -- they work in the background, catching issues and injecting context without you having to think about them.
 
 ### Step 6: Inspect hooks with /hooks
 
@@ -784,6 +852,8 @@ MCP servers give Claude access to external tools, databases, and APIs through a 
 
 ### Step 2: Add a SQLite MCP server
 
+> **Why this step:** MCP servers give Claude new capabilities it does not have built in. By adding a SQLite server, Claude can directly query and modify a database -- no need to write scripts that Claude then runs via Bash. This is a cleaner, more reliable way to work with structured data.
+
 You will use SQLite to store analysis results, coverage history, and trend data. Add the SQLite MCP server:
 
 ```
@@ -807,6 +877,8 @@ On Windows:
 ```
 claude mcp add --transport stdio sentinel-fs -- cmd /c npx -y @anthropic-ai/mcp-server-filesystem ./
 ```
+
+> **STOP -- What you just did:** You added two MCP servers using `claude mcp add`. Each server runs as a separate process that Claude communicates with through the Model Context Protocol. The SQLite server gives Claude direct database access, and the filesystem server gives it structured file operations. Notice that `claude mcp add` registered these servers locally -- they are stored in your user config, not in the project yet. You will fix that in Step 6.
 
 ### Step 4: Verify with /mcp
 
@@ -836,6 +908,13 @@ Then insert a sample scan result from the last time we ran sentinel scan.
 
 Claude will use the MCP SQLite tools (like `mcp__sentinel-db__query`) to create tables and insert data.
 
+> **STOP -- What you just did:** You watched Claude use MCP tools to create database tables and insert data -- all through natural language. Instead of writing SQL scripts and running them manually, you asked Claude what you wanted and it used the `mcp__sentinel-db__query` tool directly. This is the power of MCP: Claude treats external tools just like its built-in tools. You will use this pattern whenever Sentinel needs to store or retrieve structured data.
+
+> **Quick check before continuing:**
+> - [ ] Both MCP servers show as connected when you run `/mcp`
+> - [ ] The sentinel.db database exists with scan_results, issues, and coverage tables
+> - [ ] You can see Claude using `mcp__sentinel-db__` tools in its output
+
 ### Step 6: Create a project-scoped .mcp.json
 
 Ask Claude to create a `.mcp.json` file so team members get the same MCP setup:
@@ -847,6 +926,8 @@ committed to version control.
 ```
 
 ### Step 7: Understand MCP scopes
+
+> **Why this step:** MCP scopes determine who can use a server and where the config is stored. Getting this wrong means teammates cannot use your MCP setup, or you accidentally expose a local-only server in version control. Understanding scopes now saves confusion later.
 
 Ask Claude:
 
@@ -860,6 +941,8 @@ one? Where is each configuration stored?
 - **User**: available across all your projects, stored in ~/.claude.json
 
 ### Step 8: Create a skill that uses MCP
+
+> **Why this step:** This is where skills and MCP come together. You are about to create a skill that queries your SQLite database through MCP. This pattern -- a skill that orchestrates MCP tool calls -- is one of the most powerful combinations in Claude Code. The skill provides the workflow logic, and MCP provides the data access.
 
 Create a skill that queries SQLite for historical data:
 
@@ -908,6 +991,8 @@ In this module you build hooks that act as guardrails -- preventing bad actions,
 
 ### Step 1: Understand PreToolUse decision control
 
+> **Why this step:** PreToolUse is the most powerful hook event because it fires *before* a tool runs, giving you three options: allow it silently, block it with a reason, or ask the user to confirm. On top of that, you can inject extra context or even modify the tool's input. This is Claude Code's programmable permission system -- you are about to build custom guardrails for Sentinel.
+
 Ask Claude:
 
 ```
@@ -940,6 +1025,8 @@ Add it as a PreToolUse hook on "Write" in .claude/settings.json.
 
 A denial returns JSON like: `{"hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "Rule file missing required 'severity' field."}}`
 
+> **STOP -- What you just did:** You built a schema validation guardrail. When Claude tries to write a rule file with missing required fields, the hook blocks the write and tells Claude exactly what is wrong. Claude then sees the denial reason and can fix the file before trying again. This is "fail fast" automation -- bad data never reaches disk. You will use this pattern whenever you have strict format requirements for generated files.
+
 ### Step 3: Inject context about related analyzers
 
 Create a hook that adds context when Claude reads a rule file:
@@ -957,6 +1044,13 @@ Add it as a PreToolUse hook on "Read" in .claude/settings.json.
 
 The output uses `additionalContext` to inject text like: "Related analyzers: complexity_rule, naming_rule, docstring_rule. See docs/rule-format.md for the rule interface."
 
+> **STOP -- What you just did:** You built a context injection hook. Unlike the deny hook which blocks actions, this one enriches Claude's understanding by adding information when it reads certain files. When Claude opens a rule file, the hook automatically tells it about related analyzers. This is like giving Claude a "see also" sidebar -- it makes connections between files that Claude might not discover on its own.
+
+> **Quick check before continuing:**
+> - [ ] Your deny hook blocks writes of invalid rule schemas
+> - [ ] Your context injection hook adds related analyzer info when reading rule files
+> - [ ] Both hooks are configured in `.claude/settings.json` as PreToolUse entries
+
 ### Step 4: Auto-add metadata to generated test files
 
 Create a hook that modifies the input when Claude writes test files:
@@ -973,6 +1067,8 @@ Add it as a PreToolUse hook on "Write" in .claude/settings.json.
 
 The output uses `updatedInput` to modify the file content before it is written, prepending a metadata header with the timestamp and source file path.
 
+> **Why this step:** `updatedInput` is the third and most subtle PreToolUse capability. While `deny` blocks an action and `additionalContext` injects information, `updatedInput` silently transforms what Claude writes. The test file reaches disk with metadata already included -- Claude does not even need to remember to add it. Use this for any boilerplate that should always be present in generated files.
+
 ### Step 5: Prompt-based quality gate for generated tests
 
 Add a second prompt-based Stop hook that specifically reviews test quality:
@@ -986,7 +1082,14 @@ with a reason if quality issues are found.
 
 This demonstrates stacking multiple Stop hooks -- the Module 5 hook checks that tests exist, this one checks that they are good.
 
+> **STOP -- What you just did:** You now have four PreToolUse/Stop hooks working together: schema validation (deny), context injection (additionalContext), metadata insertion (updatedInput), and quality review (prompt-based Stop). These hooks form a layered defense -- each catches a different category of problem. Notice how they stack: you can have multiple hooks on the same event, and they all run. This composability is what makes hooks powerful for real projects.
+
 ### Step 6: Test the guard rails
+
+> **Quick check before continuing:**
+> - [ ] All four hooks are configured in `.claude/settings.json`
+> - [ ] You understand the difference between deny, additionalContext, and updatedInput
+> - [ ] The prompt-based Stop hook is set up to review test quality
 
 1. Try to create a rule file with missing fields -- the deny hook should block it
 2. Read a rule file -- check that additional context is injected
@@ -1012,6 +1115,8 @@ In this module you create specialized AI agents that handle specific tasks withi
 
 ### Step 1: What are subagents
 
+> **Why this step:** Up to now, everything has happened in a single Claude conversation. Subagents let you spin up specialized Claude instances -- each with their own system prompt, tool access, and context window. Think of it as delegation: instead of doing everything yourself, you assign specific jobs to specialists. This keeps your main conversation clean and lets you parallelize work.
+
 Ask Claude:
 
 ```
@@ -1035,6 +1140,8 @@ analysis on each issue (true/false positive, severity assessment, specific
 fix suggestions), group by category and severity. Focus on precision over
 volume.
 ```
+
+> **STOP -- What you just did:** You created a specialized analyzer agent with limited tool access (Read, Grep, Glob, Bash -- no Write or Edit). This is intentional: the analyzer agent should *find* issues, not *fix* them. Restricting tools prevents subagents from doing things outside their role. The `model: sonnet` setting means this agent uses a cheaper model -- since analysis does not require the most powerful model, this saves tokens.
 
 ### Step 3: Create the test writer agent
 
@@ -1067,6 +1174,13 @@ Save to reports/ directory.
 
 Note that the reporter agent uses `model: haiku` since formatting tasks do not need the most powerful model.
 
+> **STOP -- What you just did:** You created three agents with deliberately different configurations. The analyzer has read-only tools and uses sonnet. The test writer has write tools (it needs to create test files) and uses sonnet. The reporter uses haiku because formatting is a simpler task. This is the key design principle for subagents: match the model and tools to the job. Expensive models for hard reasoning, cheap models for mechanical work.
+
+> **Quick check before continuing:**
+> - [ ] `.claude/agents/` has three agent files: analyzer, test-writer, reporter
+> - [ ] Each agent has different tool access appropriate to its role
+> - [ ] You understand why different agents use different models
+
 ### Step 5: Understand frontmatter options
 
 Ask Claude:
@@ -1078,6 +1192,8 @@ description, tools, disallowedTools, model, permissionMode, skills, hooks.
 
 ### Step 6: Chain agents
 
+> **Why this step:** Chaining is when the output of one agent feeds into the input of the next. This is a pipeline pattern -- the analyzer finds problems, then the test writer generates tests for exactly those problems. Neither agent needs to know about the other; Claude orchestrates the handoff in your main conversation.
+
 Ask Claude to chain the analyzer and test writer:
 
 ```
@@ -1087,6 +1203,8 @@ identified as having issues.
 ```
 
 Claude will run the analyzer agent first, receive its findings, then pass relevant context to the test writer agent. This is **chaining**: the output of one agent feeds into the next.
+
+> **STOP -- What you just did:** You chained two subagents -- the analyzer found issues, and the test writer generated tests targeting those specific issues. This pipeline pattern is how you build complex workflows from simple, focused agents. In real projects, you might chain: analyzer -> fixer -> reviewer, or scanner -> reporter -> notifier.
 
 ### Step 7: Run agents in parallel and background
 
@@ -1100,6 +1218,8 @@ Run them in the background so I can continue working.
 ```
 
 Press `Ctrl+B` if Claude starts a foreground agent and you want to move it to the background. Use `/tasks` to see running background tasks.
+
+> **STOP -- What you just did:** You ran three subagents in parallel, each analyzing a different directory simultaneously. This is the key advantage of subagents for large codebases -- instead of analyzing directories one by one, you fan out the work. Background mode (`Ctrl+B`) lets you continue working in your main conversation while agents crunch away. You will use this pattern whenever you have independent tasks that can run concurrently.
 
 ### Step 8: Resume a subagent
 
@@ -1131,6 +1251,8 @@ In this module you use the Tasks system for multi-step work and practice strict 
 
 ### Step 1: Tasks system overview
 
+> **Why this step:** The Tasks system solves a problem you have probably already hit: multi-step features that are too big for a single conversation. Tasks let you break work into pieces with explicit dependencies (Task B cannot start until Task A is done), persist across sessions, and share between multiple Claude instances. This is project management built into Claude Code.
+
 Ask Claude:
 
 ```
@@ -1159,6 +1281,8 @@ Show the dependency graph.
 
 Claude will use the Tasks system to create these. Press `Ctrl+T` to toggle the task list view in your terminal.
 
+> **STOP -- What you just did:** You created a dependency graph, not a flat to-do list. Task 2 (implement parser) cannot start until Task 1 (design data model) is done, because the parser needs to know what structures to produce. Task 5 depends on both Tasks 3 and 4. Claude enforces these dependencies -- it will not start a blocked task. This prevents the common mistake of building on top of unfinished foundations.
+
 ### Step 3: Start the first task
 
 ```
@@ -1168,6 +1292,8 @@ Start working on Task 1: Design the coverage data model.
 Claude will update the task status and begin working. When it finishes, the task will be marked complete and Task 2 will become unblocked.
 
 ### Step 4: Practice strict TDD -- build the coverage parser
+
+> **Why this step:** Test-driven development (TDD) is the most disciplined way to build reliable code with Claude. By writing the test first, you give Claude a concrete, unambiguous specification. Claude does not have to guess what "correct" means -- the test defines it. The red-green-refactor cycle (fail, pass, clean up) produces code that is tested by definition.
 
 For Task 2, use strict test-driven development:
 
@@ -1187,6 +1313,13 @@ total line count."
 
 Watch Claude go through multiple red-green-refactor cycles. This is where the build-test-fix loop becomes second nature.
 
+> **STOP -- What you just did:** You watched Claude do strict TDD: write a failing test, write the minimum code to pass it, then move on. Notice how each cycle was small and focused. Claude did not try to implement the entire parser at once -- it built one behavior at a time, with tests proving each step works. This incremental approach catches bugs immediately instead of at the end when they are hard to trace.
+
+> **Quick check before continuing:**
+> - [ ] The coverage parser has at least one passing test
+> - [ ] You saw Claude go through the red-green-refactor cycle (test fails, then passes)
+> - [ ] Task 1 is marked complete and Task 2 is in progress
+
 Continue through progressively harder tests:
 
 ```
@@ -1204,6 +1337,8 @@ edge cases (zero lines, 100% coverage, empty files).
 
 ### Step 5: Complete the remaining tasks
 
+> **Why this step:** Now you let the task system guide your workflow. Instead of deciding what to build next, you ask Claude for the next unblocked task. The dependency graph ensures you build things in the right order. As each task completes, downstream tasks become available automatically.
+
 Work through Tasks 3-5, letting Claude update task status as each completes:
 
 ```
@@ -1216,7 +1351,11 @@ Check the task list periodically with `Ctrl+T` or:
 Show me the current status of all tasks.
 ```
 
+> **STOP -- What you just did:** You completed a multi-task feature using the dependency graph to guide your work order. Notice how you never had to think about "what should I build next?" -- the task system told you. In a real project, you would create task lists at the start of each feature and let the dependency graph keep you on track across sessions.
+
 ### Step 6: SubagentStop hooks for verification
+
+> **Why this step:** SubagentStop hooks are quality gates for subagent work. Just like Stop hooks check your main conversation, SubagentStop hooks check what subagents produce before they finish. This is especially important because subagents run with less oversight -- you might not see their intermediate steps.
 
 Add a SubagentStop hook that verifies subagent output quality:
 
@@ -1229,6 +1368,8 @@ subagent to run tests before completing.
 
 ### Step 7: Cross-session collaboration
 
+> **Why this step:** Cross-session task sharing is how you scale to multiple Claude instances working on the same feature. This is the foundation for the parallel development workflow you will use in Module 10.
+
 Start a second Claude Code session that shares the same task list:
 
 ```
@@ -1236,6 +1377,8 @@ CLAUDE_CODE_TASK_LIST_ID=sentinel-coverage claude
 ```
 
 In the second session, you can see the same tasks and their current statuses. If one session completes a task, the other session sees the update.
+
+> **STOP -- What you just did:** You shared a task list between two separate Claude Code sessions using `CLAUDE_CODE_TASK_LIST_ID`. Both sessions see the same tasks and their statuses update in real time. This is how you coordinate parallel work -- one session works on Task A while another works on the independent Task B, and neither duplicates effort. You will use this pattern heavily in Module 10 with git worktrees.
 
 ### Checkpoint
 
@@ -1256,6 +1399,8 @@ In this final module you learn advanced patterns for scaling your workflow.
 
 ### Step 1: Git worktrees
 
+> **Why this step:** Git worktrees let you have multiple working copies of the same repo *without cloning it again*. Each worktree shares the same git history but has its own working directory and branch. Combined with Claude Code, this means you can have two or three Claude instances building different features in parallel on the same project -- true concurrent development.
+
 Git worktrees let you have multiple working copies of the same repo. Each worktree can have its own Claude Code session working on a different feature simultaneously.
 
 ```
@@ -1268,7 +1413,11 @@ Now you have three working copies:
 - `sentinel-coverage-html/` -- HTML coverage reports
 - `sentinel-rule-import/` -- importing rules from external files
 
+> **STOP -- What you just did:** You created two git worktrees -- separate working directories that share the same repository. Each one is on its own feature branch. This is the infrastructure for parallel development: you now have three separate directories where Claude Code sessions can work independently without merge conflicts until you are ready to combine the work.
+
 ### Step 2: Multiple Claude Code instances with shared tasks
+
+> **Why this step:** This is where everything comes together -- worktrees for isolation, shared task lists for coordination, and multiple Claude instances for speed. Each instance picks up a different task and works on it independently. This is how you multiply your throughput on large features.
 
 Open separate terminal windows and start Claude Code in each worktree:
 
@@ -1294,6 +1443,13 @@ Create two independent tasks:
 
 Each session picks up a different task. They work in parallel on separate branches, sharing task status.
 
+> **STOP -- What you just did:** You ran two Claude Code instances simultaneously, each in its own worktree with its own branch, sharing a single task list. Session 1 works on HTML coverage reports while Session 2 works on rule import -- neither blocks the other. When both are done, you merge their branches. This is the most advanced Claude Code workflow: parallel, coordinated, independent development.
+
+> **Quick check before continuing:**
+> - [ ] You have two (or more) worktrees created from the sentinel repo
+> - [ ] Each worktree has its own Claude Code session running
+> - [ ] Both sessions share the same task list via CLAUDE_CODE_TASK_LIST_ID
+
 ### Step 3: Build a plugin
 
 Bundle your Sentinel skills, agents, and hooks into a distributable plugin:
@@ -1313,6 +1469,8 @@ quality-tools/
 
 The manifest at `quality-tools/.claude-plugin/plugin.json` should include the name "quality-tools", a description, and version "1.0.0".
 
+> **Why this step:** Plugins are how you distribute Claude Code customizations. Everything you built in Modules 4-8 -- skills, agents, hooks, MCP configs -- gets bundled into a single directory that anyone can load with `--plugin-dir`. This is how you share your work with teammates or the community.
+
 ### Step 4: Test the plugin
 
 ```
@@ -1325,7 +1483,11 @@ Verify that skills are available under the `quality-tools:` namespace:
 /quality-tools:analyze src/
 ```
 
+> **STOP -- What you just did:** You bundled all of Sentinel's Claude Code customizations into a portable plugin and loaded it in a fresh Claude instance. Notice the namespace prefix (`quality-tools:analyze` instead of just `analyze`) -- this prevents naming conflicts when multiple plugins are loaded. Your skills, agents, hooks, and MCP configs all travel together as a single distributable unit.
+
 ### Step 5: Build an evaluation framework
+
+> **Why this step:** Evaluation measures how well Sentinel actually works. Without it, you are guessing whether your analyzer catches real issues or produces false positives. By creating fixtures with planted bugs and comparing Sentinel's output to expected results, you get concrete accuracy metrics. This is the same approach used to evaluate AI models -- ground truth comparison.
 
 ```
 Create an evaluation framework for Sentinel:
@@ -1340,6 +1502,8 @@ Create an evaluation framework for Sentinel:
 Run the evaluation and show results.
 ```
 
+> **STOP -- What you just did:** You built a scoring framework that measures Sentinel's accuracy with real metrics: true positive rate (how many real issues it catches), false positive rate (how often it flags clean code), false negative rate (how many real issues it misses), and severity accuracy. These numbers tell you exactly where Sentinel needs improvement. Every time you add a new rule or change the analyzer, re-running the eval tells you whether you made things better or worse.
+
 ### Step 6: PermissionRequest hooks
 
 ```
@@ -1352,7 +1516,17 @@ command, and returns the appropriate allow/deny decision.
 
 The hook matches on "Bash" and runs your approval script. The script outputs JSON with `{"hookSpecificOutput": {"hookEventName": "PermissionRequest", "decision": {"behavior": "allow"}}}` for safe commands.
 
+> **STOP -- What you just did:** You built a programmable permission system. Instead of clicking "approve" every time Claude wants to run tests or scan code, the PermissionRequest hook auto-approves safe operations while still prompting for risky ones like git push or config changes. This dramatically speeds up your workflow -- Claude can run tests dozens of times without you clicking "yes" each time, but it still asks before doing anything destructive.
+
+> **Quick check before continuing:**
+> - [ ] Your evaluation framework has fixture files with planted bugs
+> - [ ] Running the eval produces accuracy metrics (TP rate, FP rate, etc.)
+> - [ ] The PermissionRequest hook auto-approves test runs and sentinel scans
+> - [ ] The PermissionRequest hook still prompts for writes to config files and git push
+
 ### Step 7: Continuous learning
+
+> **Why this step:** This is the capstone pattern -- a feedback loop where Sentinel improves itself over time. Misclassifications from the eval are logged, loaded into Claude's context at session start, and used to guide future fixes. After each fix, the eval runs again to confirm the fix worked and check for regressions. This is how production ML systems improve, and you are applying the same principle to your code analyzer.
 
 ```
 Create a continuous learning loop:
@@ -1361,6 +1535,8 @@ Create a continuous learning loop:
 3. After fixing a misclassification, re-run eval to confirm and check for regressions
 4. Update CLAUDE.md with lessons learned
 ```
+
+> **STOP -- What you just did:** You closed the loop: eval finds problems, you fix them, eval confirms the fix, and CLAUDE.md records the lesson. This means every future session starts with the accumulated knowledge of past mistakes. Over time, Sentinel gets more accurate and Claude gets better at working with it. This continuous learning pattern is the most sophisticated workflow in the entire curriculum -- it combines hooks (SessionStart), memory (CLAUDE.md), evaluation (scoring framework), and iterative improvement into a single self-reinforcing system.
 
 ### Step 8: Clean up worktrees
 
