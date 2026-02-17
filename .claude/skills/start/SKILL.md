@@ -245,7 +245,7 @@ Explain that CLAUDE.md is one level in a bigger system. Keep it simple — four 
 
 The key insight: "If a teammate would benefit from knowing it, put it in CLAUDE.md. If it's just your workflow or progress, put it in CLAUDE.local.md."
 
-End with something like: "Makes sense? Next we'll create your CLAUDE.local.md — that's the personal one that tracks your progress."
+End with something like: "Makes sense? Ready to create your CLAUDE.local.md — the personal one that tracks your progress?"
 
 **STOP. Do not continue to 6.4. Wait for the user to respond.**
 
@@ -273,7 +273,7 @@ Always use OS-appropriate commands (paths, file openers, activation scripts, etc
 - Instructions for Claude on how to greet you next time and use the right commands for your OS
 - The `@import` pulls your project's CLAUDE.md into this context automatically
 
-End with something like: "Your progress is now tracked. Next up — let's make your first git commit so you have a save point."
+End with something like: "Your progress is now tracked. Ready to make your first git commit so you have a save point?"
 
 **STOP. Do not continue to 6.5. Wait for the user to respond.**
 
@@ -351,7 +351,7 @@ git commit -m "Customize CLAUDE.md with personal preferences"
 
 Point out: "This is the **edit, check, commit** loop — you'll use it in every module."
 
-End with something like: "That's the core workflow — edit, check, commit. Let me wrap up what you learned in Module 1."
+End with something like: "That's the core workflow — edit, check, commit. Shall I wrap up what you learned in Module 1?"
 
 **STOP. Do not continue to 6.8. Wait for the user to respond.**
 

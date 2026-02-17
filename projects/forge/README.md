@@ -260,6 +260,8 @@ Refine the plan until you are satisfied with the design.
 
 > **STOP -- What you just did:** You used plan mode to design your entire storage layer, data models, and CLI interface before writing a single line of code. This is one of Claude Code's most valuable patterns: *think with Claude before you build with Claude.* Plan mode prevents the "just start coding" trap that leads to rewrites. You will use this design-first approach whenever you start a new feature.
 
+Ready to exit plan mode and start building?
+
 ### 2.4 Exit Plan Mode and Execute
 
 Press `Shift+Tab` to return to normal mode. Now ask Claude to start building -- but keep the scope narrow. Tell it to create the data models and storage layer first, without the CLI interface. You want to build in layers, not all at once.
@@ -337,6 +339,8 @@ Verify each command works. Fix anything broken.
 
 > **STOP -- What you just did:** You just tested your CLI by running real commands -- not unit tests, but the actual tool a user would run. Manual testing catches problems that unit tests miss: bad argument parsing, unclear output formatting, confusing error messages. Always do both: automated tests for correctness, manual tests for usability.
 
+Want to commit and merge everything to main?
+
 ### 2.10 Commit and Merge
 
 ```
@@ -387,7 +391,7 @@ Claude will ask you if it is unsure about your file structure or which glob patt
 
 > **STOP -- What you just did:** You created three rule files with YAML frontmatter that scopes each one to specific file paths. From now on, whenever Claude touches a test file, it automatically follows your testing conventions. Whenever it edits source code, it follows your source code rules. You never have to remind it -- the rules are always active. This is how teams enforce consistency without relying on code review alone.
 
-Say **"continue"** when you're ready for the next step.
+Ready to create your CLAUDE.local.md?
 
 ### 3.3 Create CLAUDE.local.md
 
@@ -405,7 +409,7 @@ If `CLAUDE.local.md` is not listed, ask Claude to add it.
 
 > **STOP -- What you just did:** You created a personal preferences file that is *not* committed to version control. This is the distinction between `CLAUDE.md` (shared team knowledge) and `CLAUDE.local.md` (your personal preferences). Your teammates see the project rules; your local preferences are yours alone. You will use this separation whenever you have personal workflow preferences that should not be imposed on the team.
 
-Say **"next"** when you're ready to move on.
+Want to see how the full memory hierarchy works?
 
 ### 3.4 Understand the Memory Hierarchy
 
@@ -439,7 +443,7 @@ when needed. Both relative and absolute paths work.
 
 > **STOP -- What you just did:** You modularized your project documentation. Instead of cramming everything into one file, you created focused reference docs and linked them with `@imports`. Claude loads these when it needs architectural context or API details, keeping your main CLAUDE.md clean and scannable.
 
-When you're ready, say **"let's keep going"** to continue.
+Want to explore the /context and /compact commands?
 
 ### 3.6 /context Deep Dive
 
@@ -535,7 +539,7 @@ Now create a search skill. Describe how you want search to work -- query parsing
 
 > **STOP -- What you just did:** You created two skills with different specialties: one for data entry with validation, one for intelligent search with query parsing. Each skill has its own SKILL.md with frontmatter that controls its name, description, and which tools it can use. The `allowed-tools` field is important -- it restricts what Claude can do when running the skill, which prevents unexpected side effects. You will use this pattern whenever you want a repeatable, constrained workflow.
 
-Ready? Say **"continue"** and we'll move on to manual-only skills.
+Shall we create a manual-only skill next?
 
 ### 4.4 Create the "daily-summary" Skill
 
@@ -659,7 +663,7 @@ the stats injected on startup.
 
 > **STOP -- What you just did:** You created your first hook -- a script that runs automatically when Claude starts a session. The key insight is that SessionStart hooks inject their stdout into Claude's context. This means Claude *starts every session knowing* how many notes, snippets, and bookmarks you have. You did not have to tell it -- the hook did it for you. This pattern is powerful for any project state you want Claude to be aware of from the start.
 
-Say **"next"** when you're ready to build more hooks.
+Ready to build a PostToolUse hook for auto-formatting?
 
 ### 5.3 Create a PostToolUse Hook
 
@@ -701,7 +705,7 @@ communicate (0 = success, 2 = blocking error), and can access
 
 > **STOP -- What you just did:** You learned about matchers and timeouts -- the configuration layer that controls *when* and *how long* hooks run. Matchers prevent hooks from firing on every tool call (which would slow everything down). Timeouts prevent runaway scripts from freezing your session. These two settings are what make hooks practical for real workflows rather than just demos.
 
-Say **"continue"** and we'll verify all three hooks are working.
+Want to verify all three hooks are working?
 
 ### 5.7 Exercise: Trigger Each Hook
 
@@ -767,7 +771,7 @@ Claude may ask about column types, indexes, or how to handle the migration. Answ
 
 > **STOP -- What you just did:** You connected an external tool to Claude Code using MCP. Claude can now create tables, insert data, and run queries on a SQLite database -- all through natural language. You also migrated your existing JSON data into SQLite, which means your forge toolkit now has a proper database backend. The `/mcp` command is your dashboard for checking which servers are connected and healthy.
 
-When you're ready, say **"let's keep going"** to add another MCP server.
+Shall we add a filesystem MCP server too?
 
 ### 6.3 Add a Filesystem MCP Server
 
@@ -835,7 +839,7 @@ Commit this file so teammates get the same MCP setup.
 
 > **STOP -- What you just did:** You learned the three MCP scopes and how they control visibility. Local scope is for personal experimentation, project scope is for team sharing, and user scope is for tools you want everywhere. Understanding scopes prevents the common mistake of adding MCP servers that only work on your machine while your teammates get errors.
 
-Say **"next"** and we'll combine skills with MCP servers.
+How about we combine skills with MCP servers?
 
 ### 6.7 Create a Skill That Orchestrates MCP Tools
 
@@ -886,7 +890,7 @@ Claude will create the hook script and wire it into your settings. Discuss the v
 
 > **STOP -- What you just did:** You created a guard that prevents Claude from writing invalid data to your storage files. The key mechanism is `permissionDecision: "deny"` -- it blocks the tool call entirely and sends a reason back to Claude. Claude sees the denial message and can try again with valid data. This is a safety net: even if your code has a bug that produces bad JSON, the hook catches it before it corrupts your storage.
 
-Ready? Say **"continue"** and we'll build a different kind of guard.
+Want to build a guard that injects context instead of blocking?
 
 ### 7.3 Guard: Inject Context on File Reads
 
@@ -915,7 +919,7 @@ parameters before execution.
 
 > **STOP -- What you just did:** You created a hook that uses `updatedInput` to *modify* the tool's input before it executes. This is the third and most powerful PreToolUse mechanism: the hook silently rewrites what Claude is about to write, injecting timestamps into storage files. Claude thinks it wrote the original content, but the hook quietly added `updated_at`. This pattern is ideal for cross-cutting concerns like timestamps, audit trails, or data enrichment that should happen on every write without Claude having to remember.
 
-Say **"continue"** when you're ready for the next step.
+Ready to try a prompt-based quality gate?
 
 ### 7.5 Prompt-Based Quality Gate
 
@@ -992,7 +996,7 @@ Create a format conversion agent. Describe the formats you want it to handle and
 
 > **STOP -- What you just did:** You created two subagents with different models and tool sets. The search-agent uses Haiku (fast, cheap) because search is a focused task that does not require complex reasoning. The format-agent also uses Haiku because format conversion is mechanical. By choosing the right model for each agent, you control both cost and speed. You will use this pattern whenever a task is well-defined enough that a smaller model can handle it.
 
-When you're ready, say **"let's keep going"** to create a review agent.
+Shall we create a review agent with read-only permissions?
 
 ### 8.5 Create: review-agent
 
@@ -1041,7 +1045,7 @@ Claude may route this to the search-agent on its own, based on the agent's descr
 
 > **Why this step:** Subagents can be invoked explicitly ("Use the search-agent to...") or automatically by Claude when the task matches the agent's description. Automatic delegation is powerful but requires good descriptions in your agent frontmatter -- Claude uses the description to decide when to delegate.
 
-Say **"next"** when you're ready to learn agent composition patterns.
+Want to learn how to chain and parallelize agents?
 
 ### 8.8 Patterns: Chain, Parallel, Resume
 
@@ -1148,7 +1152,7 @@ This enforces disciplined development and gives you a solid test suite.
 
 > **STOP -- What you just did:** You experienced the TDD cycle with Claude Code: write a failing test, run it (red), write minimal code to pass (green), refactor if needed. Each cycle produces both working code and a test that proves it works. After several cycles, you have a fuzzy search feature with comprehensive test coverage. This discipline is worth practicing -- it is one of the most reliable ways to build correct software, and Claude Code makes the cycle fast because Claude can see the test failure and write targeted fixes.
 
-Ready? Say **"continue"** and we'll add verification hooks for subagent output.
+Want to add verification hooks for subagent output?
 
 ### 9.5 Stop and SubagentStop Hooks for Verification
 
@@ -1258,7 +1262,7 @@ prevent conflicts.
 
 > **STOP -- What you just did:** You packaged your forge toolkit's skills, agents, and hooks into a standalone plugin with a manifest file. The plugin can be loaded into any project with `--plugin-dir`, and all skills are automatically namespaced (e.g., `/knowledge-base:add-item`) to prevent conflicts with the host project's own skills. This is how you share Claude Code customizations across projects and teams.
 
-Say **"continue"** when you're ready to move on to evaluation.
+Ready to build an evaluation suite for your skills and agents?
 
 ### 10.5 Evaluation
 
@@ -1272,7 +1276,7 @@ Claude may ask about how strict the scoring should be or what counts as "close e
 
 > **STOP -- What you just did:** You created an evaluation suite that tests your Claude Code configuration the same way you would test code. Each test case specifies what to input, what output to expect, and how to score the result. This closes the feedback loop: you built skills and agents in earlier modules, and now you have a way to measure whether they work correctly. In real projects, run evaluations after any change to skills, agents, or hooks to catch regressions.
 
-Say **"next"** and we'll set up auto-approval to streamline eval runs.
+Shall we set up auto-approval hooks for eval runs?
 
 ### 10.6 PermissionRequest Hooks for Eval Automation
 

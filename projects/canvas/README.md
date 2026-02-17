@@ -366,7 +366,7 @@ Claude will create the rule files. Review them and adjust any rules that do not 
 
 > **STOP -- What you just did:** You created three rule files, each scoped to specific file types using YAML frontmatter. When Claude edits an `.html` file, it loads `html-rules.md` automatically. When it edits `.css`, it loads `css-rules.md`. This is how you enforce coding standards without repeating yourself -- and unlike CLAUDE.md instructions, path-scoped rules only consume context when relevant files are being worked on.
 
-Say **"continue"** when you're ready for the next step.
+Ready to create your CLAUDE.local.md for personal preferences?
 
 ### 3.3 Create CLAUDE.local.md
 
@@ -384,7 +384,7 @@ If `CLAUDE.local.md` is not listed, add it.
 
 > **STOP -- What you just did:** You created a personal preferences file that is not committed to git. This is the split between team standards (rules, CLAUDE.md) and personal preferences (CLAUDE.local.md). On a real team, everyone shares the same rules but can have different personal preferences -- like which browser they test in or what commit message style they prefer.
 
-Say **"next"** when you're ready to move on.
+Want to see how the memory hierarchy works?
 
 ### 3.4 Understand the Memory Hierarchy
 
@@ -447,7 +447,7 @@ Claude uses its own judgment.
 
 > **STOP -- What you just did:** You used `/context` to see how your session's context is distributed, then `/compact` to reclaim space. Context management is a real skill -- long sessions accumulate history, and eventually Claude "forgets" earlier details. Using `/compact` with a focus argument lets you control what survives the compression. You will use this pattern whenever a session gets long or sluggish.
 
-When you're ready, say **"let's keep going"** to continue.
+Shall we check your token usage with /cost?
 
 ### 3.8 /cost Tracking
 
@@ -514,7 +514,7 @@ Claude will ask you clarifying questions about the template structure or what th
 
 > **STOP -- What you just did:** You created a skill with a supporting file. The `SKILL.md` is the instruction template -- it tells Claude what to do when you invoke `/new-page`. The `page-template.md` is a reference document the skill can read for the HTML boilerplate. This pattern (instruction + reference files) is how you build skills that produce consistent, high-quality output every time.
 
-Ready? Say **"continue"** and we'll move on to building the component skill.
+Ready to build the component skill?
 
 ### 4.3 Create the "component" Skill
 
@@ -540,7 +540,7 @@ by you typing `/check-site`. Claude will not invoke it automatically.
 
 > **STOP -- What you just did:** You created three skills with different purposes: `new-page` generates files, `component` creates CSS, and `check-site` validates without modifying anything. The `disable-model-invocation: true` flag on `check-site` is important -- it means Claude will never run this validation on its own, only when you explicitly ask. You will use this flag whenever a skill should be user-triggered only (like destructive operations or expensive checks).
 
-Say **"next"** to test your skills in action.
+Want to test all three skills in action?
 
 ### 4.5 Test Your Skills
 
@@ -648,7 +648,7 @@ the stats injected on startup.
 
 > **STOP -- What you just did:** You created your first hook -- a SessionStart hook that runs a Python script every time Claude Code launches. The script counts your site's pages and injects a summary into Claude's context. This means Claude always knows the current state of your site without you having to explain it. SessionStart hooks are perfect for injecting project status, environment info, or reminders.
 
-Say **"continue"** when you're ready to build the next hook.
+Ready to build a PostToolUse hook for HTML validation?
 
 ### 5.3 Create a PostToolUse Hook
 
@@ -675,7 +675,7 @@ The key difference from PostToolUse: a Stop hook with exit code 2 is *blocking* 
 
 > **Why this step:** Stop hooks are different from PostToolUse hooks -- they run once when Claude finishes its entire response, not after each individual tool call. A Stop hook with exit code 2 is *blocking*: it forces Claude to address the issue before moving on. This makes Stop hooks ideal for final validation checks like broken link detection.
 
-When you're ready, say **"let's keep going"** to continue.
+Want to learn about matchers and hook scripting?
 
 ### 5.5 Matchers, Timeouts, and Scripting
 
@@ -753,7 +753,7 @@ You should see `canvas-fs` listed and connected.
 
 > **STOP -- What you just did:** You connected your first MCP server and verified it with `/mcp`. The filesystem MCP server gives Claude enhanced file operations beyond the built-in Read/Write tools. The key command pattern is `claude mcp add --transport stdio <name> -- <command>`. You will use this same pattern to add any MCP server.
 
-Say **"next"** when you're ready to add another MCP server.
+Shall we add a Fetch server to pull in real web content?
 
 ### 6.3 Add a Fetch MCP Server
 
@@ -879,7 +879,7 @@ Claude will create the Python script and update the settings. Review the script 
 
 > **STOP -- What you just did:** You created a guard that *prevents* Claude from writing inaccessible HTML. Unlike the PostToolUse validator from Module 5 that reports issues after the file is already written, this PreToolUse hook blocks the write entirely. Claude receives the denial reason and must fix the content before trying again. This is the difference between detection and prevention -- and prevention is always better.
 
-Ready? Say **"continue"** and we'll build the context injection guard.
+How about we build a guard that injects context when reading HTML?
 
 ### 7.3 Guard: Context Injection for HTML Files
 
@@ -892,7 +892,7 @@ Claude's context before the tool executes.
 
 > **STOP -- What you just did:** You created a hook that does not block or modify anything -- it injects *extra context* before Claude reads a file. This is a subtle but powerful pattern: you are nudging Claude's behavior by giving it reminders at the exact moment they are relevant. The `additionalContext` field appears in Claude's context alongside the file contents, making it much more likely Claude will follow those guidelines.
 
-Say **"continue"** when you're ready for the next guard pattern.
+Want to see how hooks can silently fix content before it gets written?
 
 ### 7.4 Guard: Auto-Add Meta Tags
 
@@ -981,7 +981,7 @@ Claude will create the agent file. Notice it only has read-only tools -- this ag
 
 > **STOP -- What you just did:** You created a subagent with constrained tools (`Read, Grep, Glob` -- no `Write` or `Edit`) and a cheaper model (`haiku`). This is intentional: the accessibility agent only needs to *read and report*, not modify files. Using haiku instead of the default model saves tokens on a task that does not need the most powerful reasoning. Matching the model to the task complexity is a key cost optimization pattern.
 
-Say **"next"** when you're ready to create the design agent.
+Shall we create the design review agent next?
 
 ### 8.4 Create: design-agent
 
@@ -1138,6 +1138,8 @@ This enforces disciplined development and gives you a solid test suite.
 
 > **STOP -- What you just did:** You used TDD (test-driven development) with Claude Code. The discipline is critical: write the test *first*, see it fail, *then* write the minimum code to pass. This prevents Claude from writing a monolithic validation function and then backfilling tests. The browser-based test runner (`test.html`) is your verification -- you can see red/green status with every refresh. TDD with Claude Code is one of the most effective development patterns because it forces both you and Claude to think about behavior before implementation.
 
+Ready to add a SubagentStop hook for verifying agent output?
+
 > **Why this step (for the next section):** SubagentStop hooks verify that subagents actually completed their work properly. Without this check, a subagent could fail silently or return incomplete results, and you might not notice.
 
 ### 9.5 Stop and SubagentStop Hooks for Verification
@@ -1188,7 +1190,7 @@ Now you have three directories:
 
 > **STOP -- What you just did:** You created two separate working directories from the same git repository. Each worktree is a full checkout of a different branch. They share the same git history, but files in one worktree do not affect the other. This is fundamentally different from `git stash` or `git checkout` -- you do not lose any work when switching between features because they live in separate directories.
 
-When you're ready, say **"let's keep going"** to start building in the worktrees.
+Want to start building dark mode in the first worktree?
 
 ### 10.2 Feature: Dark Mode (Worktree 1)
 
@@ -1230,7 +1232,7 @@ Both sessions see all tasks. When one completes a task, the other is notified.
 
 > **STOP -- What you just did:** You ran two Claude Code instances simultaneously, each in its own worktree with its own branch, sharing a single task list via `CLAUDE_CODE_TASK_LIST_ID`. This is the most powerful development pattern in Claude Code: parallel feature development with coordination. Each instance works independently but can see the other's progress. In a real team workflow, you might have three or four worktrees running simultaneously -- one per feature.
 
-Say **"continue"** when you're ready to move on to plugins.
+Ready to package everything into a reusable plugin?
 
 ### 10.5 Plugin Creation
 
@@ -1288,7 +1290,7 @@ Discuss with Claude which edge cases matter most to you and whether the scoring 
 
 > **STOP -- What you just did:** You wrote evaluation test specs for your skills and agents. Each test case defines an input, expected output, and scoring criteria. This is the same pattern used in professional software testing -- define expectations, run the tool, compare results. The evaluation script gives you a pass/fail report you can run any time you change a skill or agent.
 
-Say **"next"** when you're ready to automate eval permissions.
+Want to automate eval permissions with a PermissionRequest hook?
 
 ### 10.8 PermissionRequest Hooks for Eval Automation
 
@@ -1300,7 +1302,7 @@ Keep this in `settings.local.json` (not committed) and use only during eval.
 
 > **STOP -- What you just did:** You created a PermissionRequest hook that auto-approves safe, read-only operations during evaluation runs. Without this, every `Read` and `Grep` call would prompt you for permission -- making automated evaluation tedious and slow. The key safety decision: this lives in `settings.local.json` (not committed to git) and only covers read-only tools. You would never auto-approve `Write` or `Bash` in production.
 
-Ready? Say **"continue"** and we'll wrap up with continuous learning.
+Shall we wrap up with continuous learning and a final review?
 
 ### 10.9 Continuous Learning
 

@@ -228,7 +228,7 @@ Or ask Claude to handle the git workflow for you:
 
 > **STOP -- What you just did:** You went from an empty directory to a planned, structured project on its own feature branch -- all without leaving Claude Code. The `!` prefix for shell commands and Claude's ability to run git operations mean your entire workflow lives in one place. Notice how each prompt was focused on one concern (structure, then commit, then branch) rather than asking for everything at once.
 
-Say **"continue"** when you're ready for the next step.
+Ready to start building the core gateway?
 
 ### Step 6: Implement the Core Gateway
 
@@ -319,7 +319,7 @@ Claude will create the files with the correct `paths:` frontmatter to scope each
 
 > **STOP -- What you just did:** You created path-scoped rules that automatically activate when Claude works on matching files. The `paths:` frontmatter is the key -- it means Claude only sees routing rules when editing route files, not when editing tests or configs. This keeps Claude's context focused and its behavior consistent without you having to remind it every time.
 
-Say **"next"** when you're ready to move on.
+Want to set up CLAUDE.local.md for your personal preferences?
 
 ### Step 2: Create CLAUDE.local.md
 
@@ -361,7 +361,7 @@ Try each command:
 
 > **STOP -- What you just did:** You learned the three context management tools: `/context` shows what Claude is "thinking about" (and how full its context window is), `/compact` frees up space while preserving key information, and `/cost` tracks your token usage. These tools become essential in longer sessions -- you will use `/compact` regularly to keep Claude focused and responsive.
 
-Ready? Say **"continue"** and we'll move on to building rate limiting.
+Ready to build the rate limiting feature?
 
 ### Step 6: Build Rate Limiting
 
@@ -418,6 +418,8 @@ Claude will create the skill with `$ARGUMENTS` for argument capture and `argumen
 
 > **STOP -- What you just did:** You created two skills with `disable-model-invocation: true`, which means they only run when you explicitly type the slash command. This is important for skills that take action (adding routes, firing test requests) -- you want to control when they execute. The `argument-hint` frontmatter in test-endpoint tells users what arguments the skill expects, and `$ARGUMENTS` captures everything they type after the command name.
 
+How about we create a status-report skill next?
+
 ### Step 3: Create the "status-report" Skill
 
 Ask Claude to create a status report skill that gives you a full overview of the gateway -- whether it is running, all routes with their upstreams and health, rate limit configs, and the /health endpoint response.
@@ -456,7 +458,7 @@ Skills are re-read each time they are invoked, so edits take effect immediately.
 
 > **STOP -- What you just did:** You saw that skills are re-read every time they are invoked -- no restart needed. This hot-reload behavior means you can iterate on skill prompts in real time: edit the SKILL.md, invoke the command, see the result, refine. This tight feedback loop is how you dial in the exact workflow you want.
 
-When you're ready, say **"let's keep going"** to continue.
+Shall we review how disable-model-invocation controls your skills?
 
 ### Step 6: Create a disable-model-invocation Skill
 
@@ -514,7 +516,7 @@ Test it: exit Claude Code and relaunch. The gateway status appears in context au
 
 > **STOP -- What you just did:** You created your first hook and wired it into `.claude/settings.json`. The key insight: anything a SessionStart hook prints to stdout becomes part of Claude's context automatically. Claude now knows the gateway's status without you saying a word. You will use this pattern whenever there is information Claude should have at the start of every session.
 
-Say **"continue"** when you're ready for the next hook.
+Want to build a PostToolUse hook for config validation?
 
 ### Step 3: PostToolUse Hook -- Auto-Lint Config Files
 
@@ -544,7 +546,7 @@ Claude will ask what your test command is (pytest, npm test, cargo test, etc.) a
 
 > **STOP -- What you just did:** You now have three hooks covering three different lifecycle events: SessionStart (inject context on launch), PostToolUse (validate after writes), and Stop (block completion until tests pass). Together, these form an automated safety net around your development workflow. The exit code convention (0 = success, 2 = blocking error) is the mechanism that gives hooks real power -- they are not just notifications, they can enforce rules.
 
-Say **"next"** to dig into the hook configuration details.
+Want to dig into hook configuration details?
 
 ### Step 5: Understand Hook Configuration Details
 
@@ -623,7 +625,7 @@ claude mcp add --transport stdio filesystem -- cmd /c npx -y @anthropic-ai/mcp-f
 
 > **STOP -- What you just did:** You connected two MCP servers that give Claude new capabilities: direct SQLite database access and filesystem operations. The `claude mcp add` command registered them, and now Claude can use their tools alongside its built-in tools. Think of MCP servers as "plugins for Claude's toolbox" -- each one adds new abilities.
 
-Say **"continue"** when you're ready to verify the connections.
+Ready to verify your MCP connections?
 
 ### Step 4: Verify MCP Connections
 
@@ -676,7 +678,7 @@ After building, ask Claude to query the live database:
 
 > **STOP -- What you just did:** You built a real caching layer and then used MCP to inspect it from inside Claude Code. This is a major shift: instead of writing one-off SQL queries or print statements to debug your cache, you asked Claude to query the live database directly. MCP turns Claude from a code assistant into a system operator that can see your running application's state.
 
-When you're ready, say **"let's keep going"** to combine skills with MCP.
+Want to see how skills and MCP work together?
 
 ### Step 8: Create a Skill That Uses MCP
 
@@ -730,7 +732,7 @@ Claude will create the hook script that reads the tool input from stdin, checks 
 
 > **STOP -- What you just did:** You created your first guardrail that actively *prevents* a mistake. When Claude tries to write an invalid config, the hook blocks it with a clear reason. Claude sees the denial reason and corrects its approach automatically. This is fundamentally different from the PostToolUse validation in Module 5 -- that caught errors after the write; this prevents the write from happening at all.
 
-Say **"next"** when you're ready to build softer guardrails with context injection.
+Want to try softer guardrails with context injection?
 
 ### Step 3: Guard -- Add Context to Route Handler Reads
 
@@ -822,6 +824,8 @@ Now create a caching specialist. Describe what it should analyze and what tools 
 > "Create a cache-agent subagent that manages the SQLite cache layer. It should be able to query cache.db, analyze hit/miss rates and entry ages, suggest TTL adjustments and eviction strategies, and debug stale or oversized entries. Sonnet model, with Read, Bash, Grep, and Glob tools."
 
 > **STOP -- What you just did:** You created two specialist agents with different tool sets. The router-agent has `Read, Grep, Glob, Bash` because it needs to analyze code and configs. The cache-agent also has `Bash` so it can query the database. Notice the `model: sonnet` field -- this routes these agents to a faster, cheaper model since they are doing analysis, not complex reasoning. You will use Opus for design decisions and Sonnet for routine analysis.
+
+Ready to create a read-only security auditor agent?
 
 ### Step 4: Create the "security-agent"
 
@@ -944,7 +948,7 @@ Claude will write a failing test, then ask you to confirm before implementing. E
 
 > **STOP -- What you just did:** You experienced the red-green-refactor TDD cycle with Claude. Each cycle produced a focused commit: failing test, passing implementation, cleanup. Look at your git log -- you should see a clean, incremental history where each commit adds one specific behavior. This is the gold standard for maintainable code, and Claude's tight build-test-commit loop makes it practical rather than tedious.
 
-Say **"continue"** when you're ready to add quality gates to the task system.
+Ready to add quality gate hooks to the task system?
 
 ### Step 5: Stop and SubagentStop Hooks for Quality
 
@@ -1055,7 +1059,7 @@ Test: `claude --plugin-dir ./gateway-plugin`, then try `/gateway-plugin:add-rout
 
 > **STOP -- What you just did:** You packaged your skills, agents, and hooks into a distributable plugin. Notice the namespace prefix (`/gateway-plugin:add-route`) -- this prevents naming collisions when multiple plugins are loaded. The plugin is a self-contained directory that anyone can use with `--plugin-dir`. You have gone from "tools that help me" to "tools I can share."
 
-Ready? Say **"continue"** and we'll move on to evaluation and scoring.
+Ready to build an evaluation and scoring system?
 
 ### Step 4: Evaluation -- Test Specs and Scoring
 
@@ -1087,7 +1091,7 @@ The JSON output format for PermissionRequest hooks uses `hookSpecificOutput.deci
 
 > **STOP -- What you just did:** You automated the permission system itself. PermissionRequest hooks are the final piece of the hook lifecycle: SessionStart (context at launch), PreToolUse (guard before actions), PostToolUse (validate after actions), Stop (quality gate at completion), SubagentStop (quality gate for agents), and now PermissionRequest (control the permission dialogs). Every interaction point between you and Claude is now programmable.
 
-Say **"let's wrap this up"** to move on to the final step.
+Shall we capture what you learned in your project knowledge layer?
 
 ### Step 6: Continuous Learning
 
