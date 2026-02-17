@@ -186,50 +186,31 @@ Press `Shift+Tab` to switch to Plan mode. The indicator in your prompt area chan
 
 ### Step 2: Design the Architecture
 
-Paste this prompt into Claude while in Plan mode:
+Now describe your gateway to Claude. Tell it about the core pieces you want -- an HTTP server, a route registry, request forwarding, a config file, a health endpoint, and a CLI. Don't worry about getting the prompt perfect; just describe your vision and let Claude ask clarifying questions.
 
-```
-Design the architecture for a local API gateway called "nexus-gateway" with
-these components:
+Something like:
 
-1. HTTP server that listens on a configurable port (default 3000)
-2. Route registry: define routes with path patterns, HTTP methods, upstream
-   targets (host:port)
-3. Request handler: receives incoming requests, matches against routes,
-   forwards to the matched upstream
-4. Response handler: receives upstream response, returns to the original client
-5. Config file: YAML or JSON or TOML for route definitions
-6. Health check endpoint at /health that returns {"status": "ok"}
-7. CLI interface: nexus start, nexus routes list, nexus routes add, nexus health
+> "I want to build a local API gateway called nexus-gateway. It should listen for HTTP requests, match them against configured routes, and forward them to upstream services. I also want a CLI, a health check endpoint, and a config file for route definitions. Help me design the architecture -- ask me questions about anything that's unclear."
 
-Show me the directory structure, the key modules/files, and how they connect.
-Do NOT write any code yet -- just the plan.
-```
+Claude will probably ask about your config format preference (YAML, JSON, TOML), how you want to handle path parameters, and what the CLI commands should look like. Answer naturally -- these are your design decisions.
+
+Once Claude produces a plan with a directory structure and module breakdown, read it carefully. Push back on anything you would do differently. Remember, you are still in Plan mode, so nothing is being written to disk yet.
 
 ### Step 3: Review and Iterate
 
-Read Claude's plan carefully. Ask follow-up questions while still in Plan mode:
+Read Claude's plan carefully. While still in Plan mode, push on the details. Ask about edge cases:
 
-```
-How will route matching work for path parameters like /users/:id?
-What happens when no route matches -- what status code and body?
-Where does the config file live and what is its format?
-```
+> "What happens when no route matches? How will path parameters like /users/:id work? Where does the config file live?"
 
-Iterate until you are satisfied with the design.
+If something in the design feels off, say so. Claude will revise. Iterate until you are satisfied -- this is a conversation, not a one-shot prompt.
 
 > **STOP -- What you just did:** You used plan mode to design your gateway's architecture before writing any code. This is one of Claude Code's most powerful patterns: think through complex decisions *with* Claude before committing to an approach. Plan mode prevents the "just start coding" trap that leads to rewrites. You will use this plan-first pattern at the start of every major feature.
 
 ### Step 4: Exit Plan Mode and Execute
 
-Press `Shift+Tab` to switch back to Act mode. Now tell Claude to create the project structure:
+Press `Shift+Tab` to switch back to Act mode. Now ask Claude to create the project structure you just designed together. Tell it to set up the directory layout, create placeholder files for each module, and write a config file with a couple of example routes.
 
-```
-Create the project structure from our plan. Set up the directory layout, create
-empty placeholder files for each module, and write the config file with two
-example routes: one for /api/users forwarding to localhost:4001, and one for
-/api/products forwarding to localhost:4002.
-```
+> "Let's build out the project structure from our plan. Create the directories, placeholder files, and a config file with two example routes -- one for /api/users and one for /api/products."
 
 > **Why this step:** Feature branches keep your experiments separate from working code. If something goes wrong, you can throw away the branch without affecting main. This is standard practice in professional development and Claude Code's git integration makes it seamless.
 
@@ -241,12 +222,9 @@ example routes: one for /api/users forwarding to localhost:4001, and one for
 ! git checkout -b feature/core
 ```
 
-Or ask Claude:
+Or ask Claude to handle the git workflow for you:
 
-```
-Create a feature branch called "feature/core" and commit the current project
-structure to it.
-```
+> "Create a feature branch called feature/core and commit the current project structure."
 
 > **STOP -- What you just did:** You went from an empty directory to a planned, structured project on its own feature branch -- all without leaving Claude Code. The `!` prefix for shell commands and Claude's ability to run git operations mean your entire workflow lives in one place. Notice how each prompt was focused on one concern (structure, then commit, then branch) rather than asking for everything at once.
 
@@ -254,55 +232,29 @@ structure to it.
 
 > **Why this step:** Breaking implementation into separate, focused prompts (server, routing, forwarding) gives Claude better results than one giant "build everything" prompt. Each prompt is specific enough that Claude can implement it completely before moving on.
 
-Work with Claude to build the core components. Give focused prompts:
+Work with Claude to build the core components one at a time. Start by asking for the HTTP server -- tell Claude it should read the port from config, listen for requests, pass them to the route matcher, and return 404 when nothing matches.
 
-```
-Implement the HTTP server module. It should:
-- Read the port from the config file (default 3000)
-- Listen for incoming HTTP requests
-- Pass requests to the route matcher
-- Return 404 with {"error": "no matching route"} if no route matches
-```
+> "Let's start with the HTTP server module. It needs to read the port from config, listen for requests, hand them off to the route matcher, and return a 404 JSON response when no route matches."
 
-Then:
+Once that is working, move to route matching. Describe what you need -- loading routes from config, matching by method and path pattern, supporting exact and prefix matches.
 
-```
-Implement the route matching module. It should:
-- Load routes from the config file
-- Match requests by method and path pattern
-- Support exact paths and simple prefix matching
-- Return the matched route's upstream target
-```
+> "Now let's build the route matching module. It should load routes from our config file and match incoming requests by method and path. I want exact path matches and simple prefix matching."
 
-Then:
+Then ask for request forwarding -- taking the matched upstream target, forwarding the original request, and handling connection errors with 502.
 
-```
-Implement the request forwarding module. It should:
-- Take the matched upstream target
-- Forward the original request (method, headers, body)
-- Return the upstream response to the client
-- Handle connection errors gracefully with 502 Bad Gateway
-```
+> "Next, the request forwarding module. It takes the matched upstream target, forwards the original request with its method, headers, and body, and returns the upstream response. If the upstream is unreachable, return 502 Bad Gateway."
+
+Notice the pattern: each prompt focuses on one component. Claude will ask you clarifying questions along the way -- answer them based on your design from Step 2.
 
 ### Step 7: Write and Run Tests
 
-```
-Write tests for the route matching module. Test:
-- Exact path match
-- Prefix match
-- Method filtering (GET vs POST)
-- No match returns null/none
-- Multiple routes, first match wins
+Ask Claude to write tests for the route matching module. Describe the scenarios you care about -- exact matches, prefix matches, method filtering, no-match behavior, and priority when multiple routes could match. Let Claude decide on the test structure.
 
-Then run the tests.
-```
+> "Write tests for the route matcher. I want to cover exact path matching, prefix matching, method filtering, what happens when nothing matches, and which route wins when multiple routes could match. Then run them."
 
-After tests pass, commit:
+After tests pass, ask Claude to commit the work with a descriptive message.
 
-```
-Commit the passing tests and route matching implementation with a descriptive
-message.
-```
+> "Commit the route matching implementation and its tests."
 
 > **STOP -- What you just did:** You built the core gateway and validated it with tests -- the build-test-commit cycle that you will repeat for every feature going forward. Notice the pattern: implement a focused piece, write tests to prove it works, commit when tests pass. This tight loop catches bugs early and gives you safe rollback points.
 
@@ -314,31 +266,25 @@ message.
 
 ### Step 8: Implement the CLI
 
-```
-Implement the CLI interface with these subcommands:
-- nexus start: start the gateway server
-- nexus routes list: show all configured routes
-- nexus routes add <path> <method> <upstream>: add a route to the config
-- nexus health: check if the gateway is running by hitting /health
-```
+Tell Claude about the CLI you want. Describe the subcommands -- starting the server, listing routes, adding a route, and checking health. Let Claude suggest the argument structure and help text.
+
+> "I want a CLI for the gateway. I need commands to start the server, list all configured routes, add a new route with a path, method, and upstream, and check if the gateway is healthy. What's the best way to structure this?"
+
+Claude will implement the CLI and may ask about argument parsing libraries for your language. Pick what you are comfortable with.
 
 ### Step 9: Manual Testing
 
-Start a simple upstream service (or use Claude to create a tiny echo server), then test:
+Start a simple upstream service (or ask Claude to create a tiny echo server), then test the gateway end-to-end. Ask Claude to help you set up the test and walk you through the curl commands.
 
-```
-Help me test the gateway manually:
-1. Create a simple echo server that runs on port 4001
-2. Start the gateway
-3. Show me the curl commands to test each route
-4. Show me how to check /health
-```
+> "Help me test the gateway manually. I need a simple echo server on port 4001 as an upstream, then show me how to test each route and the /health endpoint with curl."
+
+Claude will create the echo server, start the gateway, and give you the curl commands. Run them and verify the responses look right.
 
 ### Step 10: Merge to Main
 
-```
-Commit all changes, then merge feature/core into main.
-```
+Ask Claude to commit any remaining changes and merge the feature branch back to main.
+
+> "Commit everything and merge feature/core into main."
 
 > **STOP -- What you just did:** You completed a full feature development cycle: plan in plan mode, branch, implement incrementally, test, and merge. This plan-branch-build-test-merge workflow is how professional teams ship software, and you just did it entirely through Claude Code. Every future module builds on this same cycle.
 
@@ -363,62 +309,19 @@ Commit all changes, then merge feature/core into main.
 
 ### Step 1: Create Path-Scoped Rules
 
-Create a `.claude/rules/` directory in your project:
+Ask Claude to create a `.claude/rules/` directory with three rule files. Describe what each rule should enforce and which files it should apply to. Let Claude figure out the exact frontmatter syntax.
 
-```
-Create the .claude/rules/ directory with the following rule files:
+> "Create a .claude/rules/ directory with three rule files. First, a routing rule that applies to route and handler files -- it should enforce HTTP method validation, proper status codes (200, 400, 404, 502, 503), and request logging. Second, a config rule that applies to YAML, JSON, and TOML files -- it should enforce validation on load with clear error messages. Third, a testing rule for test and spec files -- it should require both success and error path coverage with descriptive test names."
 
-1. .claude/rules/routing.md — with this frontmatter:
-   ---
-   paths:
-     - "**/routes*"
-     - "**/handler*"
-     - "**/router*"
-   ---
-   Content: "Always validate the HTTP method. Return proper status codes: 200
-   for success, 400 for bad requests, 404 for no route match, 502 for upstream
-   failure, 503 for rate limited. Log every routed request with method, path,
-   upstream, and response time."
-
-2. .claude/rules/config.md — with this frontmatter:
-   ---
-   paths:
-     - "*.yml"
-     - "*.yaml"
-     - "*.toml"
-     - "*.json"
-     - "**/config*"
-   ---
-   Content: "Validate all configuration on load. Fail fast with clear error
-   messages if a required field is missing. Never silently ignore malformed
-   config entries."
-
-3. .claude/rules/testing.md — with this frontmatter:
-   ---
-   paths:
-     - "**/test*"
-     - "**/*test*"
-     - "**/*spec*"
-   ---
-   Content: "Test both success and error paths. Always test with malformed
-   requests, missing fields, and unexpected HTTP methods. Use descriptive test
-   names that explain the scenario."
-```
-
-After creating them, edit a route handler file and notice Claude follows the routing rules automatically.
+Claude will create the files with the correct `paths:` frontmatter to scope each rule. After creating them, edit a route handler file and notice Claude follows the routing rules automatically.
 
 > **STOP -- What you just did:** You created path-scoped rules that automatically activate when Claude works on matching files. The `paths:` frontmatter is the key -- it means Claude only sees routing rules when editing route files, not when editing tests or configs. This keeps Claude's context focused and its behavior consistent without you having to remind it every time.
 
 ### Step 2: Create CLAUDE.local.md
 
-```
-Create a CLAUDE.local.md file with my personal preferences:
-- I prefer verbose logging during development
-- My test upstream runs on port 4001
-- Skip integration tests when I say "quick test"
+Ask Claude to create a CLAUDE.local.md with your personal development preferences. Think about what matters to you locally -- maybe you like verbose logging, your test upstream runs on a specific port, or you want a shorthand for running quick tests.
 
-Make sure CLAUDE.local.md is in .gitignore.
-```
+> "Create a CLAUDE.local.md with my personal preferences: I like verbose logging during development, my test upstream runs on port 4001, and when I say 'quick test' I mean skip integration tests. Make sure it's gitignored."
 
 CLAUDE.local.md is for personal, per-project preferences that should not be committed to version control.
 
@@ -439,18 +342,9 @@ The hierarchy (highest to lowest): Managed policy > Project CLAUDE.md > .claude/
 
 > **Why this step:** As your project grows, CLAUDE.md gets bloated with documentation. The `@import` syntax lets you keep CLAUDE.md concise (a table of contents) while giving Claude access to detailed docs on demand. This is how you scale Claude's knowledge without wasting context window on every session.
 
-Create documentation files and reference them from CLAUDE.md:
+Ask Claude to create documentation files for the route matching algorithm and the configuration format, then reference them from CLAUDE.md using `@imports`.
 
-```
-Create two documentation files:
-1. docs/routing.md — document the route matching algorithm, supported patterns,
-   and the config file format
-2. docs/config-format.md — document the configuration file schema with examples
-
-Then update CLAUDE.md to import them:
-  See @docs/routing.md for route matching details.
-  See @docs/config-format.md for configuration schema.
-```
+> "Create a docs/routing.md that documents how route matching works and a docs/config-format.md that documents the config file schema with examples. Then update CLAUDE.md to import both using the @path syntax."
 
 The `@path` syntax in CLAUDE.md imports the referenced file into Claude's context. This keeps CLAUDE.md concise while giving Claude access to detailed documentation.
 
@@ -465,20 +359,11 @@ Try each command:
 
 ### Step 6: Build Rate Limiting
 
-Now build the rate limiting feature while actively using the context tools:
+Now build the rate limiting feature while actively using the context tools. Describe the behavior you want to Claude -- per-route limits from config, what to return when a client is rate-limited, and how to track state. Let Claude suggest the algorithm (token bucket, sliding window, etc.) and discuss the tradeoffs.
 
-```
-Implement a rate limiting module for the gateway:
-- Per-route rate limits configured in the route config
-- Token bucket algorithm (or sliding window)
-- Return 429 Too Many Requests when limit exceeded
-- Include Retry-After header in the response
-- Rate limit state stored in memory (not persisted yet)
+> "I want to add rate limiting to the gateway. Each route should have a configurable rate limit in the config file. When a client exceeds the limit, return 429 with a Retry-After header. Store the state in memory for now. What algorithm do you recommend?"
 
-Write tests for the rate limiter, run them, and commit.
-```
-
-After building, run `/compact` to free context, then run `/cost` to see how many tokens you used.
+Claude will implement the rate limiter and may ask about edge cases like what happens on server restart (state resets). After building, ask Claude to write tests, run them, and commit. Then run `/compact` to free context and `/cost` to see how many tokens you used.
 
 ### Checkpoint
 
@@ -501,30 +386,11 @@ After building, run `/compact` to free context, then run `/cost` to see how many
 
 ### Step 1: Create the "add-route" Skill
 
-Skills live in `.claude/skills/<skill-name>/SKILL.md`. Create your first skill:
+Skills live in `.claude/skills/<skill-name>/SKILL.md`. Describe the workflow you want to Claude and ask it to create the skill file with the right frontmatter.
 
-```
-Create a skill at .claude/skills/add-route/SKILL.md with this content:
+> "Create a skill called add-route that walks me through adding a new route to the gateway config. It should read the existing config, ask me for the path, method, and upstream target, validate there are no conflicts, add the route, show the updated list, and remind me to restart if the gateway is running. Make it user-triggered only -- I don't want Claude running this automatically."
 
----
-name: add-route
-description: Guided route creation with validation. Use when adding new API
-  routes to the gateway configuration.
-disable-model-invocation: true
----
-
-Add a new route to the gateway configuration:
-
-1. Read the current config file to see existing routes
-2. Ask the user for: path pattern, HTTP method, upstream target (host:port)
-3. Validate that the path does not conflict with existing routes
-4. Validate that the upstream target is a valid host:port
-5. Add the route to the config file
-6. Show the updated route list
-7. Remind the user to restart the gateway if it is running
-```
-
-Test it by typing:
+Claude will create `.claude/skills/add-route/SKILL.md` with `disable-model-invocation: true` in the frontmatter. Test it by typing:
 
 ```
 /add-route
@@ -534,30 +400,11 @@ Claude will walk through the guided route creation process.
 
 ### Step 2: Create the "test-endpoint" Skill
 
-```
-Create a skill at .claude/skills/test-endpoint/SKILL.md:
+Now ask Claude to create a skill for testing endpoints. Describe what it should do -- fire a test request, report the result, and diagnose failures. Tell Claude it should accept arguments for the path and method.
 
----
-name: test-endpoint
-description: Fire a test request at a gateway endpoint and report the result.
-  Use when testing routes after configuration changes.
-disable-model-invocation: true
-argument-hint: [path] [method]
----
+> "Create a test-endpoint skill that fires a request at the running gateway and reports the result. It should take a path and an optional HTTP method as arguments, show me the status code, response time, headers, and body, and if it fails, diagnose whether the gateway is running, the route exists, and the upstream is reachable. User-triggered only."
 
-Test the endpoint $ARGUMENTS against the running gateway:
-
-1. Parse the arguments: first argument is the path, second is the HTTP method
-   (default GET)
-2. Construct the request URL using localhost and the configured gateway port
-3. Send the request
-4. Report: status code, response time, response headers, response body
-   (truncated to 500 chars)
-5. If the request fails, diagnose: is the gateway running? Is the route
-   configured? Is the upstream reachable?
-```
-
-Test it:
+Claude will create the skill with `$ARGUMENTS` for argument capture and `argument-hint` in the frontmatter. Test it:
 
 ```
 /test-endpoint /api/users GET
@@ -567,28 +414,11 @@ Test it:
 
 ### Step 3: Create the "status-report" Skill
 
-```
-Create a skill at .claude/skills/status-report/SKILL.md:
+Ask Claude to create a status report skill that gives you a full overview of the gateway -- whether it is running, all routes with their upstreams and health, rate limit configs, and the /health endpoint response.
 
----
-name: status-report
-description: Show the full status of the gateway including all routes, their
-  health, and rate limit counters.
----
+> "Create a status-report skill that checks if the gateway is running, reads the route config, pings each upstream to see if it's reachable, shows rate limit settings, hits /health, and formats everything as a clean table. This one does NOT need disable-model-invocation -- I want Claude to be able to run status checks proactively."
 
-Generate a gateway status report:
-
-1. Check if the gateway process is running (check the configured port)
-2. Read the route configuration file
-3. For each route:
-   - Show path, method, upstream target
-   - Ping the upstream target and report if it is reachable
-   - Show the rate limit configuration (if any)
-4. Hit /health and report the response
-5. Format as a clean table
-```
-
-This skill does not have `disable-model-invocation: true`, which means Claude can also invoke it automatically when it thinks a status check is relevant.
+Notice the difference: this skill omits `disable-model-invocation: true`, so Claude can invoke it automatically when it thinks a status check is relevant.
 
 > **Quick check before continuing:**
 > - [ ] `/add-route` walks you through adding a route to the config
@@ -606,26 +436,11 @@ Skills support positional arguments. In the test-endpoint skill above, `$ARGUMEN
 - `$1` -- second argument
 - `$ARGUMENTS[0]` -- same as `$0`
 
-Create a quick skill that uses positional arguments:
+Ask Claude to create a route-info skill that uses positional arguments to look up a specific route. Describe what details you want to see about the route.
 
-```
-Create a skill at .claude/skills/route-info/SKILL.md:
+> "Create a route-info skill that takes a path pattern as its first argument and looks it up in the config. Show me the full route definition, rate limit settings, whether the upstream is reachable, and how common request patterns would match against it. User-triggered only."
 
----
-name: route-info
-description: Show detailed info about a specific route
-disable-model-invocation: true
-argument-hint: [path-pattern]
----
-
-Look up the route matching "$0" in the configuration and show:
-- Full route definition
-- Rate limit settings
-- Whether the upstream is currently reachable
-- How many times it would match against common request patterns
-```
-
-Test: `/route-info /api/users`
+Claude will use `$0` (the first positional argument) in the skill body. Test it: `/route-info /api/users`
 
 ### Step 5: Hot-Reload Demonstration
 
@@ -645,12 +460,9 @@ Review your skills and confirm:
 - `status-report`: does NOT have it (Claude can run status checks proactively)
 - `route-info`: has `disable-model-invocation: true` (lookup on demand)
 
-Ask Claude:
+Ask Claude to explain which of your skills it can invoke automatically and which require you to type the slash command.
 
-```
-Which of my skills can you invoke automatically, and which ones require me to
-type the slash command? Explain the difference.
-```
+> "Which of my skills can you invoke on your own, and which ones do I have to trigger manually? What's the difference?"
 
 ### Checkpoint
 
@@ -684,44 +496,11 @@ Key hook events you will use in this module:
 
 ### Step 2: SessionStart Hook -- Inject Gateway Status
 
-Create a script that checks whether the gateway is running and reports its state:
+Ask Claude to create a SessionStart hook script that checks whether the gateway is running and reports its state. Describe what you want the script to do -- check the health endpoint, count configured routes, and print a summary.
 
-```
-Create .claude/hooks/gateway-status.sh (make it executable):
+> "Create a SessionStart hook that checks if the gateway is running by hitting the /health endpoint, counts how many routes are configured, and prints a status summary. Put the script in .claude/hooks/gateway-status.sh and wire it up in .claude/settings.json."
 
-#!/bin/bash
-PORT=3000
-if curl -s --max-time 2 http://localhost:$PORT/health > /dev/null 2>&1; then
-  echo "Gateway is RUNNING on port $PORT"
-  ROUTE_COUNT=$(cat config.yaml 2>/dev/null | grep -c "path:" || echo "unknown")
-  echo "Routes configured: $ROUTE_COUNT"
-else
-  echo "Gateway is NOT RUNNING"
-fi
-```
-
-Adjust to match your config format. The key: stdout from a SessionStart hook gets injected into Claude's context automatically.
-
-Now configure the hook in `.claude/settings.json`:
-
-```
-Create .claude/settings.json with:
-
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gateway-status.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+Claude will create the script and configure the hook. The key: stdout from a SessionStart hook gets injected into Claude's context automatically. Adjust the script if your config format is different from what Claude assumes -- tell it your actual format.
 
 Test it: exit Claude Code and relaunch. The gateway status appears in context automatically.
 
@@ -731,46 +510,11 @@ Test it: exit Claude Code and relaunch. The gateway status appears in context au
 
 > **Why this step:** PostToolUse hooks fire after Claude successfully uses a tool. By validating config files right after Claude writes them, you catch errors immediately -- before they cause a confusing runtime failure minutes later. This is "shift left" validation: catch problems at write time, not at run time.
 
-After Claude writes or edits a config file, automatically validate it:
+Ask Claude to create a PostToolUse hook that validates config files after they are written or edited. Describe the behavior -- it should check if the file is a config file (YAML, JSON, TOML), validate it, and report errors.
 
-```
-Create .claude/hooks/validate-config.sh:
+> "Create a PostToolUse hook that validates config files after Claude writes or edits them. If the file is JSON, YAML, or TOML, parse it and fail with exit code 2 if it's invalid. Put the script in .claude/hooks/validate-config.sh and add it to settings.json with a matcher for Write and Edit tools."
 
-#!/bin/bash
-INPUT=$(cat)
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
-case "$FILE_PATH" in
-  *.yaml|*.yml|*.toml|*.json)
-    if [[ "$FILE_PATH" == *.json ]]; then
-      python -c "import json; json.load(open('$FILE_PATH'))" 2>&1
-      if [ $? -ne 0 ]; then
-        echo "Config validation FAILED for $FILE_PATH" >&2
-        exit 2
-      fi
-    fi
-    echo "Config validated: $FILE_PATH"
-    ;;
-esac
-exit 0
-```
-
-Add a PostToolUse entry to `.claude/settings.json`:
-
-```json
-"PostToolUse": [
-  {
-    "matcher": "Write|Edit",
-    "hooks": [
-      {
-        "type": "command",
-        "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/validate-config.sh"
-      }
-    ]
-  }
-]
-```
-
-The **matcher** `"Write|Edit"` means this fires only when Claude uses those tools. Matchers are case-sensitive and support regex.
+Claude will create the validation script and add a PostToolUse entry to `.claude/settings.json` with a **matcher** of `"Write|Edit"`, which means it fires only when Claude uses those specific tools. Matchers are case-sensitive and support regex.
 
 > **Quick check before continuing:**
 > - [ ] SessionStart hook injects gateway status when you launch Claude Code
@@ -782,41 +526,11 @@ The **matcher** `"Write|Edit"` means this fires only when Claude uses those tool
 
 > **Why this step:** A Stop hook acts as a quality gate -- it runs when Claude finishes a response and can *block* Claude from stopping if something is wrong (exit code 2). This prevents Claude from declaring "done" while tests are failing.
 
-A Stop hook fires when Claude finishes a response. Exit code 2 blocks Claude from stopping.
+A Stop hook fires when Claude finishes a response. Exit code 2 blocks Claude from stopping. Ask Claude to create one that runs your tests before allowing completion.
 
-```
-Create .claude/hooks/check-before-stop.sh:
+> "Create a Stop hook that runs my test suite when you finish responding. If tests fail, block with exit code 2 and show the failure output. Make sure to avoid infinite loops -- if the hook itself triggers a stop, it should exit cleanly. Add it to settings.json with a 30-second timeout."
 
-#!/bin/bash
-INPUT=$(cat)
-STOP_HOOK_ACTIVE=$(echo "$INPUT" | jq -r '.stop_hook_active // false')
-# Avoid infinite loops
-if [ "$STOP_HOOK_ACTIVE" = "true" ]; then exit 0; fi
-
-cd "$CLAUDE_PROJECT_DIR"
-TEST_OUTPUT=$(<your-test-command> 2>&1)  # replace with your test runner
-if [ $? -ne 0 ]; then
-  echo "Tests are failing. Fix them before stopping." >&2
-  exit 2
-fi
-exit 0
-```
-
-Add the Stop hook to settings.json:
-
-```json
-"Stop": [
-  {
-    "hooks": [
-      {
-        "type": "command",
-        "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/check-before-stop.sh",
-        "timeout": 30
-      }
-    ]
-  }
-]
-```
+Claude will ask what your test command is (pytest, npm test, cargo test, etc.) and create the script accordingly. It will also add the Stop hook entry to `.claude/settings.json`.
 
 > **STOP -- What you just did:** You now have three hooks covering three different lifecycle events: SessionStart (inject context on launch), PostToolUse (validate after writes), and Stop (block completion until tests pass). Together, these form an automated safety net around your development workflow. The exit code convention (0 = success, 2 = blocking error) is the mechanism that gives hooks real power -- they are not just notifications, they can enforce rules.
 
@@ -936,32 +650,15 @@ Or use: `claude mcp add --scope project sqlite-cache -- npx -y @anthropic-ai/mcp
 
 ### Step 7: Build the Caching Layer with MCP
 
-Now use the SQLite MCP server to build the caching layer:
+Now use the SQLite MCP server to build the caching layer. Describe the caching behavior you want and let Claude design the schema and implementation. Tell Claude to use MCP to inspect the database as it builds.
 
-```
-Implement a caching layer for the gateway:
+> "I want to add response caching to the gateway using SQLite. Cache GET request responses with a configurable TTL per route. If a cached response exists and hasn't expired, return it without hitting the upstream. I also want CLI commands for cache stats and cache clear. Use the SQLite MCP tools to inspect the database as you build this."
 
-1. Create a SQLite database (cache.db) with a table:
-   - cache_entries: key (TEXT PRIMARY KEY), value (TEXT), headers (TEXT),
-     created_at (INTEGER), ttl_seconds (INTEGER)
-2. When a request matches a cacheable route (GET requests only), check the
-   cache first
-3. If a cache hit exists and is not expired, return the cached response
-4. If no cache hit or expired, forward to upstream and cache the response
-5. Add a route config option: cache_ttl (seconds, 0 = no cache)
-6. Add a CLI command: nexus cache stats (show hit/miss counts)
-7. Add a CLI command: nexus cache clear
+Claude will design the cache table schema, implement the caching logic, and add the CLI commands. It may ask you about cache key strategy, what happens on TTL expiry, and whether you want cache size limits. Answer based on your preferences.
 
-Use the SQLite MCP tools to inspect the cache database directly. Show me the
-cache entries after a few test requests.
-```
+After building, ask Claude to query the live database:
 
-After building, ask Claude to query the cache database using MCP tools:
-
-```
-Use the SQLite MCP server to show me all entries in the cache_entries table.
-How many cache hits and misses have there been?
-```
+> "Use the SQLite MCP server to show me what's in the cache. How many hits and misses have there been?"
 
 > **STOP -- What you just did:** You built a real caching layer and then used MCP to inspect it from inside Claude Code. This is a major shift: instead of writing one-off SQL queries or print statements to debug your cache, you asked Claude to query the live database directly. MCP turns Claude from a code assistant into a system operator that can see your running application's state.
 
@@ -969,29 +666,9 @@ How many cache hits and misses have there been?
 
 > **Why this step:** This step combines two features you have already learned -- skills (Module 4) and MCP (this module). The skill provides the *workflow* ("check stats, find expired entries, format a table"), while MCP provides the *capability* ("query SQLite"). This skills+MCP pattern is how you build sophisticated developer tools inside Claude Code.
 
-Create a skill that orchestrates MCP tools for cache inspection:
+Ask Claude to create a skill that orchestrates MCP tools for cache inspection. Describe the kind of report you want -- totals, hit rates, top keys, expired entries.
 
-```
-Create .claude/skills/cache-inspect/SKILL.md:
-
----
-name: cache-inspect
-description: Query the SQLite cache for stats, inspect entries, and manage
-  cache state. Use when debugging caching issues or checking cache performance.
----
-
-Inspect the gateway's SQLite cache:
-
-1. Use the SQLite MCP tools to query cache.db
-2. Show total cache entries, total size, oldest entry, newest entry
-3. Show hit/miss ratio if tracking data is available
-4. Show the top 5 most-accessed cache keys
-5. Flag any expired entries that have not been cleaned up
-6. Format results as a clean summary table
-
-If the user provides a path argument, filter results to cache entries matching
-that path pattern.
-```
+> "Create a cache-inspect skill that uses the SQLite MCP tools to query cache.db and generate a report. I want to see total entries, size, oldest and newest entries, hit/miss ratio, top 5 most-accessed keys, and any expired entries that haven't been cleaned up. If I pass a path argument, filter to matching entries. This one can be auto-invoked by Claude."
 
 This demonstrates the skills+MCP pattern: the skill provides the workflow logic ("what to do"), while MCP provides the tool access ("ability to query SQLite").
 
@@ -1029,26 +706,11 @@ PreToolUse hooks fire before a tool executes. They can return JSON to control th
 
 ### Step 2: Guard -- Prevent Unvalidated Config Edits
 
-Create a hook that denies edits to route config files unless they pass validation:
+Ask Claude to create a PreToolUse hook that blocks writes to route config files when they are missing required fields. Describe the guardrail behavior you want.
 
-```
-Create .claude/hooks/guard-config-edit.sh:
+> "Create a PreToolUse hook that guards config file edits. If Claude tries to write a route config file that's missing a 'path' field, deny the write with a clear reason. Put the script in .claude/hooks/guard-config-edit.sh and add it to settings.json with a Write|Edit matcher."
 
-#!/bin/bash
-INPUT=$(cat)
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
-case "$FILE_PATH" in
-  *config*.yaml|*config*.yml|*config*.json|*routes*.yaml|*routes*.json)
-    CONTENT=$(echo "$INPUT" | jq -r '.tool_input.content // empty')
-    if ! echo "$CONTENT" | grep -q "path"; then
-      echo '{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"deny","permissionDecisionReason":"Route config must contain a path field"}}'
-      exit 0
-    fi ;;
-esac
-exit 0
-```
-
-Add a PreToolUse entry to `.claude/settings.json` with matcher `"Write|Edit"` pointing to this script. Test it: ask Claude to write a config file missing the `path` field. The hook should block it.
+Claude will create the hook script that reads the tool input from stdin, checks config file writes, and returns a `permissionDecision: deny` JSON response when validation fails. Test it: ask Claude to write a config file missing the `path` field. The hook should block it.
 
 > **STOP -- What you just did:** You created your first guardrail that actively *prevents* a mistake. When Claude tries to write an invalid config, the hook blocks it with a clear reason. Claude sees the denial reason and corrects its approach automatically. This is fundamentally different from the PostToolUse validation in Module 5 -- that caught errors after the write; this prevents the write from happening at all.
 
@@ -1056,44 +718,17 @@ Add a PreToolUse entry to `.claude/settings.json` with matcher `"Write|Edit"` po
 
 > **Why this step:** Not all guardrails block actions. `additionalContext` is a softer approach: it injects helpful information into Claude's context before a tool runs, nudging Claude toward better behavior without forcing it. Think of it as whispering a reminder rather than slamming a door.
 
-When Claude reads a route handler file, inject helpful context:
+Ask Claude to create a PreToolUse hook that injects helpful context whenever Claude reads a route handler file. The context should remind Claude about method validation, proper status codes, and rate limit checks.
 
-```
-Create .claude/hooks/route-context.sh:
-
-#!/bin/bash
-INPUT=$(cat)
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
-case "$FILE_PATH" in
-  *route*|*handler*)
-    CONTEXT="This is a route handler. Always validate HTTP method and return proper status codes. Check rate limit config before forwarding."
-    echo "{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"$CONTEXT\"}}" ;;
-esac
-exit 0
-```
+> "Create a PreToolUse hook that detects when you're reading a route handler file and injects a reminder about validating HTTP methods, returning proper status codes, and checking rate limits. Use additionalContext, not deny -- I want to nudge your behavior, not block the read."
 
 The `additionalContext` field injects text into Claude's context before the tool runs, without changing the tool's behavior.
 
 ### Step 4: Guard -- Auto-Add Logging to New Route Handlers
 
-Create `.claude/hooks/inject-logging.sh` that checks if a route handler being written includes logging. If not, use `additionalContext` to remind Claude:
+Ask Claude to create another PreToolUse hook that checks whether a route handler being written includes logging. If not, it should inject a reminder via `additionalContext`.
 
-```
-#!/bin/bash
-INPUT=$(cat)
-TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name')
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
-if [ "$TOOL_NAME" = "Write" ]; then
-  case "$FILE_PATH" in
-    *route*|*handler*)
-      CONTENT=$(echo "$INPUT" | jq -r '.tool_input.content // empty')
-      if ! echo "$CONTENT" | grep -q "logger\|logging\|log"; then
-        echo "{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"IMPORTANT: This route handler is missing logging. Add request logging with method, path, status code, and response time.\"}}"
-      fi ;;
-  esac
-fi
-exit 0
-```
+> "Create a PreToolUse hook that checks when you're writing a route handler file. If the content doesn't include any logging, inject an additionalContext reminder to add request logging with method, path, status code, and response time. Don't block the write -- just remind."
 
 Using `additionalContext` to remind Claude is more reliable than forcibly rewriting content with `updatedInput`.
 
@@ -1156,68 +791,27 @@ Subagents are specialized AI assistants running in their own context window with
 
 ### Step 2: Create the "router-agent"
 
-```
-Create .claude/agents/router-agent.md:
+Ask Claude to create a subagent that specializes in route analysis. Describe its focus area and what tools it should have access to.
 
----
-name: router-agent
-description: Specialized for route matching, optimization, and conflict detection.
-  Use proactively when working with route configurations or debugging routing.
-tools: Read, Grep, Glob, Bash
-model: sonnet
----
+> "Create a router-agent subagent that specializes in route matching, conflict detection, and optimization. It should be able to read files and search the codebase but use the Sonnet model to save costs. When invoked, it should analyze the route config for conflicts, unreachable routes, and ordering issues, and present findings as a table."
 
-You are a routing specialist for nexus-gateway. When invoked:
-1. Read the current route configuration
-2. Analyze for conflicting routes, unreachable routes, ordering issues
-3. If adding a route, validate against existing routes first
-4. If optimizing, suggest route reordering for performance
-Show analysis as: Path | Method | Upstream | Status | Issues
-```
+Claude will create `.claude/agents/router-agent.md` with the appropriate frontmatter, including `tools:` to restrict what the agent can do and `model: sonnet` for cost efficiency.
 
 ### Step 3: Create the "cache-agent"
 
-```
-Create .claude/agents/cache-agent.md:
+Now create a caching specialist. Describe what it should analyze and what tools it needs.
 
----
-name: cache-agent
-description: Manages the SQLite cache layer. Use for cache optimization,
-  eviction analysis, debugging, and performance tuning.
-tools: Read, Bash, Grep, Glob
-model: sonnet
----
-
-You are a caching specialist. The cache is SQLite at cache.db. When invoked:
-1. Query the cache database for current state
-2. Analyze: hit/miss rate, entry ages, total size, near-expiration entries
-3. If optimizing: suggest TTL adjustments, eviction strategies, prewarming
-4. If debugging: check for stale entries, oversized entries, key collisions
-```
+> "Create a cache-agent subagent that manages the SQLite cache layer. It should be able to query cache.db, analyze hit/miss rates and entry ages, suggest TTL adjustments and eviction strategies, and debug stale or oversized entries. Sonnet model, with Read, Bash, Grep, and Glob tools."
 
 > **STOP -- What you just did:** You created two specialist agents with different tool sets. The router-agent has `Read, Grep, Glob, Bash` because it needs to analyze code and configs. The cache-agent also has `Bash` so it can query the database. Notice the `model: sonnet` field -- this routes these agents to a faster, cheaper model since they are doing analysis, not complex reasoning. You will use Opus for design decisions and Sonnet for routine analysis.
 
 ### Step 4: Create the "security-agent"
 
-```
-Create .claude/agents/security-agent.md:
+Create a security auditor agent. This one should have read-only access -- no Bash, no Write -- because a security auditor should not be able to modify code.
 
----
-name: security-agent
-description: Audits the gateway for security issues. Use after config changes
-  or before deployments.
-tools: Read, Grep, Glob
-model: sonnet
----
+> "Create a security-agent subagent that audits the gateway for security issues. It should check route configs for exposed admin endpoints and missing rate limits, review code for missing input validation and header injection risks, and check for missing auth and security headers. Give it only Read, Grep, and Glob tools -- no Bash or Write. Sonnet model. Output should be an audit report with severity levels."
 
-You are a security auditor for nexus-gateway. When invoked:
-1. Route config: exposed admin endpoints, missing rate limits, external
-   hosts, overly permissive patterns
-2. Code: missing input validation, header injection, request smuggling,
-   missing timeouts
-3. Access: missing auth, missing CORS, missing security headers
-Severity: CRITICAL, HIGH, MEDIUM, LOW. Format as audit report.
-```
+Notice that the security-agent only has `Read, Grep, Glob` -- no `Bash`, no `Write`. This is intentional: a security auditor should analyze, not modify.
 
 > **Quick check before continuing:**
 > - [ ] `.claude/agents/` has three agent files: router-agent, cache-agent, security-agent
@@ -1242,27 +836,17 @@ Review the key frontmatter fields:
 
 ### Step 6: Invoke, Chain, Parallel, and Background
 
-**Direct invocation:**
+**Direct invocation:** Ask Claude to delegate to a specific agent.
 
-```
-Use the security-agent to audit the current gateway configuration
-```
+> "Use the security-agent to audit the current gateway configuration."
 
-**Chaining** (sequential delegation):
+**Chaining** (sequential delegation): Ask Claude to run agents in sequence, where each feeds into the next.
 
-```
-First use the router-agent to check for route conflicts, then use the
-security-agent to audit any issues found, then use the cache-agent to verify
-cache entries are valid for the affected routes.
-```
+> "First use the router-agent to check for route conflicts, then pass any issues to the security-agent for a security audit, then have the cache-agent verify caching is correct for the affected routes."
 
-**Parallel** (simultaneous delegation):
+**Parallel** (simultaneous delegation): Ask for two agents to work at the same time.
 
-```
-In parallel, have the router-agent analyze route performance and the
-cache-agent analyze cache hit rates. Combine the findings into a single
-optimization report.
-```
+> "In parallel, have the router-agent analyze route performance and the cache-agent analyze cache hit rates. Combine the findings into one optimization report."
 
 > **STOP -- What you just did:** You chained subagents -- one agent's output feeds into the next. This is powerful for multi-stage analysis: first check for route conflicts, then audit the conflicts for security issues, then verify caching is correct for the affected routes. Each agent brings its specialized perspective, and the chain builds a complete picture that no single agent would produce alone.
 
@@ -1272,16 +856,11 @@ optimization report.
 
 While Claude is running a subagent, press `Ctrl+B` to send it to the background. You can continue working and Claude will notify you when it finishes.
 
-```
-Run the security-agent in the background to audit the full codebase. I will
-continue working on the rate limiter.
-```
+> "Run the security-agent in the background to audit the full codebase. I'll keep working on the rate limiter."
 
-**Resuming:**
+**Resuming:** When the background agent finishes, you can resume and extend its work.
 
-```
-Resume the security-agent and have it also check the new middleware code.
-```
+> "Resume the security-agent and have it also check the new middleware code."
 
 ### Checkpoint
 
@@ -1311,38 +890,11 @@ To share a task list across sessions: `CLAUDE_CODE_TASK_LIST_ID=nexus-middleware
 
 ### Step 3: Multi-Step Pipeline -- Add Middleware System
 
-Ask Claude to create a task chain for adding a middleware system to the gateway:
+Describe the middleware system you want to build and ask Claude to break it into a task list with dependencies. Explain the high-level pieces -- a middleware interface, a couple of concrete middleware implementations, wiring them into the pipeline, and integration tests.
 
-```
-Create a task list for adding a middleware system to the gateway. Break it into
-these dependent tasks:
+> "I want to add a middleware system to the gateway. Break this into a task list with dependencies. I need: defining the middleware interface (how functions are called, ordering), implementing a logging middleware, implementing an auth middleware that checks for API keys, wiring the middleware chain into the request pipeline, and integration tests for the whole thing. Figure out the dependency order -- what blocks what."
 
-Task 1: Define the middleware interface
-  - Define how middleware functions are called (request in, response out)
-  - Define ordering (middleware chain)
-  - No dependencies
-
-Task 2: Implement logging middleware
-  - Log method, path, status code, response time for every request
-  - Depends on: Task 1
-
-Task 3: Implement auth middleware
-  - Check for API key in header
-  - Return 401 if missing or invalid
-  - Configurable per route
-  - Depends on: Task 1
-
-Task 4: Wire middleware into request pipeline
-  - Integrate middleware chain into the main request handler
-  - Execute middleware in order before forwarding to upstream
-  - Depends on: Task 2, Task 3
-
-Task 5: Integration tests
-  - Test middleware chain end-to-end
-  - Test auth + logging together
-  - Test middleware ordering
-  - Depends on: Task 4
-```
+Claude will create the dependency graph automatically. It will recognize that the logging and auth middleware both depend on the interface definition, and that wiring and tests come after the implementations.
 
 > **STOP -- What you just did:** You created a dependency graph (DAG) where tasks explicitly declare what they depend on. Task 4 (wire middleware into the pipeline) cannot start until both Tasks 2 and 3 (logging and auth middleware) are complete. Task 5 (integration tests) waits for Task 4. Claude enforces this ordering automatically -- it will not skip ahead or start a blocked task. This is how you decompose complex features into safe, ordered steps.
 
@@ -1350,12 +902,9 @@ Claude creates tasks with explicit dependencies. Task 4 cannot start until both 
 
 Press `Ctrl+T` to toggle the task list view in your terminal. You will see tasks with their status indicators.
 
-Now work through the tasks:
+Now work through the tasks. Ask Claude to start with the first one and show you the plan before implementing.
 
-```
-Start working on Task 1: Define the middleware interface. Show me the plan
-first, then implement it.
-```
+> "Start on the first task -- define the middleware interface. Show me the plan before you implement."
 
 After completing each task, Claude automatically marks it done and moves to the next unblocked task.
 
@@ -1369,28 +918,11 @@ After completing each task, Claude automatically marks it done and moves to the 
 
 > **Why this step:** TDD (Test-Driven Development) flips the normal workflow: you write the test first, watch it fail, then write the minimum code to make it pass. This might feel backwards, but it guarantees every feature has a test and prevents over-engineering. Claude is particularly good at this cycle because it can write a precise failing test, then implement exactly what is needed.
 
-Use strict Test-Driven Development to build one more middleware:
+Use strict Test-Driven Development to build one more middleware. Tell Claude you want to follow the red-green-refactor cycle and describe the middleware you are building.
 
-```
-We are going to build a request validation middleware using strict TDD. The
-rules:
+> "Let's build a request validation middleware using strict TDD. I want to follow the red-green-refactor cycle: write a failing test first, then the minimum code to pass it, then refactor. The middleware should validate Content-Type for POST/PUT requests, check Content-Length is reasonable, and reject directory traversal in paths. Start with the first failing test."
 
-1. Write a FAILING test first (red)
-2. Write the MINIMUM code to make it pass (green)
-3. Refactor if needed (refactor)
-4. Repeat
-
-The middleware should:
-- Validate Content-Type header for POST/PUT requests (must be application/json)
-- Validate Content-Length is present and reasonable (< 1MB)
-- Validate the request path does not contain directory traversal (../)
-- Return 400 Bad Request with a descriptive error for validation failures
-
-Start with the first test: a POST request without Content-Type should return
-400.
-```
-
-Work through the red-green-refactor cycle at least 4 times. Each cycle should be a separate commit.
+Claude will write a failing test, then ask you to confirm before implementing. Each red-green-refactor cycle should be a separate commit. Work through at least 4 cycles. Notice how each cycle adds exactly one behavior -- this incremental approach keeps the code clean and every feature tested.
 
 > **STOP -- What you just did:** You experienced the red-green-refactor TDD cycle with Claude. Each cycle produced a focused commit: failing test, passing implementation, cleanup. Look at your git log -- you should see a clean, incremental history where each commit adds one specific behavior. This is the gold standard for maintainable code, and Claude's tight build-test-commit loop makes it practical rather than tedious.
 
@@ -1471,29 +1003,13 @@ Open two terminals with shared tasks:
 - **Terminal 1:** `cd ../nexus-gateway-metrics && CLAUDE_CODE_TASK_LIST_ID=nexus-parallel claude`
 - **Terminal 2:** `cd ../nexus-gateway-websocket && CLAUDE_CODE_TASK_LIST_ID=nexus-parallel claude`
 
-In Terminal 1:
+In Terminal 1, describe the metrics feature and ask Claude to create tasks for it:
 
-```
-Create tasks for the metrics feature:
-- Task: Add request counter (total requests per route)
-- Task: Add response time histogram
-- Task: Add /metrics endpoint exposing all metrics
-- Task: Tests for metrics collection
+> "I want to add a metrics system to the gateway. Create tasks for: a request counter per route, a response time histogram, a /metrics endpoint, and tests for metrics collection. Start on the first task."
 
-Start working on the first task.
-```
+In Terminal 2, describe the websocket feature:
 
-In Terminal 2:
-
-```
-Create tasks for the websocket feature:
-- Task: Add websocket upgrade handling in the router
-- Task: Implement websocket proxy to upstream
-- Task: Add websocket health checks
-- Task: Tests for websocket routing
-
-Start working on the first task.
-```
+> "I want to add websocket support to the gateway. Create tasks for: websocket upgrade handling in the router, proxying websocket connections to upstreams, websocket health checks, and tests. Start on the first task."
 
 Both instances share the task list. When one completes a task, the other sees the update. This is the parallel development workflow.
 
@@ -1509,26 +1025,11 @@ Both instances share the task list. When one completes a task, the other sees th
 
 > **Why this step:** Everything you have built -- skills, agents, hooks -- lives inside your project's `.claude/` directory. A plugin packages all of that into a portable bundle that can be shared, versioned, and reused across projects. If you build another gateway next month, you bring the plugin instead of recreating everything from scratch.
 
-Bundle your skills, agents, and hooks into a distributable plugin:
+Ask Claude to bundle your skills, agents, and hooks into a distributable plugin. Describe what you want packaged.
 
-```
-Create a plugin called "gateway-plugin" with this structure:
+> "Package all my skills, agents, and hooks into a plugin called gateway-plugin. Create the plugin directory structure with a plugin.json, copy the skills and agents from .claude/, and include the hook configuration. Version 1.0.0."
 
-gateway-plugin/
-  .claude-plugin/plugin.json    # name, description, version, author
-  skills/                       # copy from .claude/skills/
-    add-route/SKILL.md
-    test-endpoint/SKILL.md
-    cache-inspect/SKILL.md
-    status-report/SKILL.md
-  agents/                       # copy from .claude/agents/
-    router-agent.md
-    security-agent.md
-    cache-agent.md
-  hooks/hooks.json              # copy hooks from .claude/settings.json
-
-Set plugin.json name to "gateway-plugin" and version "1.0.0".
-```
+Claude will create the plugin structure with `.claude-plugin/plugin.json`, a `skills/` directory, an `agents/` directory, and a `hooks/hooks.json` file.
 
 Test: `claude --plugin-dir ./gateway-plugin`, then try `/gateway-plugin:add-route` and `/gateway-plugin:status-report`. Skills appear with the namespace prefix.
 
@@ -1538,25 +1039,11 @@ Test: `claude --plugin-dir ./gateway-plugin`, then try `/gateway-plugin:add-rout
 
 > **Why this step:** Evaluation is how you measure Claude's work against objective criteria. Instead of manually checking "does the gateway work?", you define test specs with pass/fail criteria and a scoring system. This pattern is essential for CI/CD pipelines where Claude runs headlessly via `claude -p` and you need automated quality assessment.
 
-Create evaluation criteria for your gateway:
+Describe the evaluation criteria you want for your gateway and ask Claude to build a scoring script. Think about what matters -- health checks, route matching, rate limiting, caching, middleware, and error handling.
 
-```
-Create an evaluation script that tests the gateway against these criteria:
+> "Create an evaluation script that scores the gateway out of 10. I want to check: health endpoint responds within 2 seconds, route matching works for at least 5 scenarios, rate limiting returns 429 when exceeded, caching works for GET requests, middleware chain executes in order, and error handling returns proper status codes for upstream failures and bad requests. Run the evaluation and show me the score."
 
-1. Server starts and responds to /health within 2 seconds (pass/fail)
-2. Route matching: at least 5 test cases covering exact, prefix, method
-   filtering, no match, and priority ordering (score 0-5)
-3. Rate limiting: requests beyond the limit return 429 (pass/fail)
-4. Caching: repeated GET requests return cached response with correct headers
-   (pass/fail)
-5. Middleware chain: logging + auth middleware execute in order (pass/fail)
-6. Error handling: upstream failure returns 502, bad request returns 400
-   (pass/fail)
-
-Run the evaluation and report a total score out of 10.
-```
-
-This is a basic evaluation framework. In production, you would use this pattern to score Claude's work against specifications.
+Claude will build the evaluation script and run it. This is a basic evaluation framework. In production, you would use this pattern to score Claude's work against specifications.
 
 > **STOP -- What you just did:** You created a scoring rubric for your gateway and ran it as an automated evaluation. This is the foundation for continuous evaluation: every time you make changes, you can re-run the eval to check for regressions. In production workflows, this pattern runs in CI to score Claude's output against specifications before merging.
 

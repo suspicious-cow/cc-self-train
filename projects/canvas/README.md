@@ -246,56 +246,33 @@ Alternatively, type:
 
 ### 2.2 Design the Architecture
 
-Give Claude this prompt in plan mode:
+Now describe your portfolio site to Claude. Tell it what pages you want -- home, about, projects, blog, contact -- and what each page should include. Don't worry about getting the prompt perfect. Just describe your vision and let Claude ask clarifying questions.
 
-```
-Design a multi-page personal portfolio site with these pages:
-- Home (hero section with name/tagline, brief intro, call-to-action)
-- About (bio, skills list, timeline/experience)
-- Projects (card grid with title, description, image placeholder, links)
-- Blog (post listing with dates, excerpts, tags)
-- Contact (form with name, email, subject, message)
+Something like:
 
-Plan the full structure:
-- Shared navigation and footer across all pages
-- CSS design system: custom properties for colors, fonts, spacing
-- Responsive layout (mobile-first, breakpoints at 768px and 1024px)
-- Reusable CSS component classes (cards, buttons, form groups, hero)
-- File organization
+> "I want to build a personal portfolio site with about five pages. Help me plan the architecture -- what pages should I have, what goes on each one, and how should the CSS and file structure work? Don't write any code yet, just the plan."
 
-Do not write any code yet -- just the plan.
-```
+Claude will probably ask about your design preferences, layout style, and what kind of content you want to feature. Answer naturally -- these choices are yours. The back-and-forth is the point: you are designing *with* Claude, not dictating to it.
 
-Claude will produce a detailed architecture plan. Read it carefully.
+Once Claude produces a plan, read it carefully.
 
 ### 2.3 Review and Iterate
 
-Still in plan mode, ask questions:
+Still in plan mode, push back on the plan. Ask about the trade-offs Claude made. Challenge the decisions you are unsure about. For example:
 
-```
-What are the trade-offs of a single CSS file vs component-scoped CSS files?
-How should the navigation highlight the current page?
-Should the blog use separate HTML files per post or a single page with anchors?
-```
+> "Why did you choose that approach for the CSS? What are the trade-offs? And how should the navigation highlight the current page?"
 
-Refine the plan until you are satisfied.
+Claude does not get defensive about its plans -- ask hard questions and it will revise. If something does not feel right, say so. Refine the plan until you are satisfied with the architecture.
 
 > **STOP -- What you just did:** You used plan mode to design your entire site architecture before writing a single line of code. This is a pattern you will use constantly: plan first, then build. The back-and-forth questioning in step 2.3 is how you pressure-test a design. Claude does not get defensive about its plans -- ask hard questions and it will revise.
 
 ### 2.4 Exit Plan Mode and Execute
 
-Press `Shift+Tab` to return to normal mode. Now tell Claude to build:
+Press `Shift+Tab` to return to normal mode. Now tell Claude to start building -- but scope it down. You do not want all five pages at once. Ask for just the foundation:
 
-```
-Create the site structure from the plan. Start with:
-1. Shared navigation component (header with nav links, mobile hamburger menu)
-2. Shared footer component
-3. Home page with hero section and intro
-4. CSS design system (custom properties, reset, typography, layout utilities)
-Do NOT build the other pages yet -- just the home page and shared components.
-```
+> "Let's start building from the plan. Create the shared navigation, footer, the home page with its hero section, and the CSS design system. Don't build the other pages yet -- just the home page and shared components."
 
-Let Claude create the files. Open `index.html` in your browser to check it.
+Constraining scope is a key prompting skill -- it keeps Claude focused and prevents runaway file creation. Let Claude create the files, then open `index.html` in your browser to check it.
 
 > **STOP -- What you just did:** You went from plan mode to normal mode and gave Claude a focused, scoped instruction. Notice that you told Claude what to build *and* what NOT to build yet ("Do NOT build the other pages yet"). Constraining scope is a key prompting skill -- it keeps Claude focused and prevents runaway file creation.
 
@@ -315,24 +292,17 @@ Let Claude create the files. Open `index.html` in your browser to check it.
 
 ### 2.6 Build the About Page
 
-```
-Create about.html with:
-- The shared nav and footer
-- A bio section with a placeholder photo area
-- A skills section (list of skills grouped by category)
-- A timeline section showing experience/education entries
-- Use the CSS design system classes
-```
+Ask Claude to build your About page. Describe what sections you want -- a bio, your skills, your experience or education timeline. Tell Claude about yourself (or use placeholder content for now). Something like:
+
+> "Create the about page with my bio, a skills section grouped by category, and a timeline of my experience. Use the shared nav and footer and the CSS design system we already have."
+
+If the result does not match what you imagined, tell Claude what to change. This is a conversation, not a one-shot.
 
 ### 2.7 Build the Projects Page
 
-```
-Create projects.html with:
-- The shared nav and footer
-- A grid of project cards (at least 3 placeholder projects)
-- Each card: image placeholder, title, description, technology tags, link
-- Cards should be responsive: 1 column on mobile, 2 on tablet, 3 on desktop
-```
+Now ask Claude for the projects page. Describe the layout you want -- a card grid with your projects (or placeholders). Tell Claude how you want the cards to look and how many columns at different screen sizes:
+
+> "Build a projects page with a responsive card grid. Each card should have a title, description, technology tags, and a link. Make it responsive -- one column on mobile, more on larger screens."
 
 Open each page in your browser. Test the navigation links between pages.
 
@@ -340,17 +310,7 @@ Open each page in your browser. Test the navigation links between pages.
 
 ### 2.8 Manual Testing
 
-Test your site by opening each page and checking:
-
-```
-1. Open index.html -- verify hero section, navigation, footer render
-2. Click "About" in the nav -- verify about.html loads with all sections
-3. Click "Projects" in the nav -- verify the card grid renders
-4. Resize the browser window -- verify responsive layout at all breakpoints
-5. Check that the current page is highlighted in the navigation
-```
-
-Fix anything broken.
+Test your site by opening each page in the browser. Click through the navigation, resize the window to check responsiveness, and look for anything that seems off. If you find issues -- broken links, layout problems, pages that look wrong on mobile -- tell Claude what you see and ask it to fix them.
 
 ### 2.9 Commit and Merge
 
@@ -396,86 +356,21 @@ They use markdown files with optional YAML frontmatter for path scoping.
 
 ### 3.2 Create Path-Scoped Rules
 
-Create three rule files. Tell Claude:
+Now you need three rule files -- one each for HTML, CSS, and JavaScript. Each file uses YAML frontmatter to scope it to specific file types, so Claude only loads the relevant rules when working on matching files.
 
-```
-Create .claude/rules/html-rules.md with this frontmatter and content:
+Tell Claude what coding standards matter to you for each language. Think about the conventions you want enforced. Something like:
 
----
-paths:
-  - "*.html"
-  - "**/*.html"
----
+> "Create three rule files in .claude/rules/. For HTML rules (scoped to *.html files), I want semantic elements, accessibility standards like alt attributes on images, proper heading hierarchy, and correct meta tags. For CSS rules (scoped to *.css and styles/**), I want mobile-first design, CSS custom properties for all design tokens, BEM naming, and visible focus styles. For JavaScript rules (scoped to *.js and scripts/**), I want vanilla JS only, addEventListener instead of inline handlers, const by default, and explicit error handling. Use path-scoped YAML frontmatter in each file."
 
-# HTML Rules
-
-- Use semantic HTML elements: <header>, <nav>, <main>, <section>, <article>, <footer>
-- Every <img> must have a descriptive alt attribute
-- Every page must have exactly one <h1>, with headings in sequential order (h1 > h2 > h3)
-- Include <meta charset="UTF-8"> and <meta name="viewport"> on every page
-- Use <button> for actions, <a> for navigation -- never use <a href="#"> as a button
-- Forms must have <label> elements associated with every input via for/id
-- Add lang attribute to the <html> element
-- Use <time> elements for dates with datetime attribute
-```
-
-```
-Create .claude/rules/css-rules.md with this frontmatter and content:
-
----
-paths:
-  - "*.css"
-  - "**/*.css"
-  - "styles/**"
----
-
-# CSS Rules
-
-- Mobile-first: write base styles for small screens, add complexity with min-width media queries
-- Use CSS custom properties (--color-primary, --font-body, --spacing-md) for all design tokens
-- No !important unless overriding third-party styles
-- Use consistent naming: BEM-style (.card, .card__title, .card--featured) or utility classes
-- Prefer flexbox and grid over floats and absolute positioning
-- All interactive elements must have visible :focus styles for accessibility
-- Group related properties: positioning, box model, typography, visual, misc
-- Use rem for font sizes, em for component-relative spacing, px for borders
-```
-
-```
-Create .claude/rules/js-rules.md with this frontmatter and content:
-
----
-paths:
-  - "*.js"
-  - "**/*.js"
-  - "scripts/**"
----
-
-# JavaScript Rules
-
-- Vanilla JS only -- no frameworks, no jQuery, no libraries
-- Use addEventListener, never inline onclick attributes
-- Prefer event delegation on parent elements over individual listeners
-- Use const by default, let when reassignment is needed, never var
-- All DOM queries should use querySelector/querySelectorAll
-- Validate all user input before processing
-- Use template literals for HTML generation, not string concatenation
-- Handle errors explicitly -- no silent catch blocks
-```
+Claude will create the rule files. Review them and adjust any rules that do not match your preferences -- these are *your* coding standards, not Claude's.
 
 > **STOP -- What you just did:** You created three rule files, each scoped to specific file types using YAML frontmatter. When Claude edits an `.html` file, it loads `html-rules.md` automatically. When it edits `.css`, it loads `css-rules.md`. This is how you enforce coding standards without repeating yourself -- and unlike CLAUDE.md instructions, path-scoped rules only consume context when relevant files are being worked on.
 
 ### 3.3 Create CLAUDE.local.md
 
-Create a personal, non-committed preferences file:
+Create a personal preferences file that will not be committed to git. Ask Claude to create `CLAUDE.local.md` and tell it about your personal workflow preferences -- your design taste, how you like commit messages, which browser you test in, anything that is about *you* rather than the project.
 
-```
-Create CLAUDE.local.md in the project root with your personal preferences.
-For example:
-- I prefer clean, minimal designs with plenty of whitespace
-- I prefer descriptive commit messages with a type prefix (feat:, fix:, style:)
-- I test by opening HTML files directly in Chrome
-```
+> "Create a CLAUDE.local.md with my personal preferences. I like [describe your design style], I test in [your browser], and I prefer [your commit message style]."
 
 Verify it was added to `.gitignore`:
 
@@ -489,12 +384,9 @@ If `CLAUDE.local.md` is not listed, add it.
 
 ### 3.4 Understand the Memory Hierarchy
 
-Ask Claude:
+Ask Claude to explain the memory hierarchy -- where each file lives, what order they are loaded in, and which ones are shared with a team versus kept private.
 
-```
-Explain the full Claude Code memory hierarchy in order of precedence.
-Where is each file located? Which ones are shared with the team?
-```
+> "Explain the full Claude Code memory hierarchy. Which files take precedence over which? Which ones get shared with teammates?"
 
 The hierarchy from highest to lowest precedence:
 
@@ -511,20 +403,11 @@ The hierarchy from highest to lowest precedence:
 
 ### 3.5 Modularize CLAUDE.md with @imports
 
-Create supporting documentation files and reference them from `CLAUDE.md`:
+As your CLAUDE.md grows, it eats into your available context window. The solution is to break detailed documentation into separate files and reference them with `@imports`.
 
-```
-Create docs/style-guide.md describing the portfolio's visual design system:
-color palette (with hex values), typography scale, spacing scale, and
-component style patterns (buttons, cards, forms, hero sections).
+Ask Claude to create supporting docs for your project and wire them up:
 
-Create docs/sitemap.md listing all pages, their purpose, their URL path,
-and what components they contain.
-
-Then add @imports to CLAUDE.md:
-  See @docs/style-guide.md for the visual design system.
-  See @docs/sitemap.md for the site map and page inventory.
-```
+> "Create a docs/style-guide.md that documents our visual design system -- the color palette, typography, spacing, and component patterns. Also create docs/sitemap.md listing all pages and their components. Then add @imports to CLAUDE.md so Claude Code loads these when needed."
 
 The `@path` syntax tells Claude Code to load those files as additional context
 when needed. Both relative and absolute paths work.
@@ -573,17 +456,15 @@ understand how much context different operations consume.
 
 ### 3.9 Build a Feature Using These Tools
 
-Now build the blog listing page while using your new rules and context tools:
+Now build the blog listing page to see your rules and context tools in action. Create a feature branch first:
 
 ```
-Create a feature branch "feature/blog" and implement:
-- blog.html with a listing of blog post cards
-- Each card: title, date, excerpt, tags, "Read more" link
-- Style the cards following the CSS design system
-- Add at least 3 sample blog post entries
-- Navigation should highlight "Blog" as the current page
-- Follow all the HTML, CSS, and JS rules we created
+! git checkout -b feature/blog
 ```
+
+Then describe the blog page you want to Claude. Tell it about the layout, how blog post cards should look, and ask it to follow all the rules you just created:
+
+> "Build a blog listing page with post cards showing title, date, excerpt, and tags. Add a few sample posts so I can see how it looks. Make sure to follow our HTML, CSS, and JS rules."
 
 After building, run `/context` again to see how context changed. Then commit.
 
@@ -619,45 +500,21 @@ argument substitution, `disable-model-invocation`
 
 ### 4.2 Create the "new-page" Skill
 
-Tell Claude:
+Describe the skill you want to Claude. You want a skill that scaffolds a new HTML page with your site's shared layout -- so every time you invoke `/new-page faq`, it reads your existing nav and footer, creates a new page with the right boilerplate, and reminds you to update links.
 
-```
-Create .claude/skills/new-page/SKILL.md that:
-- Has frontmatter: name "new-page", description about scaffolding a new HTML
-  page with the site's shared layout, allowed-tools: Read, Write, Edit, Bash
-- Uses $0 for the page name (e.g., "faq", "resume", "testimonials")
-- Steps: read index.html to extract the shared nav and footer structure,
-  create a new HTML file named $0.html with the full HTML5 boilerplate,
-  the shared nav (with the new page added), the shared footer, a <main>
-  section with a placeholder heading and intro paragraph, and a link to
-  styles/main.css and scripts/main.js
-- After creating, remind the user to update the nav on other pages to
-  include a link to the new page
+> "Create a 'new-page' skill in .claude/skills/new-page/SKILL.md. It should take a page name as an argument (using $0), read index.html to get the shared nav and footer, then create a new HTML file with the full boilerplate and shared layout. Also create a page-template.md reference file showing the expected structure. Set allowed-tools to Read, Write, Edit, and Bash."
 
-Also create .claude/skills/new-page/page-template.md with the HTML5
-boilerplate template showing the expected structure of every page.
-```
+Claude will ask you clarifying questions about the template structure or what the skill should do after creating the file. Answer based on how you want your pages to work.
 
 > **STOP -- What you just did:** You created a skill with a supporting file. The `SKILL.md` is the instruction template -- it tells Claude what to do when you invoke `/new-page`. The `page-template.md` is a reference document the skill can read for the HTML boilerplate. This pattern (instruction + reference files) is how you build skills that produce consistent, high-quality output every time.
 
 ### 4.3 Create the "component" Skill
 
-```
-Create .claude/skills/component/SKILL.md that:
-- Has frontmatter: name "component", description about creating a reusable
-  CSS component, allowed-tools: Read, Write, Edit
-- Uses $0 for the component type (card, button, hero, form-group, timeline,
-  skill-badge, tag)
-- Steps: read the existing CSS to understand the design system variables,
-  create a new CSS class for the component following BEM naming, add
-  responsive styles, add hover/focus states for interactive components,
-  append the new styles to styles/main.css or a component-specific file
-- References a supporting file: component-templates.md
+Now create a skill for generating reusable CSS components. This one should take a component type as an argument (like "card", "button", "hero") and create the CSS following your design system.
 
-Also create .claude/skills/component/component-templates.md with example
-HTML and CSS for each component type (card, button, hero, form-group,
-timeline, skill-badge, tag) showing the expected markup and class names.
-```
+> "Create a 'component' skill that takes a component type as $0, reads the existing CSS to understand our design tokens, then creates a new BEM-style CSS class with responsive styles and hover/focus states. Also create a component-templates.md reference with example HTML and CSS for common component types."
+
+Discuss with Claude what component types you want supported and how the CSS should be organized -- appended to the main file or in separate component files.
 
 > **Quick check before continuing:**
 > - [ ] `.claude/skills/new-page/SKILL.md` exists with frontmatter and a supporting template file
@@ -666,20 +523,9 @@ timeline, skill-badge, tag) showing the expected markup and class names.
 
 ### 4.4 Create the "check-site" Skill
 
-```
-Create .claude/skills/check-site/SKILL.md that:
-- Has frontmatter: name "check-site", description about validating site
-  quality, disable-model-invocation: true, allowed-tools: Read, Bash, Grep, Glob
-- Steps: find all HTML files, then for each file check:
-  1. Has <!DOCTYPE html>
-  2. Has <html lang="...">
-  3. Has <meta charset> and <meta viewport>
-  4. Has exactly one <h1>
-  5. All <img> tags have alt attributes
-  6. All internal links (href="*.html") point to files that exist
-  7. Has <title> element
-- Output a report: file name, pass/fail for each check, total issues found
-```
+This skill is different -- it validates your site without modifying anything. Describe the quality checks you want to Claude:
+
+> "Create a 'check-site' skill that scans all HTML pages and checks for common issues -- missing doctype, missing lang attribute, missing meta tags, heading hierarchy problems, images without alt text, broken internal links, missing title elements. Output a pass/fail report. Set disable-model-invocation to true so it only runs when I explicitly invoke it, and limit allowed-tools to Read, Bash, Grep, and Glob."
 
 Notice `disable-model-invocation: true` -- this skill can only be triggered
 by you typing `/check-site`. Claude will not invoke it automatically.
@@ -731,14 +577,9 @@ content takes effect immediately -- no restart needed.
 
 ### 4.8 Create a Manual-Only Skill
 
-Create a skill that outputs a page brief template:
+Create one more skill -- a page brief template that outputs a planning document for a new page without Claude processing it.
 
-```
-Create .claude/skills/page-brief/SKILL.md with disable-model-invocation: true
-that outputs a page planning template. Use $0 for the page name. Include fields
-for Page Name, Purpose, Target Audience, Key Sections, SEO Keywords, and
-Design Notes.
-```
+> "Create a 'page-brief' skill with disable-model-invocation set to true. It should take a page name as $0 and output a planning template with fields like purpose, target audience, key sections, SEO keywords, and design notes."
 
 Test it: `/page-brief "Services"`
 
@@ -786,37 +627,11 @@ Hooks are configured in settings files:
 
 ### 5.2 Create a SessionStart Hook
 
-This hook will inject a site summary into context when Claude starts.
+This hook will inject a site summary into context when Claude starts. Describe what you want the hook to do:
 
-Tell Claude:
+> "Create a SessionStart hook that runs a Python script (.claude/hooks/site-summary.py) to count my HTML pages, total CSS size, and images, then prints a one-line summary. Add it to .claude/settings.json as a SessionStart hook."
 
-```
-Create .claude/hooks/site-summary.py that:
-1. Counts the number of HTML pages in the project
-2. Counts the total CSS file size (in KB)
-3. Counts the number of images (if any)
-4. Lists all HTML page filenames
-5. Prints a one-line summary to stdout like:
-   "Canvas site: 5 pages, 12KB CSS, 3 images. Pages: index.html, about.html, ..."
-
-Then create or update .claude/settings.json with a SessionStart hook:
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python $CLAUDE_PROJECT_DIR/.claude/hooks/site-summary.py"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-For SessionStart hooks, stdout is added to Claude's context automatically.
+Claude will create both the Python script and the settings.json configuration. For SessionStart hooks, stdout is added to Claude's context automatically.
 
 Restart Claude Code (exit and re-launch `claude`) to test it. You should see
 the stats injected on startup.
@@ -825,23 +640,11 @@ the stats injected on startup.
 
 ### 5.3 Create a PostToolUse Hook
 
-This hook validates HTML structure after Claude writes or edits an HTML file.
+This hook validates HTML structure after Claude writes or edits an HTML file. Tell Claude what you want it to check:
 
-```
-Create .claude/hooks/validate-html.py that:
-1. Reads JSON from stdin to get the file path
-2. If the file is not an .html file, exit 0 (skip)
-3. Read the file and check for:
-   - <!DOCTYPE html> present
-   - <html lang="..."> present
-   - <title> element present
-   - All opened tags have matching closing tags (basic check)
-4. If issues found, output JSON: {"systemMessage": "HTML issues: <details>"}
-5. Exit 0 (PostToolUse hooks are feedback only, they cannot block)
+> "Create a PostToolUse hook that validates HTML files after they are written or edited. The Python script (.claude/hooks/validate-html.py) should check for doctype, lang attribute, title element, and basic tag matching. Use a matcher of 'Write|Edit' so it only fires on those tools. Remember, PostToolUse hooks are feedback only -- they cannot block."
 
-Add a PostToolUse hook to .claude/settings.json with matcher "Write|Edit"
-that runs the validator.
-```
+Claude will ask you about the specifics of the validation or handle them based on the description. Review the script it creates to make sure the checks match what you care about.
 
 > **STOP -- What you just did:** You created a PostToolUse hook with a matcher. The matcher `"Write|Edit"` ensures this hook only fires when Claude writes or edits a file -- not on every tool call. PostToolUse hooks cannot block actions (the file is already written), but they give Claude immediate feedback. If the validator finds issues, Claude sees them in its next response and can fix them automatically.
 
@@ -852,20 +655,11 @@ that runs the validator.
 
 ### 5.4 Create a Stop Hook
 
-This hook checks all internal links before Claude stops to catch broken links.
+This hook checks all internal links before Claude stops to catch broken links. Describe the behavior you want:
 
-```
-Create .claude/hooks/check-links.py that:
-1. Reads JSON from stdin
-2. Finds all HTML files in the project
-3. For each file, extracts all href values pointing to local files (*.html)
-4. Checks if each linked file exists
-5. If broken links found, output to stderr: "Broken links found: page.html
-   links to missing.html" and exit 2 (blocking)
-6. If all links valid, exit 0
+> "Create a Stop hook that scans all HTML files for internal links and checks if the linked files actually exist. If any broken links are found, it should block (exit 2) and report which page links to which missing file. Add it to .claude/settings.json."
 
-Add a Stop hook to .claude/settings.json to run it.
-```
+The key difference from PostToolUse: a Stop hook with exit code 2 is *blocking* -- it forces Claude to address the issue before moving on.
 
 > **Why this step:** Stop hooks are different from PostToolUse hooks -- they run once when Claude finishes its entire response, not after each individual tool call. A Stop hook with exit code 2 is *blocking*: it forces Claude to address the issue before moving on. This makes Stop hooks ideal for final validation checks like broken link detection.
 
@@ -962,20 +756,13 @@ On macOS/Linux:
 claude mcp add --transport stdio canvas-fetch -- npx -y @anthropic-ai/mcp-fetch
 ```
 
-Now ask Claude:
+Now try it out. Ask Claude to use the Fetch server to pull in real content for your portfolio. For example:
 
-```
-Using the canvas-fetch MCP server, fetch my GitHub profile and list my
-repositories. Use the data to populate the projects page with real project
-cards.
-```
+> "Using the canvas-fetch MCP server, fetch my GitHub profile and use the data to populate the projects page with real project cards."
 
-Or if you do not have public repos:
+Or if you do not have public repos, give Claude any URL and ask it to pull content from there:
 
-```
-Using the canvas-fetch MCP server, fetch a sample blog post from a URL I
-provide and convert it to an HTML blog entry for the site.
-```
+> "Use the fetch server to grab content from [your URL] and convert it to an HTML entry for the site."
 
 ### 6.4 Check MCP Status
 
@@ -1029,20 +816,11 @@ Commit this file so teammates get the same MCP setup.
 
 ### 6.7 Create a Skill That Orchestrates MCP Tools
 
-Create a "publish" skill that validates and packages the site for deployment:
+Create a "publish" skill that combines MCP tools with built-in tools to validate and package your site for deployment. Describe the workflow to Claude:
 
-```
-Create .claude/skills/publish/SKILL.md with:
-- Frontmatter: name "publish", disable-model-invocation: true,
-  allowed-tools: Bash, Read, Write, Glob, mcp__canvas-fs__*
-- Steps:
-  1. Run /check-site validation on all pages
-  2. Generate a sitemap.xml listing all HTML pages with lastmod dates
-  3. Create a dist/ directory
-  4. Copy all HTML, CSS, JS, and image files to dist/
-  5. Inline-minify CSS in dist/ (remove comments, collapse whitespace)
-  6. Show a deployment summary: page count, total size, sitemap URL count
-```
+> "Create a 'publish' skill that validates the site, generates a sitemap.xml, copies everything into a dist/ directory, minifies the CSS, and shows a deployment summary. Set disable-model-invocation to true and include mcp__canvas-fs__* in the allowed-tools so it can use the filesystem MCP server."
+
+Discuss the publish steps with Claude -- you might want different minification, or maybe you want to skip certain files. This is your deployment workflow.
 
 Test it: `/publish`
 
@@ -1077,35 +855,19 @@ PreToolUse hooks intercept tool calls before they execute. They can:
 
 ### 7.2 Guard: Accessibility Enforcer
 
-Create a hook that prevents writing `<img>` tags without `alt` attributes:
+Create a hook that prevents Claude from writing `<img>` tags without `alt` attributes. Tell Claude what behavior you want:
 
-```
-Create .claude/hooks/enforce-alt.py that:
-1. Reads JSON from stdin
-2. If the tool is Write and the file ends in .html:
-   a. Check the content for <img tags without alt attributes
-   b. If found, output JSON with permissionDecision: "deny" and reason:
-      "All <img> tags must have alt attributes for accessibility"
-3. If all images have alt attributes or not an HTML file, exit 0 (allow)
+> "Create a PreToolUse hook that blocks any Write to an HTML file if it contains img tags without alt attributes. The script (.claude/hooks/enforce-alt.py) should use permissionDecision 'deny' with a clear reason. Add it to settings.json with a 'Write' matcher."
 
-Add a PreToolUse hook to .claude/settings.json with matcher "Write" that
-runs the enforcer.
-```
+Claude will create the Python script and update the settings. Review the script to understand how `permissionDecision: "deny"` works -- it is fundamentally different from the PostToolUse feedback you built in Module 5.
 
 > **STOP -- What you just did:** You created a guard that *prevents* Claude from writing inaccessible HTML. Unlike the PostToolUse validator from Module 5 that reports issues after the file is already written, this PreToolUse hook blocks the write entirely. Claude receives the denial reason and must fix the content before trying again. This is the difference between detection and prevention -- and prevention is always better.
 
 ### 7.3 Guard: Context Injection for HTML Files
 
-Create a hook that adds context when Claude reads HTML files:
+Create a hook that nudges Claude's behavior by injecting reminders when it reads HTML files:
 
-```
-Create .claude/hooks/html-context.py that reads JSON from stdin, checks if
-the file_path ends in .html, and if so outputs JSON with additionalContext:
-"Reminder: Use semantic HTML elements (<header>, <nav>, <main>, <section>,
-<article>, <footer>). Add ARIA roles where appropriate. Ensure heading
-hierarchy is sequential (h1 > h2 > h3)."
-Add a PreToolUse hook with matcher "Read" to run it.
-```
+> "Create a PreToolUse hook with a 'Read' matcher that checks if the file is an HTML file. If so, inject additionalContext reminding Claude to use semantic HTML elements, add ARIA roles, and keep heading hierarchy sequential. Don't block anything -- just add context."
 
 The key is `hookSpecificOutput.additionalContext` -- it injects a string into
 Claude's context before the tool executes.
@@ -1114,19 +876,9 @@ Claude's context before the tool executes.
 
 ### 7.4 Guard: Auto-Add Meta Tags
 
-Create a hook that modifies tool input to inject required meta tags:
+Create a hook that silently fixes a common omission -- missing meta tags in HTML files:
 
-```
-Create .claude/hooks/add-meta.py that reads JSON from stdin, checks if
-the Write target is an .html file, and if so:
-1. Parse the content
-2. If <meta charset="UTF-8"> is missing, inject it after <head>
-3. If <meta name="viewport" ...> is missing, inject it after <head>
-4. Output JSON with updatedInput containing the modified content and
-   permissionDecision: "allow"
-
-Add a PreToolUse hook with matcher "Write" to run it.
-```
+> "Create a PreToolUse hook with a 'Write' matcher that checks if an HTML file is missing charset or viewport meta tags. If they are missing, inject them using updatedInput to modify the content before it gets written. Set permissionDecision to 'allow' so the write proceeds with the fixed content."
 
 The key is `hookSpecificOutput.updatedInput` -- it replaces the tool's input
 parameters before execution.
@@ -1140,21 +892,12 @@ parameters before execution.
 
 ### 7.5 Prompt-Based Quality Gate
 
-Add a Stop hook with `"type": "prompt"` instead of `"type": "command"`. The
-prompt should instruct the LLM to check if Claude modified any HTML files,
-and if so verify: all images have alt text, all form inputs have labels,
-headings follow sequential order, color contrast is adequate (based on CSS
-custom properties). Respond `{"ok": true}` or `{"ok": false, "reason": "..."}`.
+Now try a different kind of hook -- a prompt-based Stop hook that uses an LLM to evaluate quality instead of a Python script. Describe to Claude what you want checked:
 
-```
-Add a prompt-based Stop hook to .claude/settings.json with type: "prompt"
-and timeout: 30. The prompt should review the conversation for accessibility
-checks: alt text on images, labels on form inputs, heading hierarchy,
-and ARIA landmarks.
-```
+> "Add a prompt-based Stop hook to settings.json. Use type 'prompt' with a timeout of 30 seconds. The prompt should review whether any HTML files were modified this turn and, if so, check for accessibility issues -- alt text, form labels, heading hierarchy, ARIA landmarks. It should respond with ok true or ok false with a reason."
 
 Prompt-based hooks use a fast LLM (Haiku) to evaluate context and return a
-structured decision. They are powerful for nuanced, context-aware checks.
+structured decision. They are powerful for nuanced, context-aware checks that would be hard to write as a script.
 
 > **Why this step:** Prompt-based hooks are a leap beyond script-based hooks. A Python script can check for a missing `alt` attribute with string matching, but it cannot evaluate whether an `alt` attribute is *descriptive enough*. A prompt-based hook uses an LLM to make nuanced judgments -- exactly the kind of check that is hard to write as code.
 
@@ -1210,49 +953,25 @@ Benefits:
 
 ### 8.3 Create: accessibility-agent
 
-Tell Claude:
+Tell Claude to create an accessibility scanning agent. Describe what you want it to check and how you want the output formatted:
 
-```
-Create .claude/agents/accessibility-agent.md with:
-- Frontmatter: name accessibility-agent, description about scanning HTML for
-  WCAG accessibility issues, tools: Read, Grep, Glob, model: haiku
-- System prompt: accessibility specialist that checks all HTML files for:
-  missing alt attributes, missing form labels, heading hierarchy violations
-  (skipped levels), missing ARIA landmarks, missing lang attribute, missing
-  skip-to-content link, insufficient color contrast notes (flag custom
-  properties to review), keyboard navigation issues. Output a report grouped
-  by severity (Critical, Warning, Info) with file name and line reference.
-```
+> "Create an accessibility-agent in .claude/agents/. It should scan all HTML files for WCAG issues -- missing alt text, missing form labels, skipped heading levels, missing ARIA landmarks, and anything else you think is important. Use haiku model since it only needs to read and report, and limit its tools to Read, Grep, and Glob. Output should be a report grouped by severity."
+
+Claude will create the agent file. Notice it only has read-only tools -- this agent cannot modify your files, which is intentional.
 
 > **STOP -- What you just did:** You created a subagent with constrained tools (`Read, Grep, Glob` -- no `Write` or `Edit`) and a cheaper model (`haiku`). This is intentional: the accessibility agent only needs to *read and report*, not modify files. Using haiku instead of the default model saves tokens on a task that does not need the most powerful reasoning. Matching the model to the task complexity is a key cost optimization pattern.
 
 ### 8.4 Create: design-agent
 
-```
-Create .claude/agents/design-agent.md with:
-- Frontmatter: name design-agent, description about reviewing CSS for
-  consistency and responsive design, tools: Read, Grep, Glob, model: haiku
-- System prompt: design reviewer that checks CSS for: inconsistent use of
-  custom properties (hardcoded values where variables exist), missing
-  responsive breakpoints, spacing inconsistencies, typography scale
-  violations, missing hover/focus states on interactive elements, overly
-  specific selectors. Output a report with specific suggestions and code
-  fixes.
-```
+Create a design review agent focused on CSS consistency. Describe the kinds of issues you want it to catch:
+
+> "Create a design-agent that reviews CSS for consistency issues -- hardcoded values that should use custom properties, missing responsive breakpoints, spacing inconsistencies, missing hover/focus states. Use haiku model and read-only tools. It should output specific suggestions with code fixes."
 
 ### 8.5 Create: content-agent
 
-```
-Create .claude/agents/content-agent.md with:
-- Frontmatter: name content-agent, description about reviewing page content
-  for clarity and completeness, tools: Read, Grep, Glob, model: sonnet,
-  permissionMode: plan
-- System prompt: content reviewer that checks pages for: placeholder or
-  lorem ipsum text still present, inconsistent tone across pages, missing
-  call-to-action on key pages, SEO basics (title, meta description, heading
-  structure), broken or placeholder links, image placeholders without real
-  content. Output a content quality score per page with specific suggestions.
-```
+Create a content quality reviewer that checks for real-world issues like leftover placeholder text and missing SEO basics:
+
+> "Create a content-agent that reviews page content for quality -- leftover lorem ipsum, inconsistent tone, missing calls-to-action, SEO issues like missing meta descriptions, broken links, and placeholder images. Use sonnet model since it needs stronger reasoning for content quality, and set permissionMode to plan so it is read-only."
 
 Note `permissionMode: plan` -- this agent is read-only.
 
@@ -1279,58 +998,38 @@ Note `permissionMode: plan` -- this agent is read-only.
 
 ### 8.7 Invoke Subagents
 
-Manually invoke a subagent:
+Try invoking your subagents. You can be explicit:
 
-```
-Use the accessibility-agent to scan all HTML pages for WCAG issues
-```
+> "Use the accessibility-agent to scan all HTML pages for WCAG issues."
 
-Or explicitly:
+Or you can just describe what you want and let Claude figure out which agent to use:
 
-```
-Use the design-agent to review the CSS for consistency and responsive issues
-```
+> "Check my portfolio for accessibility problems."
 
-Claude also delegates automatically based on the task. Ask:
-
-```
-Check my portfolio for accessibility problems
-```
-
-Claude may route this to the accessibility-agent on its own.
+Claude reads the agent's `description` field and matches it to your request. Try both approaches and notice whether Claude delegates automatically or handles it directly.
 
 > **Why this step:** You can invoke subagents explicitly ("Use the accessibility-agent") or let Claude auto-delegate based on the task description. Auto-delegation works because Claude reads the agent's `description` field and matches it to your request. Writing clear, specific descriptions in your agent frontmatter makes auto-delegation more reliable.
 
 ### 8.8 Patterns: Chain, Parallel, Resume
 
-**Chaining:** Connect agents in sequence:
+**Chaining:** Connect agents in sequence. Ask Claude to run one agent and then feed its results into another:
 
-```
-Use the accessibility-agent to find all accessibility issues, then use the
-design-agent to suggest CSS fixes for the visual issues found.
-```
+> "Use the accessibility-agent to find all issues, then use the design-agent to suggest CSS fixes for the visual problems it found."
 
 **Parallel (background):** Press `Ctrl+B` to background a running agent,
-then start another task:
+then start another task. Ask for one scan:
 
-```
-Use the accessibility-agent to scan all pages
-```
+> "Use the accessibility-agent to scan all pages."
 
-While it runs, press `Ctrl+B`, then:
+While it runs, press `Ctrl+B`, then start another:
 
-```
-Use the content-agent to review all page content
-```
+> "Use the content-agent to review all page content."
 
 Both agents work simultaneously.
 
-**Resuming:** After an agent completes, continue its work:
+**Resuming:** After an agent completes, continue its work by asking a follow-up:
 
-```
-Continue that accessibility review and now also check the contact form
-for keyboard navigation issues
-```
+> "Continue that accessibility review and now also check the contact form for keyboard navigation issues."
 
 Claude resumes the previous agent with its full context preserved.
 
@@ -1379,23 +1078,13 @@ multiple Claude instances to coordinate work.
 
 ### 9.3 Build a Multi-Step Pipeline
 
-Create a task chain for building the contact form end-to-end:
+Create a task chain for building the contact form end-to-end. Describe the steps and their dependencies to Claude:
 
-```
-Create a task list for building the contact form with these tasks
-and dependencies:
-1. "Design form layout" - Plan the form fields, layout, and validation rules (no dependencies)
-2. "Create HTML form" - Build contact.html with the form markup (blocked by 1)
-3. "Style form with CSS" - Add form styles following the design system (blocked by 2)
-4. "Write JS validation" - Client-side validation for all fields (blocked by 3)
-5. "Add success/error states" - Visual feedback for form submission (blocked by 4)
-6. "Test all form states" - Verify every state works correctly (blocked by 5)
-Use TaskCreate with blockedBy dependencies.
-```
+> "I want to build a contact form as a multi-step task pipeline. The steps are: design the form layout first, then create the HTML, then style it with CSS, then write JS validation, then add success/error states, then test everything. Each step depends on the previous one. Create these as tasks with blockedBy dependencies."
 
-Press `Ctrl+T` to see tasks in the status area. Then:
+Press `Ctrl+T` to see tasks in the status area. Then tell Claude to execute:
 
-`Execute the contact form pipeline. Work through each task in order.`
+> "Work through the contact form pipeline. Execute each task in dependency order."
 
 > **STOP -- What you just did:** You created a dependency graph where each task explicitly blocks the next. Task 3 ("Style form with CSS") cannot start until task 2 ("Create HTML form") is complete. Claude respects these dependencies automatically -- it will not jump to styling before the HTML exists. Press `Ctrl+T` to see the task list update in real time as each task completes. This is how you manage complex, multi-step features without losing track of progress.
 
@@ -1408,33 +1097,13 @@ Press `Ctrl+T` to see tasks in the status area. Then:
 ### 9.4 TDD Workflow: Build with Tests First
 
 Use strict test-driven development to build the form validation. Since this
-is plain JavaScript, we will use a simple browser-based test runner.
+is plain JavaScript, you will use a simple browser-based test runner.
 
-```
-We are going to build form validation with strict TDD. First, create a
-test.html file that acts as a simple test runner -- it loads our validation
-script, runs assertions, and shows pass/fail results in the browser.
+Tell Claude you want to do strict TDD and describe the test cases:
 
-The rules:
-1. Write a FAILING test first
-2. Open test.html in the browser -- confirm it fails (red)
-3. Write the MINIMUM code to make it pass
-4. Refresh the browser -- confirm it passes (green)
-5. Refactor if needed
-6. Repeat
+> "Let's build form validation with strict TDD. First, create a test.html file that acts as a simple test runner -- loads the validation script, runs assertions, and shows pass/fail in the browser. I want test cases for email validation, required field checks, XSS prevention on the name field, message length limits, and correct error messages. Write the test runner and the first failing test now -- do NOT write any validation code yet."
 
-Start with these test cases for form validation:
-- Valid email (user@example.com) passes validation
-- Invalid email (missing @) fails validation
-- Empty required fields (name, email, message) fail validation
-- Name field rejects HTML tags (XSS prevention)
-- Message field truncates at 1000 characters
-- Valid form data returns a success object
-- Form shows correct error messages for each field
-
-Write the test runner and the first failing test now. Do NOT write any
-validation code yet.
-```
+The key discipline: Claude writes a test first, you verify it fails in the browser (red), then Claude writes the minimum code to pass, you verify it passes (green), then refactor. Push back if Claude tries to write all the validation code at once.
 
 Let Claude work through the TDD cycle. For each test:
 1. Claude writes the test
@@ -1451,13 +1120,9 @@ This enforces disciplined development and gives you a solid test suite.
 
 ### 9.5 Stop and SubagentStop Hooks for Verification
 
-Add a SubagentStop hook that verifies subagent output:
+Add a SubagentStop hook that verifies subagent output. Describe the check to Claude:
 
-```
-Add a SubagentStop hook to .claude/settings.json with type: "prompt" that
-evaluates whether the subagent completed its task: Did it produce output?
-Were there errors? Is it complete? Respond ok: true or ok: false with reason.
-```
+> "Add a SubagentStop hook to settings.json with type 'prompt' that evaluates whether a subagent actually completed its task -- did it produce output? Were there errors? Is the work complete? It should respond with ok true or ok false with a reason."
 
 This ensures subagents finish their work properly before returning results.
 
@@ -1503,32 +1168,19 @@ Now you have three directories:
 
 ### 10.2 Feature: Dark Mode (Worktree 1)
 
-In the `canvas-dark` worktree, build a dark mode toggle:
+In the `canvas-dark` worktree, tell Claude to build dark mode support. Describe the behavior you want:
 
-```
-Add dark mode support:
-- CSS custom properties for light and dark themes (--color-bg, --color-text, etc.)
-- A toggle button in the header (sun/moon icon or text)
-- JavaScript to toggle a "dark" class on <html>
-- localStorage persistence so the theme survives page reloads
-- prefers-color-scheme media query for system default detection
-- Smooth transition between themes (transition on background-color, color)
-```
+> "Add dark mode to the site. I want a toggle button in the header, CSS custom properties for both light and dark themes, localStorage to remember the preference, and detection of the system's preferred color scheme. Make the transitions smooth."
+
+Claude will probably ask about your color choices for dark mode. Answer based on your design preferences -- this is your portfolio.
 
 ### 10.3 Feature: Blog Engine (Worktree 2)
 
-In the `canvas-blog` worktree, build a markdown-powered blog:
+In the `canvas-blog` worktree, describe the blog engine you want to Claude:
 
-```
-Add a blog engine:
-- A posts/ directory with markdown (.md) files for blog content
-- A simple markdown-to-HTML renderer in vanilla JS (headings, paragraphs,
-  lists, code blocks, links, bold, italic)
-- Blog index page listing all posts with date, title, excerpt
-- Individual post pages that render the markdown content
-- Tag filtering on the blog index
-- Previous/Next navigation between posts
-```
+> "Build a markdown-powered blog engine. I want to write blog posts as .md files in a posts/ directory, and have vanilla JS render them as HTML. I need an index page listing all posts, individual post pages, tag filtering, and previous/next navigation between posts."
+
+Discuss the implementation details with Claude -- how the markdown rendering should work, what the post format should look like, how tags should be organized. These design decisions are yours to make.
 
 > **Quick check before continuing:**
 > - [ ] `../canvas-dark/` directory exists with the feature/dark-mode branch checked out
@@ -1548,10 +1200,7 @@ cd ../canvas-dark && CLAUDE_CODE_TASK_LIST_ID=canvas-parallel claude
 cd ../canvas-blog && CLAUDE_CODE_TASK_LIST_ID=canvas-parallel claude
 ```
 
-In Terminal 1, create tasks for dark mode (design tokens, implement toggle,
-persist preference, test transitions -- with dependencies). In Terminal 2,
-create tasks for the blog engine (markdown parser, post renderer, index
-page, tag filtering).
+In Terminal 1, tell Claude to create tasks for dark mode -- design tokens, implement the toggle, persist the preference, test transitions -- with dependencies between them. In Terminal 2, do the same for the blog engine -- markdown parser, post renderer, index page, tag filtering.
 
 Both sessions see all tasks. When one completes a task, the other is notified.
 
@@ -1561,17 +1210,11 @@ Both sessions see all tasks. When one completes a task, the other is notified.
 
 > **Why this step:** Plugins let you package everything you have built -- skills, agents, hooks -- into a single distributable unit. Instead of every new project needing to recreate these tools from scratch, you bundle them once and reuse them anywhere. This is how you go from "project-specific tooling" to "reusable toolkit."
 
-Package everything you have built into a reusable plugin.
+Package everything you have built into a reusable plugin. Tell Claude what you want to bundle:
 
-Create the plugin structure:
+> "Create a plugin called 'web-dev-plugin' that packages all the skills, agents, and hooks we have built. It needs a .claude-plugin/plugin.json manifest, the skills and agents directories at the root level, and the hooks extracted into a hooks/hooks.json file."
 
-```
-Create a plugin called "web-dev-plugin" with:
-- .claude-plugin/plugin.json manifest (name: "web-dev", version: 1.0.0)
-- skills/ directory: copy new-page, component, check-site, publish from .claude/skills/
-- agents/ directory: copy accessibility-agent, design-agent, content-agent from .claude/agents/
-- hooks/hooks.json: extract hooks from .claude/settings.json into plugin format
-```
+Claude will handle the file copying and manifest creation. Review the structure it creates against the expected layout:
 
 The directory layout must be:
 
@@ -1611,31 +1254,19 @@ prevent conflicts.
 
 > **Why this step:** Building skills and agents is only half the job -- you need to verify they work correctly across different inputs. Evaluation suites test your tools systematically: does the `new-page` skill handle an empty name gracefully? Does the accessibility agent catch a missing alt attribute? This is how you catch regressions and build confidence in your toolkit.
 
-Write test specs to evaluate your skills and agents:
+Ask Claude to help you build an evaluation suite for your toolkit. Describe the kinds of test cases you want:
 
-```
-Create an evaluation suite for the canvas toolkit. For each skill and agent,
-define test cases with input, expected output, and scoring criteria:
-- new-page skill: valid name (expect new HTML file), empty name (expect error),
-  duplicate name (expect warning)
-- check-site skill: page with issues (expect report), clean page (expect pass)
-- accessibility-agent: page with missing alt (expect critical finding),
-  missing labels (expect warning), clean page (expect pass)
-- design-agent: inconsistent CSS (expect suggestions), clean CSS (expect pass)
-Write a script that runs each test and reports pass/fail.
-```
+> "Create an evaluation suite for our skills and agents. I want test cases for the new-page skill (valid name, empty name, duplicate name), check-site skill (pages with issues, clean pages), accessibility-agent (missing alt text, missing labels, clean pages), and design-agent (inconsistent CSS, clean CSS). Each test should define input, expected output, and scoring criteria. Write a script that runs everything and reports pass/fail."
+
+Discuss with Claude which edge cases matter most to you and whether the scoring criteria make sense.
 
 > **STOP -- What you just did:** You wrote evaluation test specs for your skills and agents. Each test case defines an input, expected output, and scoring criteria. This is the same pattern used in professional software testing -- define expectations, run the tool, compare results. The evaluation script gives you a pass/fail report you can run any time you change a skill or agent.
 
 ### 10.8 PermissionRequest Hooks for Eval Automation
 
-During evaluation, auto-approve safe operations to avoid prompt fatigue:
+During evaluation, auto-approve safe operations to avoid prompt fatigue. Tell Claude what you need:
 
-```
-Add a PermissionRequest hook to .claude/settings.local.json with matcher
-"Read|Grep|Glob" that outputs JSON with
-hookSpecificOutput.decision.behavior: "allow" to auto-approve.
-```
+> "Add a PermissionRequest hook to settings.local.json (not the committed settings file) that auto-approves Read, Grep, and Glob operations. Use a matcher of 'Read|Grep|Glob' and output hookSpecificOutput.decision.behavior 'allow'."
 
 Keep this in `settings.local.json` (not committed) and use only during eval.
 
@@ -1643,13 +1274,11 @@ Keep this in `settings.local.json` (not committed) and use only during eval.
 
 ### 10.9 Continuous Learning
 
-Reflect on the full project and update your configuration:
+Reflect on the full project and update your configuration. Ask Claude to help you review what you have built:
 
-```
-Review CLAUDE.md, rules, skills, agents, and hooks. Update each based on
-lessons learned: patterns that worked, patterns to avoid, refined descriptions,
-missing edge cases, hook interaction notes.
-```
+> "Review our CLAUDE.md, rules, skills, agents, and hooks. What worked well? What should we refine? Update each one based on what we learned -- better descriptions, missing edge cases, patterns to avoid, hook interaction notes."
+
+This is a conversation about your own tooling. Tell Claude what surprised you, what felt clunky, and what you would do differently. Then update the configuration together.
 
 This is the continuous learning cycle: build, reflect, refine, repeat.
 

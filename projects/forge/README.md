@@ -238,52 +238,37 @@ Alternatively, type:
 
 ### 2.2 Design the Architecture
 
-Give Claude this prompt in plan mode:
+Now describe your dev toolkit to Claude. Tell it about the data types you want to manage -- notes, code snippets, bookmarks, templates -- and how you would want to interact with them from the CLI. Don't worry about getting the prompt perfect. Just describe your vision and let Claude ask clarifying questions.
 
-```
-Design a CLI tool called "forge" with these data types:
-- Notes (title, body, tags, created_at, updated_at)
-- Snippets (language, code, description, tags)
-- Bookmarks (url, title, description, tags)
-- Templates (name, content, variables)
+Something like:
 
-Storage: file-based JSON, one file per type, index file for search.
+> "I want to build a CLI tool called forge that stores notes, code snippets, bookmarks, and templates. Help me design the architecture -- ask me questions about storage format, CLI commands, and data models. Don't write any code yet, just the plan."
 
-CLI: forge add <type>, forge list [type] [--tag TAG], forge search QUERY,
-forge show ID, forge delete ID, forge tags.
+Claude will probably ask about your storage preferences (JSON files vs SQLite), how you want IDs to work, and how search should behave. Answer naturally -- these are your design decisions. The back-and-forth is how you get a plan that actually fits your needs.
 
-Give me the full project structure, data models, and module breakdown.
-Do not write any code yet -- just the plan.
-```
-
-Claude will produce a detailed architecture plan. Read it carefully.
+Once Claude produces a plan, read it carefully. Push back on anything you would do differently.
 
 ### 2.3 Review and Iterate
 
-Still in plan mode, ask questions:
+Still in plan mode, challenge the plan. Ask Claude about the trade-offs it made -- storage format, ID generation strategy, how search will work across types. If something feels over-engineered or too simple, say so. This is a design conversation, not a rubber stamp.
 
-```
-What are the trade-offs of file-based JSON storage vs SQLite for this use case?
-How should IDs be generated -- UUID, incrementing integer, or slug?
-How will search across all types work efficiently?
-```
+For example:
 
-Refine the plan until you are satisfied.
+> "Why did you choose that storage format? What are the trade-offs vs the alternatives? And how will search work efficiently across all four types?"
+
+Refine the plan until you are satisfied with the design.
 
 > **STOP -- What you just did:** You used plan mode to design your entire storage layer, data models, and CLI interface before writing a single line of code. This is one of Claude Code's most valuable patterns: *think with Claude before you build with Claude.* Plan mode prevents the "just start coding" trap that leads to rewrites. You will use this design-first approach whenever you start a new feature.
 
 ### 2.4 Exit Plan Mode and Execute
 
-Press `Shift+Tab` to return to normal mode. Now tell Claude to build:
+Press `Shift+Tab` to return to normal mode. Now ask Claude to start building -- but keep the scope narrow. Tell it to create the data models and storage layer first, without the CLI interface. You want to build in layers, not all at once.
 
-```
-Create the project structure from the plan. Start with:
-1. Data models / type definitions for Note, Snippet, Bookmark, Template
-2. The storage layer (read/write JSON files, index management)
-3. Do NOT build the CLI interface yet -- just the core library.
-```
+Something like:
 
-Let Claude create the files. Review what it produces.
+> "Let's start building from the plan. Create the data models and the storage layer first -- no CLI yet. I want to review the core library before we add the interface on top."
+
+Let Claude create the files. Review what it produces -- check that the models match what you agreed on in the plan.
 
 > **Why this step:** Feature branches keep your experiments separate from working code. If something goes wrong, you can throw away the branch without affecting main.
 
@@ -295,16 +280,11 @@ Let Claude create the files. Review what it produces.
 
 ### 2.6 Build the Storage Layer
 
-If Claude has not yet created the full storage layer, prompt it:
+If the storage layer is not fully implemented yet, describe what you still need. Tell Claude about the operations you want -- creating, reading, updating, deleting items -- plus tag filtering, search, timestamps, and validation. Let Claude figure out the implementation details.
 
-```
-Implement the storage layer:
-- CRUD operations for each data type (create, read, update, delete)
-- Tag-based filtering
-- Full-text search across title, body, description fields
-- Automatic timestamping (created_at on create, updated_at on modify)
-- Data validation before writing
-```
+> "The storage layer still needs full CRUD operations, tag-based filtering, search across all text fields, automatic timestamps, and validation before writes. Can you fill in what's missing?"
+
+If Claude asks you questions about how search should work or what validation means for your data types, answer based on what makes sense for your toolkit.
 
 > **STOP -- What you just did:** You went from an architecture plan to working code -- data models and a storage layer -- by giving Claude specific, scoped instructions. Notice you did not ask Claude to build everything at once. You built the core library *without* the CLI, keeping the first step focused. This incremental approach (plan, then build layer by layer) gives you chances to review and course-correct at each stage.
 
@@ -315,15 +295,9 @@ Implement the storage layer:
 
 ### 2.7 Write and Run Tests
 
-```
-Write tests for the storage layer. Cover:
-- Creating each data type
-- Reading by ID
-- Listing with tag filter
-- Search across types
-- Deleting an item
-- Edge cases: duplicate IDs, empty fields, missing files
-```
+Ask Claude to write tests for the storage layer. Describe what you want covered -- the happy paths (create, read, list, search, delete) and the edge cases (what happens with duplicate IDs, empty fields, missing files). Claude will likely ask about your test framework preferences if it is not obvious from your language choice.
+
+> "Write tests for the storage layer. I want coverage for all CRUD operations, tag filtering, search, and edge cases like duplicate IDs and missing files."
 
 Run the tests:
 
@@ -340,11 +314,11 @@ will use throughout the project.
 
 ### 2.8 Build the CLI Interface
 
-```
-Build the CLI interface for forge with all commands: forge add (each type
-with appropriate flags), forge list, forge search, forge show, forge delete,
-forge tags. Make sure the CLI parses arguments and calls the storage layer.
-```
+Now ask Claude to build the CLI on top of your storage layer. Describe the commands you want -- adding items, listing them, searching, showing details, deleting, and browsing tags. Claude already knows your data models and storage API, so it can wire everything together.
+
+> "Build the CLI interface for forge. I want commands for add, list, search, show, delete, and tags. Wire them up to the storage layer we already built."
+
+If Claude suggests a CLI framework (like argparse, click, cobra, clap), discuss whether it fits your project's needs.
 
 ### 2.9 Manual Testing
 
@@ -405,99 +379,35 @@ They use markdown files with optional YAML frontmatter for path scoping.
 
 > **Why this step:** Path-scoped rules only activate when Claude works on matching files. Your testing rules apply in test files, your source code rules apply in source files. This keeps context lean -- Claude does not load storage rules when editing a test, and vice versa.
 
-Create three rule files. Tell Claude:
+Ask Claude to create three rule files for you: one for testing conventions, one for source code style, and one for storage operations. Describe the conventions you care about for each area, and tell Claude to scope them to the right file paths using YAML frontmatter.
 
-```
-Create .claude/rules/testing.md with this frontmatter and content:
+> "Create three rule files in .claude/rules/. First, a testing.md scoped to test files -- I want rules about using fixtures, descriptive assertions, and testing both success and failure cases. Second, a source-code.md scoped to src/lib/pkg -- rules about single responsibility, docstrings, error handling, and function length. Third, a storage.md scoped to storage and data files -- rules about validation, graceful handling of missing files, and atomic writes. Use YAML frontmatter with path globs to scope each one."
 
----
-paths:
-  - "tests/**"
-  - "test_*"
-  - "*_test.*"
-  - "*.test.*"
----
-
-# Testing Rules
-
-- Always use fixtures for test data, never hardcode values inline
-- Every assertion must have a descriptive message explaining what it verifies
-- Group tests by feature, not by function name
-- Test both success and failure cases for every operation
-- Use setup/teardown to manage test state, never leave test artifacts behind
-```
-
-```
-Create .claude/rules/source-code.md with this frontmatter and content:
-
----
-paths:
-  - "src/**"
-  - "lib/**"
-  - "pkg/**"
----
-
-# Source Code Rules
-
-- Follow single-responsibility principle: one function does one thing
-- All public functions must have docstrings/comments explaining purpose, params, and return values
-- Handle errors explicitly -- never swallow exceptions silently
-- Use meaningful variable names: no single-letter names except loop counters
-- Keep functions under 40 lines; extract helpers when they grow
-```
-
-```
-Create .claude/rules/storage.md with this frontmatter and content:
-
----
-paths:
-  - "**/storage*"
-  - "**/store*"
-  - "**/data*"
-  - "**/*.json"
----
-
-# Storage Rules
-
-- Always validate data schema before writing to storage
-- Handle file-not-found gracefully: return empty collection, not an error
-- Use atomic writes: write to temp file, then rename
-- Never modify storage files by hand during tests -- use the storage API
-- Back up the index file before rebuilding it
-```
+Claude will ask you if it is unsure about your file structure or which glob patterns to use. Answer based on how your project is organized. Review the generated rules and adjust any conventions that do not match your preferences.
 
 > **STOP -- What you just did:** You created three rule files with YAML frontmatter that scopes each one to specific file paths. From now on, whenever Claude touches a test file, it automatically follows your testing conventions. Whenever it edits source code, it follows your source code rules. You never have to remind it -- the rules are always active. This is how teams enforce consistency without relying on code review alone.
 
 ### 3.3 Create CLAUDE.local.md
 
-Create a personal, non-committed preferences file:
+Create a personal, non-committed preferences file. Tell Claude about your individual workflow preferences -- things like how you like test output formatted, your commit message style, and your language of choice. These are *your* preferences, not team rules.
 
-```
-Create CLAUDE.local.md in the project root with your personal preferences.
-For example:
-- I prefer verbose test output with individual test names shown
-- I prefer descriptive commit messages with a type prefix (feat:, fix:, test:)
-- When showing examples, use my preferred language: [your language]
-```
+> "Create a CLAUDE.local.md with my personal preferences. I like [your test output style], [your commit style], and I'm working in [your language]. Make sure it's in .gitignore."
 
-Verify it was added to `.gitignore`:
+Claude should add it to `.gitignore` automatically. Verify:
 
 ```
 ! cat .gitignore
 ```
 
-If `CLAUDE.local.md` is not listed, add it.
+If `CLAUDE.local.md` is not listed, ask Claude to add it.
 
 > **STOP -- What you just did:** You created a personal preferences file that is *not* committed to version control. This is the distinction between `CLAUDE.md` (shared team knowledge) and `CLAUDE.local.md` (your personal preferences). Your teammates see the project rules; your local preferences are yours alone. You will use this separation whenever you have personal workflow preferences that should not be imposed on the team.
 
 ### 3.4 Understand the Memory Hierarchy
 
-Ask Claude:
+Ask Claude to explain the full memory hierarchy -- where each file lives, what takes precedence, and which ones are shared with your team vs. private to you.
 
-```
-Explain the full Claude Code memory hierarchy in order of precedence.
-Where is each file located? Which ones are shared with the team?
-```
+> "Explain the Claude Code memory hierarchy. What are all the layers, what's the precedence order, and which ones are shared vs. personal?"
 
 The hierarchy from highest to lowest precedence:
 
@@ -514,19 +424,9 @@ The hierarchy from highest to lowest precedence:
 
 ### 3.5 Modularize CLAUDE.md with @imports
 
-Create supporting documentation files and reference them from `CLAUDE.md`:
+As your project grows, CLAUDE.md can become a wall of text. Ask Claude to extract the architecture and API documentation into separate files and link them with `@imports`.
 
-```
-Create docs/architecture.md describing the forge project architecture:
-data models, storage layer, CLI interface, and file structure.
-
-Create docs/api.md describing the public API of the storage layer:
-function signatures, parameters, return types, error handling.
-
-Then add @imports to CLAUDE.md:
-  See @docs/architecture.md for the system architecture.
-  See @docs/api.md for the storage API reference.
-```
+> "Create a docs/architecture.md that describes our project structure, data models, and storage layer. Then create docs/api.md with the storage layer's public API. Finally, add @imports to CLAUDE.md so Claude loads these when it needs that context."
 
 The `@path` syntax tells Claude Code to load those files as additional context
 when needed. Both relative and absolute paths work.
@@ -577,18 +477,11 @@ understand how much context different operations consume.
 
 ### 3.9 Build a Feature Using These Tools
 
-Now build the template system while using your new rules and context tools:
+Now put everything together by building the template rendering feature. Create a feature branch and describe to Claude what you want: a command that takes a template name and variable assignments, renders the template with those values, and validates that all required variables are provided.
 
-```
-Create a feature branch "feature/templates" and implement:
-- Template rendering: replace $VARIABLE placeholders with provided values
-- forge render TEMPLATE_NAME --var KEY=VALUE --var KEY2=VALUE2
-- Validate that all required variables are provided
-- Error if unknown variables are passed
-- Write tests following our testing rules
-```
+> "Create a feature branch 'feature/templates' and build template rendering. I want a forge render command that substitutes variables into templates, validates that all required variables are provided, and errors on unknown variables. Write tests too -- follow our testing rules."
 
-After building, run `/context` again to see how context changed. Then commit.
+Notice how Claude follows the testing rules you created in `.claude/rules/testing.md` without you having to remind it. After building, run `/context` again to see how context changed. Then commit.
 
 ### Checkpoint
 
@@ -622,48 +515,25 @@ argument substitution, `disable-model-invocation`
 
 ### 4.2 Create the "add-item" Skill
 
-Tell Claude:
+Describe to Claude what your add-item skill should do. You want a slash command that takes an item type and details, validates the input, runs the forge add command, and shows the result. Tell Claude about your validation rules -- what makes a valid note vs. a valid snippet vs. a valid bookmark.
 
-```
-Create .claude/skills/add-item/SKILL.md that:
-- Has frontmatter: name "add-item", description about adding items with
-  validation, allowed-tools: Read, Write, Bash, Edit
-- Uses $0 for item type (note, snippet, bookmark, template) and $ARGUMENTS
-  for details
-- Steps: determine type, collect required fields per type, validate
-  (non-empty titles, valid URLs, lowercase tags, uppercase template vars),
-  run forge add, show created item
-- References a supporting file: validation-rules.md
+> "Create an add-item skill in .claude/skills/add-item/SKILL.md. It should accept the item type as the first argument and details as additional arguments. It needs to validate inputs -- non-empty titles, valid URLs for bookmarks, lowercase tags, uppercase template variables -- before running forge add. Also create a validation-rules.md companion file that spells out what's valid for each data type. Restrict it to Read, Write, Bash, and Edit tools."
 
-Also create .claude/skills/add-item/validation-rules.md with detailed
-validation rules for each field of each data type, with examples of valid
-and invalid inputs.
-```
+Claude may ask about edge cases in your validation rules. Answer based on what makes sense for your workflow -- these are your conventions.
 
 ### 4.3 Create the "search" Skill
 
-```
-Create .claude/skills/search/SKILL.md that:
-- Has frontmatter: name "search", description about searching all item types,
-  allowed-tools: Read, Bash, Grep, Glob
-- Uses $ARGUMENTS for the search query
-- Steps: parse query, detect prefixes (tag:, type:, since: for filtering,
-  otherwise full text search), run forge search, display results as a table
-  (ID | Type | Title | Tags | Date), suggest alternatives if no results
-```
+Now create a search skill. Describe how you want search to work -- query parsing with special prefixes like `tag:` and `type:`, full-text search as the default, results displayed as a clean table, and helpful suggestions when nothing matches.
+
+> "Create a search skill in .claude/skills/search/SKILL.md. It should take the search query from $ARGUMENTS, support prefixes like tag:, type:, and since: for filtering, fall back to full-text search, display results as a table with ID, type, title, tags, and date, and suggest alternatives if nothing matches. Restrict tools to Read, Bash, Grep, and Glob."
 
 > **STOP -- What you just did:** You created two skills with different specialties: one for data entry with validation, one for intelligent search with query parsing. Each skill has its own SKILL.md with frontmatter that controls its name, description, and which tools it can use. The `allowed-tools` field is important -- it restricts what Claude can do when running the skill, which prevents unexpected side effects. You will use this pattern whenever you want a repeatable, constrained workflow.
 
 ### 4.4 Create the "daily-summary" Skill
 
-```
-Create .claude/skills/daily-summary/SKILL.md that:
-- Has frontmatter: name "daily-summary", description about summarizing
-  today's forge activity, disable-model-invocation: true,
-  allowed-tools: Read, Bash
-- Steps: get today's date, list items per type filtered by date, group by
-  type, show title/tags/summary per item, show totals
-```
+Create a daily summary skill that shows what you added to forge today. This one should be manual-only -- you do not want Claude invoking it automatically during other tasks.
+
+> "Create a daily-summary skill that lists everything I added or modified today, grouped by type, with title, tags, and a brief summary for each item. Set disable-model-invocation to true so it only runs when I type /daily-summary. Restrict tools to Read and Bash."
 
 Notice `disable-model-invocation: true` -- this skill can only be triggered
 by you typing `/daily-summary`. Claude will not invoke it automatically.
@@ -720,13 +590,9 @@ content takes effect immediately -- no restart needed.
 
 ### 4.8 Create a Manual-Only Skill
 
-Create a skill that outputs a bug report template:
+Create one more manual-only skill -- a bug report template generator. Tell Claude what fields you want in the template (type, steps to reproduce, expected vs. actual behavior, version) and that the issue title should come from the first argument.
 
-```
-Create .claude/skills/issue-template/SKILL.md with disable-model-invocation: true
-that outputs a bug report template. Use $0 for the issue title. Include fields
-for Type, Steps to reproduce, Expected behavior, Actual behavior, Forge version.
-```
+> "Create an issue-template skill with disable-model-invocation: true. It should take an issue title as $0 and output a bug report template with fields for Type, Steps to reproduce, Expected behavior, Actual behavior, and Forge version."
 
 Test it: `/issue-template "Search returns wrong results"`
 
@@ -774,33 +640,11 @@ Hooks are configured in settings files:
 
 ### 5.2 Create a SessionStart Hook
 
-This hook will inject project stats into context when Claude starts.
+This hook will inject project stats into context when Claude starts. Describe to Claude what you want: a script that counts your stored items and prints a summary, wired up as a SessionStart hook.
 
-Tell Claude:
+> "Create a SessionStart hook that counts the number of notes, snippets, bookmarks, and templates in storage and prints a one-line summary. Create the script in .claude/hooks/ and add the hook entry to .claude/settings.json. Use whichever scripting language makes sense for my setup."
 
-```
-Create .claude/hooks/session-stats.sh (or .py) that counts the number of
-notes, snippets, bookmarks, and templates in storage, shows last-modified
-timestamps, and prints a one-line summary to stdout. Make it executable.
-
-Then create or update .claude/settings.json with a SessionStart hook:
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-stats.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-For SessionStart hooks, stdout is added to Claude's context automatically.
+Claude may ask about your OS or scripting preference (bash vs. Python). For SessionStart hooks, stdout is added to Claude's context automatically.
 
 Restart Claude Code (exit and re-launch `claude`) to test it. You should see
 the stats injected on startup.
@@ -809,15 +653,9 @@ the stats injected on startup.
 
 ### 5.3 Create a PostToolUse Hook
 
-This hook auto-formats files after Claude writes or edits them.
+This hook auto-formats files after Claude writes or edits them. Tell Claude which formatter you use and ask it to wire it up as a PostToolUse hook that triggers on Write and Edit operations.
 
-```
-Add a PostToolUse hook to .claude/settings.json with matcher "Write|Edit"
-that runs your language's formatter. Examples:
-  Python:     "python -m black . --quiet 2>/dev/null || true"
-  TypeScript: "npx prettier --write . 2>/dev/null || true"
-Use || true so the hook does not fail if the formatter is missing.
-```
+> "Add a PostToolUse hook to settings.json that runs my formatter whenever Claude writes or edits a file. I use [your formatter -- e.g., black, prettier, gofmt, rustfmt]. Use a Write|Edit matcher and make it fail gracefully if the formatter isn't installed."
 
 > **Quick check before continuing:**
 > - [ ] `.claude/settings.json` has a SessionStart hook entry
@@ -828,15 +666,11 @@ Use || true so the hook does not fail if the formatter is missing.
 
 > **Why this step:** A Stop hook runs after Claude finishes responding but before it hands control back to you. By running the test suite at this point, you catch breakage *immediately* -- Claude broke something and you know before you even type your next prompt. If the tests fail, the hook can block and feed the failures back to Claude for automatic fixing.
 
-This hook runs the test suite before Claude stops to verify nothing is broken.
+This hook runs the test suite after Claude finishes to verify nothing is broken. Describe what you want to Claude -- it needs to handle the infinite loop case (the hook itself triggers Claude, which triggers the hook again).
 
-```
-Create .claude/hooks/run-tests.sh that reads JSON from stdin, checks if
-stop_hook_active is true (to prevent infinite loops -- if true, exit 0),
-otherwise runs the test suite. If tests fail, output JSON:
-{"decision": "block", "reason": "Tests failed: <output>"}
-If tests pass, exit 0. Add a Stop hook to .claude/settings.json to run it.
-```
+> "Create a Stop hook that runs my test suite after Claude finishes responding. If tests fail, it should block and feed the failures back so Claude can fix them. Make sure it handles the infinite loop problem -- if it's already running inside a Stop hook, it should exit cleanly. Add it to settings.json."
+
+Claude will ask about your test command if it is not obvious. It will also need to figure out the right way to detect re-entrancy for your setup.
 
 ### 5.5 Matchers, Timeouts, and Scripting
 
@@ -913,13 +747,11 @@ After adding, check the status:
 
 You should see `forge-db` listed and connected.
 
-Now ask Claude:
+Now ask Claude to set up the database using the MCP server. Describe what tables you need and ask it to migrate your existing data.
 
-```
-Using the forge-db MCP server, create tables for notes, snippets, bookmarks,
-and templates matching our existing data models. Then migrate any existing
-JSON data into the SQLite database.
-```
+> "Using the forge-db MCP server, create tables for my four data types matching our existing data models. Then migrate any existing JSON data into the SQLite database."
+
+Claude may ask about column types, indexes, or how to handle the migration. Answer based on your existing data models.
 
 > **STOP -- What you just did:** You connected an external tool to Claude Code using MCP. Claude can now create tables, insert data, and run queries on a SQLite database -- all through natural language. You also migrated your existing JSON data into SQLite, which means your forge toolkit now has a proper database backend. The `/mcp` command is your dashboard for checking which servers are connected and healthy.
 
@@ -991,16 +823,11 @@ Commit this file so teammates get the same MCP setup.
 
 ### 6.7 Create a Skill That Orchestrates MCP Tools
 
-Create a "backup" skill that uses MCP tools:
+Now combine skills and MCP by creating a backup skill. Describe the workflow to Claude -- exporting data from the database, writing it to a dated backup directory, and logging the backup.
 
-```
-Create .claude/skills/backup/SKILL.md with:
-- Frontmatter: name "backup", disable-model-invocation: true,
-  allowed-tools: Bash, Read, Write, mcp__forge-db__*, mcp__forge-fs__*
-- Steps: export all tables to JSON via forge-db MCP, create backup directory
-  (backups/YYYY-MM-DD/), write each table's data, log backup in a backup_log
-  table, show summary with counts and total size
-```
+> "Create a backup skill that exports all tables from the SQLite database to JSON files in a backups/YYYY-MM-DD/ directory, logs the backup in a backup_log table, and shows a summary with counts and file sizes. Make it manual-only and give it access to both MCP servers plus Bash, Read, and Write."
+
+Claude will wire up the `mcp__forge-db__*` and `mcp__forge-fs__*` tool patterns in the `allowed-tools` frontmatter. This is the skills+MCP pattern in action.
 
 Test it: `/backup`
 
@@ -1035,35 +862,19 @@ PreToolUse hooks intercept tool calls before they execute. They can:
 
 ### 7.2 Guard: Validate Before Storage Writes
 
-Create a hook that prevents writes to storage files unless validation passes:
+Create a hook that prevents writes to storage files unless validation passes. Describe the guard to Claude -- it should intercept Write operations, check if the target is a storage file, validate the JSON structure, and deny the write with a clear message if validation fails.
 
-```
-Create .claude/hooks/validate-storage.sh (or .py) that:
-1. Reads JSON from stdin
-2. Checks if the file being written matches storage paths (*.json data files)
-3. If it is a storage file, validate JSON structure. If invalid, output:
-   {"hookSpecificOutput": {"hookEventName": "PreToolUse",
-     "permissionDecision": "deny",
-     "permissionDecisionReason": "Storage validation failed: <details>"}}
-4. If not a storage file, exit 0 (allow)
+> "Create a PreToolUse hook that validates storage writes. It should read the tool input from stdin, check if the file is a storage JSON file, and if so, validate the structure. If validation fails, deny the write with a permissionDecision of deny and a reason explaining what's wrong. If it's not a storage file, allow it through. Add it to settings.json with a Write matcher."
 
-Then add a PreToolUse hook to .claude/settings.json with matcher "Write" that
-runs $CLAUDE_PROJECT_DIR/.claude/hooks/validate-storage.sh
-```
+Claude will create the hook script and wire it into your settings. Discuss the validation rules -- what counts as valid JSON structure for your data types.
 
 > **STOP -- What you just did:** You created a guard that prevents Claude from writing invalid data to your storage files. The key mechanism is `permissionDecision: "deny"` -- it blocks the tool call entirely and sends a reason back to Claude. Claude sees the denial message and can try again with valid data. This is a safety net: even if your code has a bug that produces bad JSON, the hook catches it before it corrupts your storage.
 
 ### 7.3 Guard: Inject Context on File Reads
 
-Create a hook that adds context when Claude reads source files:
+Create a hook that adds context when Claude reads source files. This one does not block anything -- it injects a reminder about your coding conventions.
 
-```
-Create .claude/hooks/read-context.sh that reads JSON from stdin, checks if
-the file_path is in src/, lib/, or pkg/, and if so outputs JSON with
-additionalContext: "Reminder: This is a source file. Follow single-
-responsibility principle. All public functions need docstrings."
-Add a PreToolUse hook with matcher "Read" to run it.
-```
+> "Create a PreToolUse hook with a Read matcher that checks if the file being read is a source file (in src/, lib/, or pkg/). If it is, inject additionalContext reminding Claude to follow single-responsibility principle and add docstrings to public functions. If it's not a source file, do nothing."
 
 The key is `hookSpecificOutput.additionalContext` -- it injects a string into
 Claude's context before the tool executes.
@@ -1077,15 +888,9 @@ Claude's context before the tool executes.
 
 ### 7.4 Guard: Auto-Add Timestamps
 
-Create a hook that modifies tool input to inject timestamps:
+Create a hook that silently modifies tool input to inject timestamps. This is the third PreToolUse mechanism -- instead of blocking or informing, it *rewrites* what Claude is about to write.
 
-```
-Create .claude/hooks/add-timestamp.sh that reads JSON from stdin, checks if
-the Write target is a storage file, and if so parses the content, injects or
-updates "updated_at" with the current ISO timestamp, and outputs JSON with
-updatedInput containing the modified content and permissionDecision: "allow".
-Add a PreToolUse hook with matcher "Write" to run it.
-```
+> "Create a PreToolUse hook with a Write matcher that auto-adds timestamps to storage files. When Claude writes to a storage file, the hook should parse the content, inject or update an 'updated_at' field with the current ISO timestamp, and pass the modified content through using updatedInput with permissionDecision allow."
 
 The key is `hookSpecificOutput.updatedInput` -- it replaces the tool's input
 parameters before execution.
@@ -1094,19 +899,12 @@ parameters before execution.
 
 ### 7.5 Prompt-Based Quality Gate
 
-Add a Stop hook with `"type": "prompt"` instead of `"type": "command"`. The
-prompt should instruct the LLM to check if Claude was asked to commit code,
-and if so verify: all tests pass, no unresolved TODOs, no leftover debug
-statements. Respond `{"ok": true}` or `{"ok": false, "reason": "..."}`.
+Now try a different kind of hook -- one powered by an LLM instead of a script. Ask Claude to create a prompt-based Stop hook that reviews the conversation for commit-quality issues.
 
-```
-Add a prompt-based Stop hook to .claude/settings.json with type: "prompt"
-and timeout: 30. The prompt should review the conversation for commit-quality
-checks: tests passing, no TODO comments, no debug logging left in code.
-```
+> "Add a prompt-based Stop hook (type: prompt, not command) with a 30-second timeout. The prompt should check whether Claude was asked to commit code, and if so, verify that tests pass, there are no unresolved TODOs, and no leftover debug statements. It should respond with ok: true or ok: false with a reason."
 
 Prompt-based hooks use a fast LLM (Haiku) to evaluate context and return a
-structured decision. They are powerful for nuanced, context-aware checks.
+structured decision. They are powerful for nuanced, context-aware checks that would be impractical to write as regex or shell scripts.
 
 > **Why this step:** Some quality checks cannot be expressed as simple scripts. "Are there leftover debug statements?" requires understanding code context. Prompt-based hooks delegate this judgment to a fast LLM (Haiku), combining the automation of hooks with the reasoning ability of an AI. This is one of the most advanced hook patterns -- use it for nuanced checks that would be impractical to write as regex or shell scripts.
 
@@ -1162,41 +960,25 @@ Benefits:
 
 ### 8.3 Create: search-agent
 
-Tell Claude:
+Describe your search agent to Claude. It should be a specialist that parses queries, searches across all data types, ranks results by relevance, and suggests alternatives when nothing matches. Since search is a focused task, use a fast, cheap model.
 
-```
-Create .claude/agents/search-agent.md with:
-- Frontmatter: name search-agent, description about finding and ranking items,
-  tools: Read, Grep, Glob, Bash, model: haiku
-- System prompt: search specialist that parses queries, searches all data types,
-  ranks results by relevance (exact title > tag > body > partial), formats as
-  ranked list, suggests related searches if no results
-```
+> "Create a search-agent in .claude/agents/search-agent.md. It should be a search specialist that parses queries, searches all data types, ranks results by relevance (exact title matches first, then tags, then body text), and suggests related searches if no results. Use model: haiku and restrict tools to Read, Grep, Glob, and Bash."
 
 ### 8.4 Create: format-agent
 
-```
-Create .claude/agents/format-agent.md with:
-- Frontmatter: name format-agent, description about converting between formats,
-  tools: Read, Write, Bash, model: haiku
-- System prompt: format converter that reads items and exports to Markdown,
-  JSON, HTML, or CSV with proper formatting, handles edge cases, reports summary
-```
+Create a format conversion agent. Describe the formats you want it to handle and what "good output" looks like for each one.
+
+> "Create a format-agent in .claude/agents/format-agent.md. It should convert forge items to Markdown, JSON, HTML, or CSV with proper formatting for each output type. It should handle edge cases like special characters and report a summary of what it exported. Use model: haiku and restrict tools to Read, Write, and Bash."
 
 > **STOP -- What you just did:** You created two subagents with different models and tool sets. The search-agent uses Haiku (fast, cheap) because search is a focused task that does not require complex reasoning. The format-agent also uses Haiku because format conversion is mechanical. By choosing the right model for each agent, you control both cost and speed. You will use this pattern whenever a task is well-defined enough that a smaller model can handle it.
 
 ### 8.5 Create: review-agent
 
-```
-Create .claude/agents/review-agent.md with:
-- Frontmatter: name review-agent, description about reviewing items for quality,
-  tools: Read, Grep, Glob, model: sonnet, permissionMode: plan
-- System prompt: quality reviewer that checks completeness, clarity, tag
-  consistency, and duplicates, scores items (Good/Needs Improvement/Poor),
-  provides specific suggestions
-```
+Create a review agent for quality-checking your knowledge base. This one needs better reasoning than search or format conversion, so use a more capable model. And since a reviewer should never modify anything, make it read-only.
 
-Note `permissionMode: plan` -- this agent is read-only.
+> "Create a review-agent in .claude/agents/review-agent.md. It should check items for completeness, clarity, tag consistency, and duplicates, then score them (Good/Needs Improvement/Poor) with specific suggestions. Use model: sonnet, permissionMode: plan (read-only), and restrict tools to Read, Grep, and Glob."
+
+Note `permissionMode: plan` -- this agent can only read and analyze, never modify files.
 
 > **STOP -- What you just did:** You created a review agent with `permissionMode: plan`, which means it can only *read* and *analyze* -- it cannot write files or run commands that modify anything. This is the principle of least privilege applied to AI agents: give each agent only the permissions it needs. A reviewer should never accidentally edit the code it is reviewing.
 
@@ -1221,57 +1003,41 @@ Note `permissionMode: plan` -- this agent is read-only.
 
 ### 8.7 Invoke Subagents
 
-Manually invoke a subagent:
+Try invoking your subagents. You can be explicit about which agent to use, or just describe a task and let Claude decide whether to delegate.
 
-```
-Use the search-agent to find all items tagged with "reference"
-```
+Explicit invocation:
 
-Or explicitly:
+> "Use the search-agent to find all items tagged with 'reference'"
 
-```
-Use the format-agent to export all notes as Markdown to exports/notes.md
-```
+> "Use the format-agent to export all notes as Markdown to exports/notes.md"
 
-Claude also delegates automatically based on the task. Ask:
+Automatic delegation -- just describe what you want and see if Claude routes it:
 
-```
-Find items related to "API design" in my knowledge base
-```
+> "Find items related to API design in my knowledge base"
 
-Claude may route this to the search-agent on its own.
+Claude may route this to the search-agent on its own, based on the agent's description.
 
 > **Why this step:** Subagents can be invoked explicitly ("Use the search-agent to...") or automatically by Claude when the task matches the agent's description. Automatic delegation is powerful but requires good descriptions in your agent frontmatter -- Claude uses the description to decide when to delegate.
 
 ### 8.8 Patterns: Chain, Parallel, Resume
 
-**Chaining:** Connect agents in sequence:
+**Chaining:** Connect agents in sequence -- the output of one feeds into the next:
 
-```
-Use the search-agent to find all poorly-tagged items, then use the
-review-agent to suggest better tags for each one.
-```
+> "Use the search-agent to find all poorly-tagged items, then use the review-agent to suggest better tags for each one."
 
-**Parallel (background):** Press `Ctrl+B` to background a running agent,
-then start another task:
+**Parallel (background):** Press `Ctrl+B` to background a running agent, then start another task:
 
-```
-Use the review-agent to review all my notes
-```
+> "Use the review-agent to review all my notes"
 
 While it runs, press `Ctrl+B`, then:
 
-```
-Use the format-agent to export all bookmarks as HTML
-```
+> "Use the format-agent to export all bookmarks as HTML"
 
 Both agents work simultaneously.
 
 **Resuming:** After an agent completes, continue its work:
 
-```
-Continue that review and now also check snippets for quality
-```
+> "Continue that review and now also check snippets for quality"
 
 Claude resumes the previous agent with its full context preserved.
 
@@ -1320,29 +1086,17 @@ multiple Claude instances to coordinate work.
 
 ### 9.3 Build a Multi-Step Pipeline
 
-Create a task chain for importing notes from markdown files:
+Describe a multi-step import pipeline to Claude. Walk through the steps you envision -- scanning a directory for markdown files, parsing them, validating the data, importing into storage, rebuilding the index, and generating a report. Tell Claude about the dependencies between steps.
 
-```
-Create a task list for importing markdown files as notes with these tasks
-and dependencies:
-1. "Scan directory" - Find .md files in imports/ (no dependencies)
-2. "Parse markdown" - Extract title, body, tags from each file (blocked by 1)
-3. "Validate data" - Validate against schema (blocked by 2)
-4. "Import to storage" - Write to forge database (blocked by 3)
-5. "Update index" - Rebuild search index (blocked by 4)
-6. "Generate report" - Summary of imports and errors (blocked by 5)
-Use TaskCreate with blockedBy dependencies.
-```
+> "Create a task list for importing markdown files as notes. I need these steps in order: scan the imports/ directory for .md files, parse title/body/tags from each one, validate the data, import into the forge database, rebuild the search index, and generate a summary report. Each step depends on the one before it. Use TaskCreate with blockedBy dependencies."
 
-Press `Ctrl+T` to see tasks in the status area. Before executing, create
-test data:
+Press `Ctrl+T` to see tasks in the status area. Before executing, you need test data:
 
-```
-Create an imports/ directory with 5 sample markdown files that have YAML
-frontmatter (title, tags) and varied body content.
-```
+> "Create an imports/ directory with 5 sample markdown files that have YAML frontmatter (title, tags) and varied body content for testing."
 
-Then: `Execute the import pipeline. Work through each task in order.`
+Then tell Claude to execute the pipeline:
+
+> "Execute the import pipeline. Work through each task in order."
 
 > **STOP -- What you just did:** You created a dependency graph of tasks and watched Claude execute them in order. Task 2 waited for Task 1 to complete, Task 3 waited for Task 2, and so on. The `blockedBy` field is what makes this work -- it tells the tasks system which tasks must finish before others can start. Press `Ctrl+T` to see the visual progress tracker. This is how you break down complex features into manageable, ordered steps.
 
@@ -1355,31 +1109,11 @@ Then: `Execute the import pipeline. Work through each task in order.`
 
 > **Why this step:** Test-driven development (TDD) flips the usual order: you write the test *first*, watch it fail, then write just enough code to make it pass. With Claude Code, TDD is especially effective because Claude can see the failing test, understand what is expected, and write precisely the code needed. This prevents over-engineering and gives you a comprehensive test suite as a side effect.
 
-Use strict test-driven development to build a new feature -- fuzzy search:
+Use strict test-driven development to build a new feature -- fuzzy search. Explain the TDD workflow to Claude and describe the search behavior you want. Be clear about the discipline: test first, then code, never the other way around.
 
-```
-We are going to build "smart search" with fuzzy matching using strict TDD.
-The rules:
-1. Write a FAILING test first
-2. Run the test -- confirm it fails
-3. Write the MINIMUM code to make it pass
-4. Run the test -- confirm it passes
-5. Refactor if needed
-6. Repeat
+> "Let's build smart search with fuzzy matching using strict TDD. The rules: write a failing test first, run it to confirm it fails, write the minimum code to make it pass, run it to confirm it passes, refactor if needed, then repeat. I want fuzzy search to handle typos like 'ntes' matching 'notes', abbreviations like 'py snippet' matching Python snippets, and be case-insensitive. Start with the first failing test -- do NOT write any implementation yet."
 
-Start with these test cases for fuzzy search:
-- "ntes" should match "notes" (typo tolerance)
-- "py snippet" should match snippets with language "python"
-- "fav bookmarks" should match bookmarks tagged "favorite"
-- "readme tmpl" should match templates named "readme-template"
-- Empty query returns all items
-- Query with no matches returns empty list with suggestions
-- Search is case-insensitive
-
-Write the first failing test now. Do NOT write any implementation yet.
-```
-
-Let Claude work through the TDD cycle. For each test:
+Let Claude work through the TDD cycle. For each test case:
 1. Claude writes the test
 2. You or Claude runs it (it should fail)
 3. Claude writes just enough code to pass
@@ -1392,13 +1126,9 @@ This enforces disciplined development and gives you a solid test suite.
 
 ### 9.5 Stop and SubagentStop Hooks for Verification
 
-Add a SubagentStop hook that verifies subagent output:
+Add a quality gate for subagent output. Ask Claude to create a SubagentStop hook that verifies subagents actually completed their tasks before returning results.
 
-```
-Add a SubagentStop hook to .claude/settings.json with type: "prompt" that
-evaluates whether the subagent completed its task: Did it produce output?
-Were there errors? Is it complete? Respond ok: true or ok: false with reason.
-```
+> "Add a SubagentStop hook to settings.json with type: prompt that evaluates whether the subagent completed its task. It should check: Did it produce output? Were there errors? Is the work complete? It should respond ok: true or ok: false with a reason."
 
 This ensures subagents finish their work properly before returning results.
 
@@ -1470,19 +1200,11 @@ Both sessions see all tasks. When one completes a task, the other is notified.
 
 > **Why this step:** Everything you have built -- skills, agents, hooks -- lives inside your project. A plugin packages these components into a portable, reusable bundle that can be shared with other projects or other people. Think of it as turning your project-specific customizations into a distributable tool.
 
-Package everything you have built into a reusable plugin.
+Package everything you have built into a reusable plugin. Describe to Claude what you want to include and let it figure out the plugin structure.
 
-Create the plugin structure:
+> "Package my forge toolkit into a reusable plugin called knowledge-base-plugin. Include the add-item, search, daily-summary, and backup skills, the search, format, and review agents, and extract the relevant hooks into plugin format. Create a plugin.json manifest with name and version."
 
-```
-Create a plugin called "knowledge-base-plugin" with:
-- .claude-plugin/plugin.json manifest (name: "knowledge-base", version: 1.0.0)
-- skills/ directory: copy add-item, search, daily-summary, backup from .claude/skills/
-- agents/ directory: copy search-agent, format-agent, review-agent from .claude/agents/
-- hooks/hooks.json: extract hooks from .claude/settings.json into plugin format
-```
-
-The directory layout must be:
+Claude may ask about which hooks to include or how to handle project-specific paths. The directory layout must be:
 
 ```
 knowledge-base-plugin/
@@ -1514,18 +1236,11 @@ prevent conflicts.
 
 > **Why this step:** How do you know your skills and agents actually work well? Evaluation gives you a systematic way to test them with defined inputs, expected outputs, and scoring criteria. This is not the same as unit testing your code -- it is testing your *Claude Code configuration*: do skills produce the right output? Do agents make good decisions?
 
-Write test specs to evaluate your skills and agents:
+Describe to Claude the test cases you want for each skill and agent. Think about what "correct behavior" looks like for each one -- both the happy path and the failure cases.
 
-```
-Create an evaluation suite for the forge toolkit. For each skill and agent,
-define test cases with input, expected output, and scoring criteria:
-- add-item skill: valid note (expect ID), empty title (expect error),
-  missing fields (expect prompt)
-- search agent: exact title (expect match), tag search (expect filtered),
-  no results (expect suggestions)
-- review agent: incomplete item (expect flag), duplicates (expect merge suggestion)
-Write a script that runs each test and reports pass/fail.
-```
+> "Create an evaluation suite for the forge toolkit. I want test cases for each skill and agent with defined inputs, expected outputs, and scoring criteria. For add-item: test with a valid note, an empty title, and missing fields. For the search agent: test exact title match, tag search, and no-results behavior. For the review agent: test with an incomplete item and duplicates. Write a script that runs each test and reports pass/fail."
+
+Claude may ask about how strict the scoring should be or what counts as "close enough." These are your standards -- discuss them.
 
 > **STOP -- What you just did:** You created an evaluation suite that tests your Claude Code configuration the same way you would test code. Each test case specifies what to input, what output to expect, and how to score the result. This closes the feedback loop: you built skills and agents in earlier modules, and now you have a way to measure whether they work correctly. In real projects, run evaluations after any change to skills, agents, or hooks to catch regressions.
 
@@ -1533,15 +1248,9 @@ Write a script that runs each test and reports pass/fail.
 
 > **Why this step:** Running evaluations means invoking many tool calls in rapid succession. Without auto-approval, you would have to manually confirm every Read, Grep, and Bash command -- dozens of permission prompts that slow everything down. PermissionRequest hooks let you auto-approve safe operations during eval while keeping the safety prompts during normal development.
 
-During evaluation, auto-approve safe operations to avoid prompt fatigue:
+During evaluation, auto-approve safe operations to avoid prompt fatigue. Ask Claude to set up the auto-approval hook in your local settings (not the shared project settings).
 
-```
-Add a PermissionRequest hook to .claude/settings.local.json with matcher
-"Read|Grep|Glob|Bash(forge *)" that outputs JSON with
-hookSpecificOutput.decision.behavior: "allow" to auto-approve.
-```
-
-Keep this in `settings.local.json` (not committed) and use only during eval.
+> "Add a PermissionRequest hook to .claude/settings.local.json that auto-approves Read, Grep, Glob, and forge commands during evaluation. Use a matcher for those specific tools and output a decision with behavior: allow. Keep it in settings.local.json since this is a personal workflow choice."
 
 > **STOP -- What you just did:** You used a PermissionRequest hook to auto-approve safe operations (Read, Grep, Glob, and forge commands) during evaluation. Notice this hook lives in `settings.local.json` -- not committed to version control -- because auto-approval is a personal workflow choice, not a team policy. This is a good example of the local vs. project settings distinction: safety-reducing configurations stay local.
 
@@ -1555,13 +1264,9 @@ Keep this in `settings.local.json` (not committed) and use only during eval.
 
 > **Why this step:** This is the most important habit you can build. Claude Code's effectiveness comes from its configuration -- CLAUDE.md, rules, skills, agents, hooks. Every time you discover a pattern that works or a mistake to avoid, capturing it in your configuration makes every future session better. This is compound learning: each session builds on everything that came before.
 
-Reflect on the full project and update your configuration:
+Reflect on the full project and have a conversation with Claude about what you have learned. Ask it to review your configuration and suggest improvements based on how things actually worked.
 
-```
-Review CLAUDE.md, rules, skills, agents, and hooks. Update each based on
-lessons learned: patterns that worked, patterns to avoid, refined descriptions,
-missing edge cases, hook interaction notes.
-```
+> "Review our CLAUDE.md, rules, skills, agents, and hooks. What patterns worked well? What should we refine? Are there edge cases we missed or descriptions that could be clearer? Help me update everything based on what we've learned building this project."
 
 This is the continuous learning cycle: build, reflect, refine, repeat.
 
