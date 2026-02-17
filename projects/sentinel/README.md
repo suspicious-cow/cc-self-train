@@ -222,6 +222,8 @@ Claude will probably ask about which languages to support, how rules should be s
 
 > **STOP -- What you just did:** You used plan mode to design your analyzer before writing a single line of code. This is one of Claude Code's most powerful patterns: you can think through complex decisions *with* Claude before committing to an approach. Plan mode prevents the "just start coding" trap that leads to rewrites. You will use this pattern whenever you face a non-trivial feature -- sketch the design first, then build.
 
+Say **"continue"** when you're ready for the next step.
+
 ### Step 3: Iterate on the plan
 
 Push back on the plan while you are still in plan mode. Ask Claude about the parts that feel unclear or where you have opinions. For example, you might want to know how users will add custom rules without touching the core engine, or whether the reporter should stream results or batch them for large codebases.
@@ -241,6 +243,8 @@ Something like:
 Claude will create files. Review each one before accepting.
 
 > **STOP -- What you just did:** You went through the full plan-then-build cycle. Claude designed the architecture in plan mode, you asked questions to refine it, then you switched to normal mode and Claude created the project skeleton. Notice how you reviewed each file before accepting -- that review step is critical. Claude is a collaborator, not an autopilot.
+
+Say **"next"** when you're ready to move on.
 
 ### Step 5: Create a feature branch
 
@@ -281,6 +285,8 @@ Watch Claude write tests, execute them with `!`, fix failures, and re-run. This 
 
 > **STOP -- What you just did:** You just experienced the build-test-fix loop that will be your primary workflow for the rest of this project. Claude wrote tests, ran them, saw failures, fixed the code, and re-ran until everything passed. This tight feedback loop is why Claude Code is so effective -- Claude gets concrete error messages and fixes them immediately, rather than guessing.
 
+When you're ready, say **"let's keep going"** to continue.
+
 ### Step 8: Implement the CLI
 
 Ask Claude to wire up a CLI so you can run Sentinel from the command line. Describe the commands you want -- at minimum `sentinel scan <path>` to run analysis and `sentinel rules list` to show available rules. Let Claude pick the standard CLI framework for your language.
@@ -296,6 +302,8 @@ Ask Claude to wire up a CLI so you can run Sentinel from the command line. Descr
 Or the equivalent command for your language. Scan the sentinel project itself and see what the analyzer finds.
 
 > **STOP -- What you just did:** You wired together the scanner, rule engine, and CLI into a working tool, then tested it on its own source code. Sentinel can now analyze real code. Running your analyzer on itself ("dog-fooding") is a great way to find gaps -- if Sentinel misses obvious issues in its own code, it needs better rules.
+
+Ready? Say **"continue"** and we'll move on to committing and merging.
 
 ### Step 10: Commit and merge
 
@@ -335,6 +343,8 @@ Claude will ask you about the conventions, or propose some based on your project
 
 > **STOP -- What you just did:** You created targeted instructions that Claude loads based on file paths. Now when Claude edits an analyzer file, it knows analyzers must be stateless and return structured Issue objects. When it writes tests, it knows to use fixture files. This is far more effective than dumping all conventions into a single file -- Claude gets precisely the context it needs, when it needs it.
 
+Say **"next"** when you're ready to move on.
+
 ### Step 2: Create CLAUDE.local.md
 
 > **Why this step:** CLAUDE.local.md is your *personal* memory file -- it stores preferences that should not be shared with the team (like your preferred output format or local file paths). It is automatically gitignored, so it never gets committed.
@@ -354,6 +364,8 @@ Ask Claude to walk you through the full memory hierarchy for this project. You w
 Claude should describe: managed policy (if any) -> user memory (~/.claude/CLAUDE.md) -> project memory (CLAUDE.md) -> project rules (.claude/rules/*.md) -> local project memory (CLAUDE.local.md).
 
 > **STOP -- What you just did:** You explored the full memory hierarchy -- from global user settings down to local project preferences. Understanding this hierarchy matters because it determines what Claude knows and when. Managed policy overrides everything, then user memory, then project memory, then rules, then local memory. When Claude does something unexpected, checking which memory files are loaded is the first debugging step.
+
+When you're ready, say **"continue"** to move on to @imports.
 
 ### Step 4: Use @imports
 
@@ -398,6 +410,8 @@ This shows your token usage statistics for the current session. Get in the habit
 
 > **STOP -- What you just did:** You learned the three context management commands: `/context` shows how full your context window is, `/compact` compresses conversation history to free up space, and `/cost` shows your token usage. These are essential for long sessions -- if Claude starts forgetting things or giving vague answers, your context window is probably full. Use `/compact` with a focus instruction to keep the most relevant context and discard the rest.
 
+Say **"let's keep going"** when you're ready to put it all together.
+
 ### Step 8: Build a new rule using these tools
 
 Now put it all together. Ask Claude to build a new analysis rule while it has all this context loaded. Describe a complexity rule -- something that estimates cyclomatic complexity by counting decision points (if/else, loops, logical operators) and flags functions that exceed a threshold.
@@ -441,6 +455,8 @@ Test it:
 ```
 
 > **STOP -- What you just did:** You created your first custom skill and tested it with a path argument. The `$ARGUMENTS` placeholder captured everything after `/analyze`, so `/analyze src/` passed `src/` to the skill. This is the foundation -- you will build several more skills that become your daily shortcuts for working with Sentinel.
+
+Say **"continue"** when you're ready for the next skill.
 
 ### Step 2: Create the "generate-tests" skill
 
@@ -575,6 +591,8 @@ Restart Claude Code and verify you see the summary injected at session start.
 
 > **STOP -- What you just did:** You created your first hook -- a SessionStart script that gives you a project health snapshot every time you open Claude Code. The key insight is that SessionStart hook stdout is automatically injected into Claude's context. This means Claude *starts every session knowing* the current state of your codebase. You will use this pattern whenever you want Claude to have up-to-date project awareness from the first prompt.
 
+Say **"next"** when you're ready to move on.
+
 ### Step 3: Create a PostToolUse hook
 
 This hook auto-validates rule configuration files after Claude writes them. Ask Claude to create a validation script and wire it up as a PostToolUse hook.
@@ -629,6 +647,8 @@ Restart Claude Code (to load the hooks). Then:
 3. Ask Claude to modify some code -- verify the Stop hook checks for tests
 
 > **STOP -- What you just did:** You tested the three hook types that cover the most common automation needs: SessionStart (inject context at startup), PostToolUse (validate after actions), and Stop (quality gate at the end). Together, these hooks form an invisible safety net -- they work in the background, catching issues and injecting context without you having to think about them.
+
+When you're ready, say **"continue"** to wrap up this module.
 
 ### Step 6: Inspect hooks with /hooks
 
@@ -694,6 +714,8 @@ claude mcp add --transport stdio sentinel-fs -- cmd /c npx -y @anthropic-ai/mcp-
 ```
 
 > **STOP -- What you just did:** You added two MCP servers using `claude mcp add`. Each server runs as a separate process that Claude communicates with through the Model Context Protocol. The SQLite server gives Claude direct database access, and the filesystem server gives it structured file operations. Notice that `claude mcp add` registered these servers locally -- they are stored in your user config, not in the project yet. You will fix that in Step 6.
+
+Say **"let's keep going"** when you're ready to verify the setup.
 
 ### Step 4: Verify with /mcp
 
@@ -798,6 +820,8 @@ A denial returns JSON like: `{"hookSpecificOutput": {"hookEventName": "PreToolUs
 
 > **STOP -- What you just did:** You built a schema validation guardrail. When Claude tries to write a rule file with missing required fields, the hook blocks the write and tells Claude exactly what is wrong. Claude then sees the denial reason and can fix the file before trying again. This is "fail fast" automation -- bad data never reaches disk. You will use this pattern whenever you have strict format requirements for generated files.
 
+Say **"continue"** when you're ready for the next step.
+
 ### Step 3: Inject context about related analyzers
 
 Now create a hook that enriches Claude's context when it reads rule files. Ask Claude to build a script that detects when a rule file is being read and injects information about related analyzer files using `additionalContext`.
@@ -880,6 +904,8 @@ Ask Claude to create a specialized analyzer agent. Describe its role -- deep cod
 
 > **STOP -- What you just did:** You created a specialized analyzer agent with limited tool access (Read, Grep, Glob, Bash -- no Write or Edit). This is intentional: the analyzer agent should *find* issues, not *fix* them. Restricting tools prevents subagents from doing things outside their role. The `model: sonnet` setting means this agent uses a cheaper model -- since analysis does not require the most powerful model, this saves tokens.
 
+Say **"next"** when you're ready to create the test writer agent.
+
 ### Step 3: Create the test writer agent
 
 Now create a test writer agent. This one needs Write and Edit tools since it creates test files. Describe its job -- read source files, identify public functions, generate comprehensive tests, run them, and fix failures.
@@ -917,6 +943,8 @@ Claude will run the analyzer agent first, receive its findings, then pass releva
 
 > **STOP -- What you just did:** You chained two subagents -- the analyzer found issues, and the test writer generated tests targeting those specific issues. This pipeline pattern is how you build complex workflows from simple, focused agents. In real projects, you might chain: analyzer -> fixer -> reviewer, or scanner -> reporter -> notifier.
 
+When you're ready, say **"let's keep going"** to try parallel agents.
+
 ### Step 7: Run agents in parallel and background
 
 Ask Claude to fan out analysis across multiple directories using parallel subagents. Tell it to run them in the background so you can keep working.
@@ -926,6 +954,8 @@ Ask Claude to fan out analysis across multiple directories using parallel subage
 Press `Ctrl+B` if Claude starts a foreground agent and you want to move it to the background. Use `/tasks` to see running background tasks.
 
 > **STOP -- What you just did:** You ran three subagents in parallel, each analyzing a different directory simultaneously. This is the key advantage of subagents for large codebases -- instead of analyzing directories one by one, you fan out the work. Background mode (`Ctrl+B`) lets you continue working in your main conversation while agents crunch away. You will use this pattern whenever you have independent tasks that can run concurrently.
+
+Say **"continue"** when you're ready for the next step.
 
 ### Step 8: Resume a subagent
 
@@ -971,6 +1001,8 @@ Ask Claude to create a task list for adding coverage tracking to Sentinel. Descr
 Claude will use the Tasks system to create these. Press `Ctrl+T` to toggle the task list view in your terminal.
 
 > **STOP -- What you just did:** You created a dependency graph, not a flat to-do list. Task 2 (implement parser) cannot start until Task 1 (design data model) is done, because the parser needs to know what structures to produce. Task 5 depends on both Tasks 3 and 4. Claude enforces these dependencies -- it will not start a blocked task. This prevents the common mistake of building on top of unfinished foundations.
+
+Say **"next"** when you're ready to start building.
 
 ### Step 3: Start the first task
 
@@ -1022,6 +1054,8 @@ Check the task list periodically with `Ctrl+T` or ask Claude for a status update
 > "Show me the current status of all tasks."
 
 > **STOP -- What you just did:** You completed a multi-task feature using the dependency graph to guide your work order. Notice how you never had to think about "what should I build next?" -- the task system told you. In a real project, you would create task lists at the start of each feature and let the dependency graph keep you on track across sessions.
+
+Ready? Say **"continue"** and we'll add quality gates for subagents.
 
 ### Step 6: SubagentStop hooks for verification
 
@@ -1079,6 +1113,8 @@ Now you have three working copies:
 - `sentinel-rule-import/` -- importing rules from external files
 
 > **STOP -- What you just did:** You created two git worktrees -- separate working directories that share the same repository. Each one is on its own feature branch. This is the infrastructure for parallel development: you now have three separate directories where Claude Code sessions can work independently without merge conflicts until you are ready to combine the work.
+
+Say **"continue"** when you're ready to spin up parallel sessions.
 
 ### Step 2: Multiple Claude Code instances with shared tasks
 
@@ -1144,6 +1180,8 @@ Verify that skills are available under the `quality-tools:` namespace:
 
 > **STOP -- What you just did:** You bundled all of Sentinel's Claude Code customizations into a portable plugin and loaded it in a fresh Claude instance. Notice the namespace prefix (`quality-tools:analyze` instead of just `analyze`) -- this prevents naming conflicts when multiple plugins are loaded. Your skills, agents, hooks, and MCP configs all travel together as a single distributable unit.
 
+Say **"next"** when you're ready to move on.
+
 ### Step 5: Build an evaluation framework
 
 > **Why this step:** Evaluation measures how well Sentinel actually works. Without it, you are guessing whether your analyzer catches real issues or produces false positives. By creating fixtures with planted bugs and comparing Sentinel's output to expected results, you get concrete accuracy metrics. This is the same approach used to evaluate AI models -- ground truth comparison.
@@ -1155,6 +1193,8 @@ Ask Claude to build an evaluation framework for Sentinel. Describe what you need
 Claude might ask about how many fixtures you want or what kinds of bugs to plant. Tell it to start with a few representative examples and you will add more over time.
 
 > **STOP -- What you just did:** You built a scoring framework that measures Sentinel's accuracy with real metrics: true positive rate (how many real issues it catches), false positive rate (how often it flags clean code), false negative rate (how many real issues it misses), and severity accuracy. These numbers tell you exactly where Sentinel needs improvement. Every time you add a new rule or change the analyzer, re-running the eval tells you whether you made things better or worse.
+
+When you're ready, say **"let's keep going"** to continue.
 
 ### Step 6: PermissionRequest hooks
 
@@ -1181,6 +1221,8 @@ Ask Claude to build a feedback loop where eval results drive improvements. Descr
 > "Create a continuous learning loop: log false positives and negatives from the eval to eval/learning/misclassifications.jsonl. Add a SessionStart hook that loads recent misclassifications into context. After fixing one, re-run the eval to confirm and check for regressions. Then update CLAUDE.md with the lesson learned."
 
 > **STOP -- What you just did:** You closed the loop: eval finds problems, you fix them, eval confirms the fix, and CLAUDE.md records the lesson. This means every future session starts with the accumulated knowledge of past mistakes. Over time, Sentinel gets more accurate and Claude gets better at working with it. This continuous learning pattern is the most sophisticated workflow in the entire curriculum -- it combines hooks (SessionStart), memory (CLAUDE.md), evaluation (scoring framework), and iterative improvement into a single self-reinforcing system.
+
+Say **"continue"** when you're ready to wrap up.
 
 ### Step 8: Clean up worktrees
 

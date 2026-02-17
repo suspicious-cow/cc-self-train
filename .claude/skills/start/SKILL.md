@@ -245,6 +245,8 @@ Explain that CLAUDE.md is one level in a bigger system. Keep it simple — four 
 
 The key insight: "If a teammate would benefit from knowing it, put it in CLAUDE.md. If it's just your workflow or progress, put it in CLAUDE.local.md."
 
+End with something like: "Makes sense? Next we'll create your CLAUDE.local.md — that's the personal one that tracks your progress."
+
 **STOP. Do not continue to 6.4. Wait for the user to respond.**
 
 ---
@@ -271,6 +273,8 @@ Always use OS-appropriate commands (paths, file openers, activation scripts, etc
 - Instructions for Claude on how to greet you next time and use the right commands for your OS
 - The `@import` pulls your project's CLAUDE.md into this context automatically
 
+End with something like: "Your progress is now tracked. Next up — let's make your first git commit so you have a save point."
+
 **STOP. Do not continue to 6.5. Wait for the user to respond.**
 
 ---
@@ -292,6 +296,8 @@ git commit -m "Initial project setup with CLAUDE.md"
 ```
 
 After committing, mention: "If Claude ever makes a change you don't like, press `Esc` twice quickly. It rewinds the last changes — like an undo button."
+
+End with something like: "Your first commit is done — you've got a save point. Want to learn the keyboard shortcuts that make Claude Code faster?"
 
 **STOP. Do not continue to 6.6. Wait for the user to respond.**
 
@@ -319,6 +325,8 @@ After presenting all three groups, suggest they try a few:
 
 **Why teach it this way:** This shows the user that Claude can look things up in real time — they don't need to memorize everything. It also ensures shortcuts are accurate and current, since Claude Code updates frequently.
 
+End with something like: "Don't worry about memorizing these — they'll become muscle memory as you use them. Ready for one last exercise before we wrap up Module 1?"
+
 **STOP. Do not continue to 6.7. Wait for the user to respond.**
 
 ---
@@ -342,6 +350,8 @@ git commit -m "Customize CLAUDE.md with personal preferences"
 ```
 
 Point out: "This is the **edit, check, commit** loop — you'll use it in every module."
+
+End with something like: "That's the core workflow — edit, check, commit. Let me wrap up what you learned in Module 1."
 
 **STOP. Do not continue to 6.8. Wait for the user to respond.**
 
