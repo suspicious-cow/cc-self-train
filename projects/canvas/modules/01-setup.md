@@ -140,6 +140,18 @@ Open `index.html` in your browser to verify it works.
 ! git commit -m "Initial project setup with CLAUDE.md"
 ```
 
+### Leaving and Coming Back
+
+You can exit Claude Code at any time with `Ctrl+D` or `/exit`. To pick up where you left off:
+
+- **`claude -c`** — continues your most recent session in this directory. This is the fastest way to resume.
+- **`/resume`** — opens a session picker so you can choose which session to continue. Use this if you have multiple sessions.
+- **`/rename my-session-name`** — names your current session before you leave, so you can find it easily with `/resume` later.
+
+Your CLAUDE.md, rules, and project files persist between sessions. Conversation history is restored when you resume, but you may need to re-approve permission prompts.
+
+> **Tip:** Before exiting a long session, run `/memory` to save any important context. Claude reads CLAUDE.md at the start of every session, so anything saved there carries forward automatically.
+
 ### Checkpoint
 
 - [ ] `workspace/canvas-site/` directory exists with `git init` completed
@@ -148,4 +160,5 @@ Open `index.html` in your browser to verify it works.
 - [ ] You can open `index.html` in your browser and see the page
 - [ ] You ran `/init` and `/memory` successfully
 - [ ] You tried all keyboard shortcuts from the table above
+- [ ] You know how to exit (`Ctrl+D`) and resume (`claude -c`) a session
 - [ ] You made your first commit

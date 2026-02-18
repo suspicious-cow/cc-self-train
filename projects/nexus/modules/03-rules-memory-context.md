@@ -56,6 +56,8 @@ Try each command:
 - `/compact Focus on the rate limiting feature we are about to build` -- compacts conversation, keeping focus on what you specify
 - `/cost` -- shows token usage statistics for the current session
 
+> **Note:** On Max subscriptions, `/cost` may show limited or empty output due to known issues. If you see blank results, don't worry -- your token usage is still being tracked. API key users will see detailed cost breakdowns.
+
 > **STOP -- What you just did:** You learned the three context management tools: `/context` shows what Claude is "thinking about" (and how full its context window is), `/compact` frees up space while preserving key information, and `/cost` tracks your token usage. These tools become essential in longer sessions -- you will use `/compact` regularly to keep Claude focused and responsive.
 
 Ready to build the rate limiting feature?

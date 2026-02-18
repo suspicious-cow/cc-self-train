@@ -124,6 +124,8 @@ Run:
 This shows your token usage for the current session. Check it periodically to
 understand how much context different operations consume.
 
+> **Note:** On Max subscriptions, `/cost` may show limited or empty output due to known issues. If you see blank results, don't worry -- your token usage is still being tracked. API key users will see detailed cost breakdowns.
+
 ### 3.9 Build a Feature Using These Tools
 
 Now build the blog listing page to see your rules and context tools in action. Create a feature branch first:
