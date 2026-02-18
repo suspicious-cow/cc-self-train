@@ -127,6 +127,32 @@ Test it: `/backup`
 
 > **STOP -- What you just did:** You combined two Claude Code features -- skills and MCP -- into something more powerful than either one alone. The backup skill uses `allowed-tools` to access MCP tools (`mcp__forge-db__*`) alongside regular tools. This is the skills+MCP pattern: a skill defines the workflow, MCP servers provide the data access. You will use this pattern whenever you need a repeatable workflow that touches external data sources.
 
+## 6.8 Connect a Tool You Actually Use
+
+The MCP servers you added above are local utilities -- SQLite and filesystem. But MCP also connects to cloud tools you already use. If you have a Notion workspace, track issues in Linear, or coordinate on Slack, you can connect those directly to Claude Code.
+
+What productivity tools do you use day-to-day? Pick one from this table (or browse `context/mcp.txt` for the full list of available servers):
+
+| Tool | What it gives you | Command |
+|------|------------------|---------|
+| Notion | Search and update notes from inside Claude | `claude mcp add --transport http notion https://mcp.notion.com/mcp` |
+| Linear | Manage issues for your toolkit | `claude mcp add --transport http linear https://mcp.linear.app/mcp` |
+| Slack | Send messages and fetch channel data | `claude mcp add slack --transport http https://mcp.slack.com/mcp` |
+
+Notice the `--transport http` flag -- that is how you connect to remote cloud servers (as opposed to `--transport stdio` for local servers like SQLite).
+
+If you want the server available across all your projects, add `--scope user`:
+
+```
+claude mcp add --transport http notion --scope user https://mcp.notion.com/mcp
+```
+
+After adding, run `/mcp` to authenticate and verify the connection. Then try it out:
+
+> "Using the Notion MCP server, find my most recently edited pages and suggest which ones I should link from the forge toolkit's help output."
+
+This section is optional -- if you do not use any of these tools, skip ahead to the checkpoint.
+
 ## Checkpoint
 
 - [ ] SQLite MCP server is connected (`/mcp` shows it active)
@@ -136,3 +162,4 @@ Test it: `/backup`
 - [ ] You understand the three MCP scopes (local, project, user)
 - [ ] Backup skill orchestrates MCP tools to export and archive data
 - [ ] Data has been migrated from JSON files to SQLite
+- [ ] (Optional) You connected an MCP server for a tool you actually use

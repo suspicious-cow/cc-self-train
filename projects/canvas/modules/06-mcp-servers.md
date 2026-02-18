@@ -127,6 +127,32 @@ Test it: `/publish`
 
 > **STOP -- What you just did:** You created a skill that combines MCP tools with built-in tools into a single workflow. The `allowed-tools` frontmatter field (`mcp__canvas-fs__*`) grants the skill access to MCP server tools using the naming pattern `mcp__<server-name>__<tool-name>`. This is the Skills + MCP integration pattern -- your most powerful automation combines custom skills with external data sources.
 
+### 6.8 Connect a Tool You Actually Use
+
+The MCP servers you added above are local utilities -- filesystem and fetch. But MCP also connects to cloud tools you already use. If you have a Figma account, a Canva workspace, or deploy to Netlify, you can connect those directly to Claude Code.
+
+What tools do you use for design or deployment? Pick one from this table (or browse `context/mcp.txt` for the full list of available servers):
+
+| Tool | What it gives you | Command |
+|------|------------------|---------|
+| Figma | Read design files, extract colors and specs | `claude mcp add --transport http figma-remote-mcp https://mcp.figma.com/mcp` |
+| Canva | Search and export Canva designs | `claude mcp add --transport http canva https://mcp.canva.com/mcp` |
+| Netlify | Deploy and manage your site from Claude | `claude mcp add --transport http netlify https://netlify-mcp.netlify.app/mcp` |
+
+Notice the `--transport http` flag -- that is how you connect to remote cloud servers (as opposed to `--transport stdio` for local servers like the filesystem MCP).
+
+If you want the server available across all your projects, add `--scope user`:
+
+```
+claude mcp add --transport http figma-remote-mcp --scope user https://mcp.figma.com/mcp
+```
+
+After adding, run `/mcp` to authenticate and verify the connection. Then try it out:
+
+> "Using the Figma MCP server, look at my recent files and suggest which design tokens I should add to my portfolio's CSS custom properties."
+
+This section is optional -- if you do not use any of these tools, skip ahead to the checkpoint.
+
 ### Checkpoint
 
 - [ ] Filesystem MCP server is connected (`/mcp` shows it active)
@@ -136,3 +162,4 @@ Test it: `/publish`
 - [ ] You understand the three MCP scopes (local, project, user)
 - [ ] Publish skill orchestrates MCP tools to validate and package the site
 - [ ] `dist/` directory contains a deployable version of the site
+- [ ] (Optional) You connected an MCP server for a tool you actually use

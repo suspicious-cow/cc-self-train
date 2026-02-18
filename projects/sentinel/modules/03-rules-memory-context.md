@@ -28,7 +28,7 @@ Want to see how CLAUDE.local.md handles personal preferences?
 
 Create a `CLAUDE.local.md` file in the project root. This file is for your personal preferences and is automatically added to .gitignore. Ask Claude to create it, and tell it about your personal preferences -- things like your preferred output format, where your test fixtures live, or how you like test output displayed.
 
-> "Create a CLAUDE.local.md with my personal preferences -- I like verbose test output, my fixtures are in tests/fixtures/, and I prefer JSON format for local testing."
+> "Create a CLAUDE.local.md with my personal preferences -- I like verbose test output, my fixtures are in tests/fixtures/, and I prefer JSON format for local testing. Also note any code quality or issue-tracking tools I use (like GitHub or Jira) -- we'll connect them in Module 6."
 
 Your preferences will be different from the example above. Put whatever is actually useful for your workflow.
 

@@ -105,6 +105,32 @@ Test it:
 /coverage-trend --last 5
 ```
 
+### Step 9: Connect a Tool You Actually Use
+
+The MCP servers you added above are local utilities -- SQLite and filesystem. But MCP also connects to cloud tools you already use. If you track issues on GitHub, monitor errors with Sentry, or manage work in Linear, you can connect those directly to Claude Code.
+
+What code quality or issue-tracking tools do you use? Pick one from this table (or browse `context/mcp.txt` for the full list of available servers):
+
+| Tool | What it gives you | Command |
+|------|------------------|---------|
+| GitHub | Read repos, PRs, issues -- analyze code from any repo | `claude mcp add --transport http github https://api.githubcopilot.com/mcp/` |
+| Sentry | Surface real production errors to write tests against | `claude mcp add --transport http sentry https://mcp.sentry.dev/mcp` |
+| Linear | Connect Sentinel findings to Linear issues | `claude mcp add --transport http linear https://mcp.linear.app/mcp` |
+
+Notice the `--transport http` flag -- that is how you connect to remote cloud servers (as opposed to `--transport stdio` for local servers like SQLite).
+
+If you want the server available across all your projects, add `--scope user`:
+
+```
+claude mcp add --transport http github --scope user https://api.githubcopilot.com/mcp/
+```
+
+After adding, run `/mcp` to authenticate and verify the connection. Then try it out:
+
+> "Using the GitHub MCP server, look at the open issues in [your repo]. Run Sentinel against the affected files and see if the issues are detectable."
+
+This section is optional -- if you do not use any of these tools, skip ahead to the checkpoint.
+
 ### Checkpoint
 
 - [ ] SQLite MCP server is connected (verify with `/mcp`)
@@ -113,3 +139,4 @@ Test it:
 - [ ] `.mcp.json` exists in the project root with server configurations
 - [ ] `/coverage-trend` skill works and queries the SQLite database
 - [ ] You understand the three MCP scopes (local, project, user)
+- [ ] (Optional) You connected an MCP server for a tool you actually use

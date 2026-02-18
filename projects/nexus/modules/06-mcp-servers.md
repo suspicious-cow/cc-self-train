@@ -101,6 +101,33 @@ Ask Claude to create a skill that orchestrates MCP tools for cache inspection. D
 
 This demonstrates the skills+MCP pattern: the skill provides the workflow logic ("what to do"), while MCP provides the tool access ("ability to query SQLite").
 
+### Step 9: Connect a Tool You Actually Use
+
+The MCP servers you added above are local utilities -- SQLite and filesystem. But MCP also connects to cloud tools you already use. If you monitor errors with Sentry, manage infrastructure on Cloudflare, or track issues on GitHub, you can connect those directly to Claude Code.
+
+What monitoring or dev tools do you use? Pick one from this table (or browse `context/mcp.txt` for the full list of available servers):
+
+| Tool | What it gives you | Command |
+|------|------------------|---------|
+| Sentry | Query real errors hitting your gateway | `claude mcp add --transport http sentry https://mcp.sentry.dev/mcp` |
+| Honeycomb | Query observability data and SLOs | `claude mcp add --transport http honeycomb https://mcp.honeycomb.io/mcp` |
+| GitHub | Manage issues for the gateway project | `claude mcp add --transport http github https://api.githubcopilot.com/mcp/` |
+| Cloudflare | Inspect deployed app state | `claude mcp add --transport http cloudflare https://bindings.mcp.cloudflare.com/mcp` |
+
+Notice the `--transport http` flag -- that is how you connect to remote cloud servers (as opposed to `--transport stdio` for local servers like SQLite).
+
+If you want the server available across all your projects, add `--scope user`:
+
+```
+claude mcp add --transport http sentry --scope user https://mcp.sentry.dev/mcp
+```
+
+After adding, run `/mcp` to authenticate and verify the connection. Then try it out:
+
+> "Using the Sentry MCP server, what are the most common errors in the last 24 hours?"
+
+This section is optional -- if you do not use any of these tools, skip ahead to the checkpoint.
+
 ### Checkpoint
 
 - [ ] SQLite MCP server is connected (`/mcp` shows it)
@@ -112,3 +139,4 @@ This demonstrates the skills+MCP pattern: the skill provides the workflow logic 
 - [ ] The `/cache-inspect` skill queries the SQLite MCP server
 - [ ] Claude can directly query cache.db through MCP tools
 - [ ] Changes committed to git
+- [ ] (Optional) You connected an MCP server for a tool you actually use

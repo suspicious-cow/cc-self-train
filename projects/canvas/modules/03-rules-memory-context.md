@@ -36,7 +36,7 @@ Ready to create your CLAUDE.local.md for personal preferences?
 
 Create a personal preferences file that will not be committed to git. Ask Claude to create `CLAUDE.local.md` and tell it about your personal workflow preferences -- your design taste, how you like commit messages, which browser you test in, anything that is about *you* rather than the project.
 
-> "Create a CLAUDE.local.md with my personal preferences. I like [describe your design style], I test in [your browser], and I prefer [your commit message style]."
+> "Create a CLAUDE.local.md with my personal preferences. I like [describe your design style], I test in [your browser], and I prefer [your commit message style]. Also note any design tools I use regularly (like Figma or Canva) -- we'll connect them to Claude in Module 6."
 
 Verify it was added to `.gitignore`:
 

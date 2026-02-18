@@ -22,7 +22,7 @@ Want to set up CLAUDE.local.md for your personal preferences?
 
 Ask Claude to create a CLAUDE.local.md with your personal development preferences. Think about what matters to you locally -- maybe you like verbose logging, your test upstream runs on a specific port, or you want a shorthand for running quick tests.
 
-> "Create a CLAUDE.local.md with my personal preferences: I like verbose logging during development, my test upstream runs on port 4001, and when I say 'quick test' I mean skip integration tests. Make sure it's gitignored."
+> "Create a CLAUDE.local.md with my personal preferences: I like verbose logging during development, my test upstream runs on port 4001, and when I say 'quick test' I mean skip integration tests. Also note any monitoring or dev tools I use (like Sentry or GitHub) -- we'll connect them in Module 6. Make sure it's gitignored."
 
 CLAUDE.local.md is for personal, per-project preferences that should not be committed to version control.
 

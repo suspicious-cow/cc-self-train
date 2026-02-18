@@ -36,7 +36,7 @@ Ready to create your CLAUDE.local.md?
 
 Create a personal, non-committed preferences file. Tell Claude about your individual workflow preferences -- things like how you like test output formatted, your commit message style, and your language of choice. These are *your* preferences, not team rules.
 
-> "Create a CLAUDE.local.md with my personal preferences. I like [your test output style], [your commit style], and I'm working in [your language]. Make sure it's in .gitignore."
+> "Create a CLAUDE.local.md with my personal preferences. I like [your test output style], [your commit style], and I'm working in [your language]. Also note any productivity tools I use regularly (like Notion or Linear) -- we'll connect them in Module 6. Make sure it's in .gitignore."
 
 Claude should add it to `.gitignore` automatically. Verify:
 
