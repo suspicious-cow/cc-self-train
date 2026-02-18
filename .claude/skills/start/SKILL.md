@@ -55,6 +55,21 @@ Remember the OS for all subsequent steps. Everywhere this skill shows OS-specifi
 
 For all other projects, ask them what programming language they want to use. Common choices: Python, TypeScript/JavaScript, Go, Rust. Any language works.
 
+## Step 2b: Experience Level
+
+Ask the user about their experience with AI coding assistants using AskUserQuestion:
+
+1. **First timer** — "I've never used an AI coding assistant before."
+   → Store as `beginner`. Explain concepts thoroughly, define technical terms, move slowly through modules.
+
+2. **Some experience** — "I've used Copilot, Cursor, or similar tools."
+   → Store as `intermediate`. Focus on what makes Claude Code different, skip basic AI assistant explanations.
+
+3. **CC veteran** — "I've used Claude Code before and want to go deeper."
+   → Store as `advanced`. Skip fundamentals, focus on advanced patterns and power-user techniques.
+
+Remember their choice — it goes into CLAUDE.local.md and affects how modules are delivered.
+
 ## Step 3: Environment (Optional)
 
 **If the user chose Canvas, skip this step** — no environment isolation needed. HTML/CSS/JS runs directly in the browser.
@@ -260,17 +275,24 @@ Create `CLAUDE.local.md` in the **cc-self-train root directory** (NOT inside wor
 ```
 # Active Project
 Project: <project> | Language: <language> | OS: <detected-os> | Directory: workspace/<project-dir> | Current Module: 1
+Experience Level: <beginner/intermediate/advanced>
 
 When the user starts a session, greet them and offer to continue where they left off.
-When the user says "next module" or asks for the next module, read projects/<name>/README.md and walk them through the next module.
+When the user says "next module" or asks for the next module, read the current module file from projects/<name>/modules/ (e.g., projects/<name>/modules/02-blueprint.md) and walk them through it.
+Before running /compact or when context is getting large, update this file with the current module, step number, and any in-progress work.
 Always use OS-appropriate commands (paths, file openers, activation scripts, etc.).
+
+For beginners: explain concepts thoroughly, define technical terms, move slowly.
+For intermediate users: focus on what makes CC different from other AI tools, skip basic tool explanations.
+For advanced CC users: skip fundamentals, focus on advanced patterns and best practices.
 
 @import workspace/<project-dir>/CLAUDE.md
 ```
 
 **Display the full file contents in a code block** (the Write tool truncates previews). Then briefly explain each line:
-- Progress tracker (project, language, OS, module number)
-- Instructions for Claude on how to greet you next time and use the right commands for your OS
+- Progress tracker (project, language, OS, module number, experience level)
+- Instructions for Claude on how to greet you next time, use the right commands for your OS, and adapt depth to your experience level
+- Pre-compaction instruction — reminds Claude to save progress before context compression
 - The `@import` pulls your project's CLAUDE.md into this context automatically
 
 End with something like: "Your progress is now tracked. Ready to make your first git commit so you have a save point?"

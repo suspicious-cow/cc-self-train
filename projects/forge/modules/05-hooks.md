@@ -1,0 +1,101 @@
+# Module 5 -- Hooks
+
+**CC features:** SessionStart, PostToolUse, Stop hooks, matchers, hook
+scripting, settings.json
+
+## 5.1 Hook Lifecycle Overview
+
+> **Why this step:** Hooks let you automate actions at key moments in Claude Code's lifecycle -- when a session starts, after a file is written, before Claude stops responding. They are the foundation of quality automation: auto-formatting, auto-testing, injecting context, and blocking dangerous operations. Understanding the hook lifecycle is essential before you start writing hooks.
+
+Hooks fire at specific points during a Claude Code session:
+
+| Hook Event | When It Fires |
+|-----------|--------------|
+| `SessionStart` | Session begins or resumes |
+| `UserPromptSubmit` | User submits a prompt |
+| `PreToolUse` | Before a tool executes |
+| `PermissionRequest` | When a permission dialog appears |
+| `PostToolUse` | After a tool succeeds |
+| `Stop` | Claude finishes responding |
+| `SubagentStop` | When a subagent finishes |
+| `PreCompact` | Before context compaction |
+| `SessionEnd` | Session terminates |
+
+Hooks are configured in settings files:
+- `.claude/settings.json` -- project hooks (shared with team)
+- `.claude/settings.local.json` -- local hooks (personal, not committed)
+- `~/.claude/settings.json` -- user hooks (all projects)
+
+## 5.2 Create a SessionStart Hook
+
+This hook will inject project stats into context when Claude starts. Describe to Claude what you want: a script that counts your stored items and prints a summary, wired up as a SessionStart hook.
+
+> "Create a SessionStart hook that counts the number of notes, snippets, bookmarks, and templates in storage and prints a one-line summary. Create the script in .claude/hooks/ and add the hook entry to .claude/settings.json. Use whichever scripting language makes sense for my setup."
+
+Claude may ask about your OS or scripting preference (bash vs. Python). For SessionStart hooks, stdout is added to Claude's context automatically.
+
+Restart Claude Code (exit and re-launch `claude`) to test it. You should see
+the stats injected on startup.
+
+> **STOP -- What you just did:** You created your first hook -- a script that runs automatically when Claude starts a session. The key insight is that SessionStart hooks inject their stdout into Claude's context. This means Claude *starts every session knowing* how many notes, snippets, and bookmarks you have. You did not have to tell it -- the hook did it for you. This pattern is powerful for any project state you want Claude to be aware of from the start.
+
+Ready to build a PostToolUse hook for auto-formatting?
+
+## 5.3 Create a PostToolUse Hook
+
+This hook auto-formats files after Claude writes or edits them. Tell Claude which formatter you use and ask it to wire it up as a PostToolUse hook that triggers on Write and Edit operations.
+
+> "Add a PostToolUse hook to settings.json that runs my formatter whenever Claude writes or edits a file. I use [your formatter -- e.g., black, prettier, gofmt, rustfmt]. Use a Write|Edit matcher and make it fail gracefully if the formatter isn't installed."
+
+> **Quick check before continuing:**
+> - [ ] `.claude/settings.json` has a SessionStart hook entry
+> - [ ] `.claude/settings.json` has a PostToolUse hook entry with a `Write|Edit` matcher
+> - [ ] The SessionStart hook prints stats when you restart Claude
+
+## 5.4 Create a Stop Hook
+
+> **Why this step:** A Stop hook runs after Claude finishes responding but before it hands control back to you. By running the test suite at this point, you catch breakage *immediately* -- Claude broke something and you know before you even type your next prompt. If the tests fail, the hook can block and feed the failures back to Claude for automatic fixing.
+
+This hook runs the test suite after Claude finishes to verify nothing is broken. Describe what you want to Claude -- it needs to handle the infinite loop case (the hook itself triggers Claude, which triggers the hook again).
+
+> "Create a Stop hook that runs my test suite after Claude finishes responding. If tests fail, it should block and feed the failures back so Claude can fix them. Make sure it handles the infinite loop problem -- if it's already running inside a Stop hook, it should exit cleanly. Add it to settings.json."
+
+Claude will ask about your test command if it is not obvious. It will also need to figure out the right way to detect re-entrancy for your setup.
+
+## 5.5 Matchers, Timeouts, and Scripting
+
+Matchers filter which tools trigger a hook. Key patterns:
+
+| Pattern | Matches |
+|---------|---------|
+| `"Write"` | Exactly the Write tool |
+| `"Write\|Edit"` | Write or Edit tools |
+| `"Bash(npm test*)"` | Bash commands starting with `npm test` |
+| `"*"` | All tools |
+| `"mcp__.*"` | All MCP tools |
+
+Add `"timeout": 30` to any hook command to override the default 60-second
+timeout. Every hook script receives JSON on stdin, uses exit codes to
+communicate (0 = success, 2 = blocking error), and can access
+`$CLAUDE_PROJECT_DIR` for the project root.
+
+> **STOP -- What you just did:** You learned about matchers and timeouts -- the configuration layer that controls *when* and *how long* hooks run. Matchers prevent hooks from firing on every tool call (which would slow everything down). Timeouts prevent runaway scripts from freezing your session. These two settings are what make hooks practical for real workflows rather than just demos.
+
+Want to verify all three hooks are working?
+
+## 5.7 Exercise: Trigger Each Hook
+
+1. **SessionStart:** Exit and restart `claude`. Check that stats appear.
+2. **PostToolUse:** Ask Claude to create a new file. Verify the formatter ran.
+3. **Stop:** Ask Claude a question and let it finish. Verify tests ran.
+
+Use `Ctrl+O` (verbose mode) to see hook execution details.
+
+## Checkpoint
+
+- [ ] `.claude/settings.json` exists with hook configuration
+- [ ] SessionStart hook injects project stats on session start
+- [ ] PostToolUse hook auto-formats files after writes/edits
+- [ ] Stop hook runs tests before Claude stops
+- [ ] Matchers filter correctly (Write|Edit, not all tools)
+- [ ] You verified each hook fires by triggering it and checking output

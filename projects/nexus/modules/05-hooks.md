@@ -1,0 +1,100 @@
+# Module 5 -- Hooks
+
+**CC features:** SessionStart, PostToolUse, Stop hooks, matchers, hook scripting, settings.json
+
+### Step 1: Hook Lifecycle Overview
+
+Hooks are custom shell commands that fire at specific points during a Claude Code session. They are configured in `.claude/settings.json` (project) or `~/.claude/settings.json` (user).
+
+Key hook events you will use in this module:
+
+| Event | When It Fires | Use Case |
+|-------|--------------|----------|
+| SessionStart | Session begins or resumes | Inject gateway status into context |
+| PostToolUse | After a tool succeeds | Auto-lint config after writes |
+| Stop | Claude finishes responding | Run tests before stopping |
+
+> **Why this step:** A SessionStart hook runs every time you launch Claude Code, automatically injecting information into context. Instead of manually telling Claude "the gateway is running on port 3000 with 5 routes," the hook does it for you. This is how you eliminate repetitive setup at the start of every session.
+
+### Step 2: SessionStart Hook -- Inject Gateway Status
+
+Ask Claude to create a SessionStart hook script that checks whether the gateway is running and reports its state. Describe what you want the script to do -- check the health endpoint, count configured routes, and print a summary.
+
+> "Create a SessionStart hook that checks if the gateway is running by hitting the /health endpoint, counts how many routes are configured, and prints a status summary. Put the script in .claude/hooks/gateway-status.sh and wire it up in .claude/settings.json."
+
+Claude will create the script and configure the hook. The key: stdout from a SessionStart hook gets injected into Claude's context automatically. Adjust the script if your config format is different from what Claude assumes -- tell it your actual format.
+
+Test it: exit Claude Code and relaunch. The gateway status appears in context automatically.
+
+> **STOP -- What you just did:** You created your first hook and wired it into `.claude/settings.json`. The key insight: anything a SessionStart hook prints to stdout becomes part of Claude's context automatically. Claude now knows the gateway's status without you saying a word. You will use this pattern whenever there is information Claude should have at the start of every session.
+
+Want to build a PostToolUse hook for config validation?
+
+### Step 3: PostToolUse Hook -- Auto-Lint Config Files
+
+> **Why this step:** PostToolUse hooks fire after Claude successfully uses a tool. By validating config files right after Claude writes them, you catch errors immediately -- before they cause a confusing runtime failure minutes later. This is "shift left" validation: catch problems at write time, not at run time.
+
+Ask Claude to create a PostToolUse hook that validates config files after they are written or edited. Describe the behavior -- it should check if the file is a config file (YAML, JSON, TOML), validate it, and report errors.
+
+> "Create a PostToolUse hook that validates config files after Claude writes or edits them. If the file is JSON, YAML, or TOML, parse it and fail with exit code 2 if it's invalid. Put the script in .claude/hooks/validate-config.sh and add it to settings.json with a matcher for Write and Edit tools."
+
+Claude will create the validation script and add a PostToolUse entry to `.claude/settings.json` with a **matcher** of `"Write|Edit"`, which means it fires only when Claude uses those specific tools. Matchers are case-sensitive and support regex.
+
+> **Quick check before continuing:**
+> - [ ] SessionStart hook injects gateway status when you launch Claude Code
+> - [ ] PostToolUse hook validates config files after Claude writes them
+> - [ ] Both hooks are registered in `.claude/settings.json`
+> - [ ] You understand that matchers (`"Write|Edit"`) control which tool calls trigger the hook
+
+### Step 4: Stop Hook -- Run Tests Before Stopping
+
+> **Why this step:** A Stop hook acts as a quality gate -- it runs when Claude finishes a response and can *block* Claude from stopping if something is wrong (exit code 2). This prevents Claude from declaring "done" while tests are failing.
+
+A Stop hook fires when Claude finishes a response. Exit code 2 blocks Claude from stopping. Ask Claude to create one that runs your tests before allowing completion.
+
+> "Create a Stop hook that runs my test suite when you finish responding. If tests fail, block with exit code 2 and show the failure output. Make sure to avoid infinite loops -- if the hook itself triggers a stop, it should exit cleanly. Add it to settings.json with a 30-second timeout."
+
+Claude will ask what your test command is (pytest, npm test, cargo test, etc.) and create the script accordingly. It will also add the Stop hook entry to `.claude/settings.json`.
+
+> **STOP -- What you just did:** You now have three hooks covering three different lifecycle events: SessionStart (inject context on launch), PostToolUse (validate after writes), and Stop (block completion until tests pass). Together, these form an automated safety net around your development workflow. The exit code convention (0 = success, 2 = blocking error) is the mechanism that gives hooks real power -- they are not just notifications, they can enforce rules.
+
+Want to dig into hook configuration details?
+
+### Step 5: Understand Hook Configuration Details
+
+Key points about hooks:
+- **$CLAUDE_PROJECT_DIR**: environment variable pointing to the project root
+- **timeout**: maximum seconds a hook can run (default 60)
+- **exit codes**: 0 = success, 2 = blocking error, other = non-blocking error
+- **stdin**: hooks receive JSON with session info and event-specific data
+- **stdout**: for SessionStart and UserPromptSubmit, stdout is added to context
+- **stderr**: for exit code 2, stderr is shown to Claude as the error message
+- **matchers**: only apply to PreToolUse, PostToolUse, and PermissionRequest
+
+Verify your hooks are registered:
+
+```
+/hooks
+```
+
+### Step 6: Shell Scripting with Hook Input
+
+Hooks receive JSON via stdin with fields like `session_id`, `hook_event_name`, `tool_name`, `tool_input`, and `tool_response`. Extract values with jq:
+
+```
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path')
+```
+
+Ask Claude to show you the full input schema for each hook type you configured.
+
+### Checkpoint
+
+- [ ] `.claude/settings.json` exists with hook configuration
+- [ ] SessionStart hook injects gateway status on session launch
+- [ ] PostToolUse hook validates config files after writes
+- [ ] Stop hook runs tests before allowing Claude to stop
+- [ ] You can explain matchers and when they apply
+- [ ] You understand exit code behavior (0, 2, other)
+- [ ] `/hooks` shows your registered hooks
+- [ ] All hook scripts committed to git

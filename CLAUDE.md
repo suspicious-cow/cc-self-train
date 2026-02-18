@@ -28,10 +28,18 @@ cc-self-train/
 │   ├── boris-workflow.txt       # Real-world workflow patterns
 │   └── ...                      # Additional reference docs
 ├── projects/
-│   ├── canvas/README.md         # Personal Portfolio Site (10 modules) — HTML/CSS/JS, no build tools
-│   ├── forge/README.md          # Personal Dev Toolkit (10 modules)
-│   ├── nexus/README.md          # Local API Gateway (10 modules)
-│   └── sentinel/README.md       # Code Analyzer & Test Generator (10 modules)
+│   ├── canvas/
+│   │   ├── README.md            # Project overview, setup, module list
+│   │   └── modules/             # Individual module guides (01 through 10)
+│   ├── forge/
+│   │   ├── README.md
+│   │   └── modules/
+│   ├── nexus/
+│   │   ├── README.md
+│   │   └── modules/
+│   └── sentinel/
+│       ├── README.md
+│       └── modules/
 └── workspace/                   # User project directories (gitignored)
     └── <project-name>/          # Scaffolded by /start, has its own git repo
 ```
@@ -43,7 +51,7 @@ When a user runs `claude` in this repo:
 2. **Hook 1 — welcome.sh**: Prints a welcome banner telling them to type `/start` and explains the hooks.
 3. **Hook 2 — check-updates.js**: Pings GitHub to check if a newer version of Claude Code is available. If so, it tells the user to run `claude update`. Fails silently if offline.
 4. The `/start` skill walks them through: pick a project (Canvas, Forge, Nexus, or Sentinel), pick a language (skipped for Canvas), optionally choose an environment (skipped for Canvas; venv/conda/Docker for others), verify environment, scaffold project in `workspace/<name>/`, then deliver Module 1 inline.
-5. From there, users say "next module" to continue through Modules 2-10. Claude reads the project guide from `projects/<name>/README.md` and walks them through each module — all within the same cc-self-train session. No terminal switching needed.
+5. From there, users say "next module" to continue through Modules 2-10. Claude reads the current module file from `projects/<name>/modules/` and walks them through it — all within the same cc-self-train session. No terminal switching needed.
 
 ## Conventions
 
@@ -74,7 +82,8 @@ This is critical — new users must not land in a blank, confusing session. Alwa
 - If they're stuck on environment setup, help them get their toolchain working first
 - Encourage the build→test→fix→commit cycle from Module 2 onward
 - Keep suggestions practical and incremental, not theoretical
-- When the user says "next module", read `projects/<name>/README.md` (from `CLAUDE.local.md`) and walk them through the next module. Update `Current Module` in `CLAUDE.local.md` after completion.
+- When the user says "next module", read the current module file from `projects/<name>/modules/` (e.g., `02-blueprint.md` for Module 2). The module number is tracked in `CLAUDE.local.md`. Update `Current Module` in `CLAUDE.local.md` after completion.
+- Before running /compact or when context is getting large, first update `CLAUDE.local.md` with the current module, step number, and any in-progress work so progress survives context compaction.
 
 ## The 10 Modules (Same for All 3 Projects)
 

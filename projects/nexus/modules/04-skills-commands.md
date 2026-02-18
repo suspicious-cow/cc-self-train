@@ -1,0 +1,99 @@
+# Module 4 -- Skills & Commands
+
+**CC features:** SKILL.md, frontmatter, custom commands, hot-reload, argument substitution, disable-model-invocation
+
+> **Why this step:** Skills turn multi-step workflows into one-command shortcuts. Instead of explaining "read the config, validate the route, add it, show the result" every time, you encode that workflow once and invoke it with `/add-route`. Skills are how you teach Claude repeatable processes.
+
+### Step 1: Create the "add-route" Skill
+
+Skills live in `.claude/skills/<skill-name>/SKILL.md`. Describe the workflow you want to Claude and ask it to create the skill file with the right frontmatter.
+
+> "Create a skill called add-route that walks me through adding a new route to the gateway config. It should read the existing config, ask me for the path, method, and upstream target, validate there are no conflicts, add the route, show the updated list, and remind me to restart if the gateway is running. Make it user-triggered only -- I don't want Claude running this automatically."
+
+Claude will create `.claude/skills/add-route/SKILL.md` with `disable-model-invocation: true` in the frontmatter. Test it by typing:
+
+```
+/add-route
+```
+
+Claude will walk through the guided route creation process.
+
+### Step 2: Create the "test-endpoint" Skill
+
+Now ask Claude to create a skill for testing endpoints. Describe what it should do -- fire a test request, report the result, and diagnose failures. Tell Claude it should accept arguments for the path and method.
+
+> "Create a test-endpoint skill that fires a request at the running gateway and reports the result. It should take a path and an optional HTTP method as arguments, show me the status code, response time, headers, and body, and if it fails, diagnose whether the gateway is running, the route exists, and the upstream is reachable. User-triggered only."
+
+Claude will create the skill with `$ARGUMENTS` for argument capture and `argument-hint` in the frontmatter. Test it:
+
+```
+/test-endpoint /api/users GET
+```
+
+> **STOP -- What you just did:** You created two skills with `disable-model-invocation: true`, which means they only run when you explicitly type the slash command. This is important for skills that take action (adding routes, firing test requests) -- you want to control when they execute. The `argument-hint` frontmatter in test-endpoint tells users what arguments the skill expects, and `$ARGUMENTS` captures everything they type after the command name.
+
+How about we create a status-report skill next?
+
+### Step 3: Create the "status-report" Skill
+
+Ask Claude to create a status report skill that gives you a full overview of the gateway -- whether it is running, all routes with their upstreams and health, rate limit configs, and the /health endpoint response.
+
+> "Create a status-report skill that checks if the gateway is running, reads the route config, pings each upstream to see if it's reachable, shows rate limit settings, hits /health, and formats everything as a clean table. This one does NOT need disable-model-invocation -- I want Claude to be able to run status checks proactively."
+
+Notice the difference: this skill omits `disable-model-invocation: true`, so Claude can invoke it automatically when it thinks a status check is relevant.
+
+> **Quick check before continuing:**
+> - [ ] `/add-route` walks you through adding a route to the config
+> - [ ] `/test-endpoint /health GET` fires a request and reports the result
+> - [ ] `/status-report` generates a gateway overview
+> - [ ] You understand that `disable-model-invocation: true` means "user-triggered only"
+
+### Step 4: Argument Substitution
+
+> **Why this step:** Positional arguments (`$0`, `$1`, `$ARGUMENTS`) make skills flexible. Instead of creating separate skills for each route, one skill with `$0` can look up any route you specify. This is the difference between a rigid script and a reusable tool.
+
+Skills support positional arguments. In the test-endpoint skill above, `$ARGUMENTS` captures everything after the skill name. You can also use:
+
+- `$0` -- first argument
+- `$1` -- second argument
+- `$ARGUMENTS[0]` -- same as `$0`
+
+Ask Claude to create a route-info skill that uses positional arguments to look up a specific route. Describe what details you want to see about the route.
+
+> "Create a route-info skill that takes a path pattern as its first argument and looks it up in the config. Show me the full route definition, rate limit settings, whether the upstream is reachable, and how common request patterns would match against it. User-triggered only."
+
+Claude will use `$0` (the first positional argument) in the skill body. Test it: `/route-info /api/users`
+
+### Step 5: Hot-Reload Demonstration
+
+With Claude Code running, open `.claude/skills/status-report/SKILL.md` in a separate editor and change the description text. Go back to Claude Code and type `/status-report`. Claude picks up the updated skill content without restarting.
+
+Skills are re-read each time they are invoked, so edits take effect immediately.
+
+> **STOP -- What you just did:** You saw that skills are re-read every time they are invoked -- no restart needed. This hot-reload behavior means you can iterate on skill prompts in real time: edit the SKILL.md, invoke the command, see the result, refine. This tight feedback loop is how you dial in the exact workflow you want.
+
+Shall we review how disable-model-invocation controls your skills?
+
+### Step 6: Create a disable-model-invocation Skill
+
+The `disable-model-invocation: true` frontmatter prevents Claude from using a skill automatically. It will only run when you explicitly type the slash command.
+
+Review your skills and confirm:
+- `add-route`: has `disable-model-invocation: true` (you control when routes are added)
+- `test-endpoint`: has `disable-model-invocation: true` (you control when tests fire)
+- `status-report`: does NOT have it (Claude can run status checks proactively)
+- `route-info`: has `disable-model-invocation: true` (lookup on demand)
+
+Ask Claude to explain which of your skills it can invoke automatically and which require you to type the slash command.
+
+> "Which of my skills can you invoke on your own, and which ones do I have to trigger manually? What's the difference?"
+
+### Checkpoint
+
+- [ ] `.claude/skills/add-route/SKILL.md` exists and `/add-route` works
+- [ ] `.claude/skills/test-endpoint/SKILL.md` exists and `/test-endpoint /health GET` works
+- [ ] `.claude/skills/status-report/SKILL.md` exists and `/status-report` works
+- [ ] `.claude/skills/route-info/SKILL.md` exists with `$0` substitution
+- [ ] You modified a skill file and saw the change take effect without restart
+- [ ] You understand the difference between `disable-model-invocation: true` and default
+- [ ] All skills committed to git
