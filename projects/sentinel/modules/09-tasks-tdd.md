@@ -2,6 +2,8 @@
 
 **CC features:** Tasks, dependencies, cross-session, TDD loops, SubagentStop
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 In this module you use the Tasks system for multi-step work and practice strict TDD.
 
 ### Step 1: Tasks system overview

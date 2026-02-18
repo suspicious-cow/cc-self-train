@@ -3,6 +3,8 @@
 **CC features:** SKILL.md, frontmatter, custom slash commands, hot-reload,
 argument substitution, `disable-model-invocation`
 
+> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+
 ### 4.1 Create the Skills Directory
 
 > **Why this step:** Skills are reusable, parameterized workflows you invoke with a slash command. Instead of typing the same multi-step prompt every time you need a new page, you write it once as a skill and invoke it with `/new-page faq`. Skills are the difference between using Claude Code casually and using it like a power tool.

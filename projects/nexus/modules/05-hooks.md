@@ -2,6 +2,8 @@
 
 **CC features:** SessionStart, PostToolUse, Stop hooks, matchers, hook scripting, settings.json
 
+> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+
 ### Step 1: Hook Lifecycle Overview
 
 Hooks are custom shell commands that fire at specific points during a Claude Code session. They are configured in `.claude/settings.json` (project) or `~/.claude/settings.json` (user).

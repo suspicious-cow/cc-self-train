@@ -3,6 +3,8 @@
 **CC features:** `.claude/agents/`, subagent frontmatter, chaining, parallel,
 background (`Ctrl+B`), resuming
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 ### 8.1 What Are Subagents
 
 > **Why this step:** Until now, everything has happened in your main Claude Code conversation. Subagents are separate AI assistants that work in their own context windows. This is important because your main conversation has limited context space -- heavy analysis (like scanning every HTML file for accessibility issues) fills it up fast. Subagents do the heavy lifting in their own space and return just the results.

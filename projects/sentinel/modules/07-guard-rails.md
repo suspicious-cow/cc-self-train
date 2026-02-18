@@ -2,6 +2,8 @@
 
 **CC features:** PreToolUse, hook decision control, prompt-based hooks, permissionDecision, additionalContext, updatedInput
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 In this module you build hooks that act as guardrails -- preventing bad actions, injecting context, and modifying inputs before tools execute.
 
 ### Step 1: Understand PreToolUse decision control

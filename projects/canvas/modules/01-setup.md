@@ -3,6 +3,8 @@
 **CC features:** CLAUDE.md, `/init`, `/memory`, interactive mode, keyboard
 shortcuts
 
+> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+
 > **Used `/start`?** Module 1 was completed during onboarding. Jump to [Module 2 -- Blueprint and Build](02-blueprint.md).
 
 ### 1.1 Create Your Project

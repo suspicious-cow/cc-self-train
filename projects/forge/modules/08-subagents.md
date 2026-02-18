@@ -3,6 +3,8 @@
 **CC features:** `.claude/agents/`, subagent frontmatter, chaining, parallel,
 background (`Ctrl+B`), resuming
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 ## 8.1 What Are Subagents
 
 > **Why this step:** Up to now, your main Claude session does everything -- planning, coding, testing, searching. Subagents let you delegate specialized tasks to focused assistants that have their own context windows and tool restrictions. This keeps your main conversation clean and lets you route tasks to cheaper, faster models (like Haiku for search) while reserving the more capable model for complex work.

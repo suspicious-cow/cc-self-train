@@ -2,6 +2,8 @@
 
 **CC features:** SKILL.md, frontmatter, custom slash commands, hot-reload, argument substitution, disable-model-invocation
 
+> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+
 In this module you create reusable skills that extend what Claude can do in your project.
 
 ### Step 1: Create the "analyze" skill

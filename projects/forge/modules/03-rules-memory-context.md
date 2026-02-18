@@ -3,6 +3,8 @@
 **CC features:** `.claude/rules/`, `CLAUDE.local.md`, `@imports`, `/context`,
 `/compact`, memory hierarchy, `/cost`
 
+> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+
 ## 3.1 Create Project Rules
 
 > **Why this step:** Rules are how you teach Claude your project's conventions. Instead of repeating "use fixtures in tests" or "add docstrings" in every prompt, you write it once in a rule file and Claude follows it automatically in every session.

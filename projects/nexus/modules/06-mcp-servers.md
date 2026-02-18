@@ -2,6 +2,8 @@
 
 **CC features:** MCP servers, .mcp.json, scopes, skills+MCP, claude mcp add
 
+> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+
 ### Step 1: What is MCP
 
 MCP (Model Context Protocol) connects Claude Code to external tools, databases, and APIs. Skills teach Claude **what to do**; MCP gives Claude **access to things**.

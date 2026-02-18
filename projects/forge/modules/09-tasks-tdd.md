@@ -3,6 +3,8 @@
 **CC features:** Tasks system, `TaskCreate`, dependencies/blockedBy,
 cross-session persistence, TDD loops, SubagentStop
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 ## 9.1 Tasks System Overview
 
 > **Why this step:** Up to now, you have been giving Claude one instruction at a time. Tasks let you define a *plan of work* with dependencies -- "do A, then B (which needs A), then C (which needs B)." Claude tracks progress, respects the dependency order, and persists the task list across sessions. This is how you manage multi-step work that spans hours or days.

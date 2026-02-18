@@ -2,6 +2,8 @@
 
 **CC features:** MCP servers, `.mcp.json`, scopes, skills+MCP, `claude mcp add`
 
+> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+
 ## 6.1 What Is MCP
 
 MCP (Model Context Protocol) is an open standard for connecting AI tools to

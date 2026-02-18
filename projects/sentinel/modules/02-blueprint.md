@@ -2,6 +2,8 @@
 
 **CC features:** Plan mode, git integration, basic prompting
 
+> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+
 In this module you design Sentinel's architecture in plan mode, then switch to execution mode to build the core.
 
 ### Step 1: Enter plan mode

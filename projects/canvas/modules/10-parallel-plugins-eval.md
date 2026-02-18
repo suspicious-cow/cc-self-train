@@ -3,6 +3,8 @@
 **CC features:** Git worktrees, plugins, evaluation, PermissionRequest hooks,
 continuous learning
 
+> **Persona — Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."
+
 ### 10.1 Git Worktrees for Parallel Development
 
 > **Why this step:** Until now, you have worked on one feature at a time. Git worktrees let you have multiple branches checked out simultaneously in different directories -- each with its own Claude Code session. This is how you do true parallel development: two features being built at the same time by two Claude instances that can even share a task list.

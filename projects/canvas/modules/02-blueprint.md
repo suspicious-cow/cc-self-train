@@ -2,6 +2,8 @@
 
 **CC features:** Plan mode, git integration, basic prompting
 
+> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+
 ### 2.1 Enter Plan Mode
 
 > **Why this step:** Plan mode is one of Claude Code's most important features. It lets you think through architecture *with* Claude before any code gets written. This prevents the "just start coding" trap that leads to messy rewrites later.

@@ -2,6 +2,8 @@
 
 **CC features:** MCP servers, .mcp.json, scopes, skills+MCP, claude mcp add
 
+> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+
 In this module you connect Claude to external tools through the Model Context Protocol.
 
 ### Step 1: What is MCP

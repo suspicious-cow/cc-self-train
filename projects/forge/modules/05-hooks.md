@@ -3,6 +3,8 @@
 **CC features:** SessionStart, PostToolUse, Stop hooks, matchers, hook
 scripting, settings.json
 
+> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+
 ## 5.1 Hook Lifecycle Overview
 
 > **Why this step:** Hooks let you automate actions at key moments in Claude Code's lifecycle -- when a session starts, after a file is written, before Claude stops responding. They are the foundation of quality automation: auto-formatting, auto-testing, injecting context, and blocking dangerous operations. Understanding the hook lifecycle is essential before you start writing hooks.

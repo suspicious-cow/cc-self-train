@@ -2,6 +2,8 @@
 
 **CC features:** .claude/agents/, subagent frontmatter, chaining, parallel, background, resuming
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 In this module you create specialized AI agents that handle specific tasks within Sentinel.
 
 ### Step 1: What are subagents

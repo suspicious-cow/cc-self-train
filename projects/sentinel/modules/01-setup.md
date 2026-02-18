@@ -2,6 +2,8 @@
 
 **CC features:** CLAUDE.md, /init, /memory, interactive mode, keyboard shortcuts
 
+> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+
 > **Used `/start`?** Module 1 was completed during onboarding. Jump to [Module 2 -- Blueprint & Build](02-blueprint.md).
 
 In this module you create the sentinel project, initialize it with Claude Code, and learn the fundamentals of interactive mode.

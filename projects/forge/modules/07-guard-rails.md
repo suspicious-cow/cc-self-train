@@ -3,6 +3,8 @@
 **CC features:** PreToolUse, hook decision control, prompt-based hooks,
 `permissionDecision`, `additionalContext`, `updatedInput`
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 ## 7.1 PreToolUse Hooks with Decision Control
 
 > **Why this step:** In Module 5 you built hooks that *observe* (SessionStart, PostToolUse, Stop). Now you are building hooks that *control* -- they intercept tool calls and decide whether to allow, deny, or modify them. This is the guard rail pattern: automated safety checks that prevent mistakes before they happen, without slowing you down.

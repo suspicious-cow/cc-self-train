@@ -3,6 +3,8 @@
 **CC features:** SKILL.md, frontmatter, custom slash commands, hot-reload,
 argument substitution, `disable-model-invocation`
 
+> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+
 ## 4.1 Create the Skills Directory
 
 > **Why this step:** Skills are reusable, parameterized workflows you trigger with slash commands. Instead of retyping a complex prompt every time you want to add an item or search your knowledge base, you write it once as a skill and invoke it with `/add-item` or `/search`. Think of skills as saved prompts with superpowers -- they accept arguments, restrict tool access, and can reference supporting files.

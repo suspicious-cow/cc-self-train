@@ -2,6 +2,8 @@
 
 **CC features:** .claude/rules/, CLAUDE.local.md, @imports, /context, /compact, /cost
 
+> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+
 In this module you learn how to give Claude structured, persistent instructions that apply to specific parts of your codebase.
 
 ### Step 1: Create path-scoped rules

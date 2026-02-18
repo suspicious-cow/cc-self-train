@@ -2,6 +2,8 @@
 
 **CC features:** .claude/agents/, subagent frontmatter, chaining, parallel, background, resuming
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 ### Step 1: What Are Subagents
 
 Subagents are specialized AI assistants running in their own context window with custom system prompts, specific tool access, and independent permissions. Benefits: preserve main conversation context, enforce tool constraints, specialize behavior, control costs by routing to faster models.

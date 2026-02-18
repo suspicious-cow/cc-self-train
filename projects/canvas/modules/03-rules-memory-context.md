@@ -3,6 +3,8 @@
 **CC features:** `.claude/rules/`, `CLAUDE.local.md`, `@imports`, `/context`,
 `/compact`, memory hierarchy, `/cost`
 
+> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+
 ### 3.1 Create Project Rules
 
 > **Why this step:** Rules are how you teach Claude your project's standards permanently. Instead of repeating "use semantic HTML" every session, you write it once in a rule file and Claude follows it automatically. Path-scoped rules only activate when Claude works on matching files, keeping context lean.

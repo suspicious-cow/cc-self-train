@@ -2,6 +2,8 @@
 
 **CC features:** Plan mode, git integration, basic prompting
 
+> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+
 ### Step 1: Enter Plan Mode
 
 Press `Shift+Tab` to switch to Plan mode. The indicator in your prompt area changes to show you are in planning mode. In plan mode, Claude analyzes and designs without making changes to files.

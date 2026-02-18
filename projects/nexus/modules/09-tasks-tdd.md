@@ -2,6 +2,8 @@
 
 **CC features:** Tasks, dependencies, cross-session, TDD loops, SubagentStop
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 ### Step 1: Tasks System Overview
 
 Tasks replace the old "Todos" system. Key differences: dependency graphs (DAG structure where tasks can block other tasks), filesystem persistence (`~/.claude/tasks`), cross-session sharing (multiple Claude instances on one task list), and broadcast updates.

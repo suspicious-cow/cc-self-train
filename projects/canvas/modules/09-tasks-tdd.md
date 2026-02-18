@@ -3,6 +3,8 @@
 **CC features:** Tasks system, `TaskCreate`, dependencies/blockedBy,
 cross-session persistence, TDD loops, SubagentStop
 
+> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
 ### 9.1 Tasks System Overview
 
 > **Why this step:** Tasks give Claude Code a built-in project management system. Instead of keeping a mental checklist of what needs to happen, you define tasks with explicit dependencies -- task B cannot start until task A finishes. This prevents Claude from jumping ahead or working on things out of order, which is especially important for multi-step features like building a contact form.

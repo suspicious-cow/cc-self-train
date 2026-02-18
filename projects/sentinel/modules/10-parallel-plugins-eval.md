@@ -2,6 +2,8 @@
 
 **CC features:** Worktrees, plugins, eval, PermissionRequest hooks, continuous learning
 
+> **Persona — Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."
+
 In this final module you learn advanced patterns for scaling your workflow.
 
 ### Step 1: Git worktrees
