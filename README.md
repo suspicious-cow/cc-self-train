@@ -200,3 +200,7 @@ The `context/` folder contains detailed reference documentation for every CC fea
 - [everything-claude-code](https://github.com/affaan-m/everything-claude-code) — Reference docs, agents, skills, and commands for Claude Code
 - [Claude Code docs](https://docs.anthropic.com/en/docs/claude-code) — Official documentation
 - [Claude Code changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md) — Latest changes
+
+## License
+
+This project is licensed under the [MIT License](LICENSE). Co-authored with [Claude](https://claude.ai) by Anthropic — see [DISCLAIMER.md](DISCLAIMER.md) for details on AI-generated content, warranty, and support.
