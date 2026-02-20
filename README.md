@@ -175,11 +175,14 @@ The `context/` folder contains detailed reference documentation for every CC fea
 | `context/hooks.txt` | Hook lifecycle, events, scripting, decision control |
 | `context/configure-hooks.txt` | Practical hook configuration examples |
 | `context/subagents.txt` | Subagent creation, frontmatter, patterns |
+| `context/agent-teams.txt` | Agent teams (experimental), coordination |
 | `context/plugins.txt` | Plugin structure, manifest, bundling |
 | `context/tasks.txt` | Tasks system, dependencies, cross-session |
 | `context/mcp.txt` | MCP servers, transports, scopes |
 | `context/skills-plus-mcp.txt` | Combining skills with MCP tools |
 | `context/interactive-mode.txt` | Keyboard shortcuts, vim mode |
+| `context/common-workflows.txt` | Common workflows and patterns |
+| `context/when-to-use-features.txt` | Feature comparison and selection guide |
 | `context/boris-workflow.txt` | Real-world patterns, parallel Claude workflows |
 | `context/changelog-cc.txt` | Claude Code changelog (v2.0.0 — v2.1.42) |
 

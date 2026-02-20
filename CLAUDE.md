@@ -20,11 +20,14 @@ cc-self-train/
 │   ├── hooks.txt                # Hook lifecycle, events, scripting
 │   ├── configure-hooks.txt      # Practical hook configuration
 │   ├── subagents.txt            # Custom subagents (.claude/agents/)
+│   ├── agent-teams.txt          # Agent teams (experimental), coordination
 │   ├── plugins.txt              # Plugin structure and distribution
 │   ├── tasks.txt                # Tasks system, dependencies
 │   ├── mcp.txt                  # MCP servers and integrations
 │   ├── skills-plus-mcp.txt      # Skills + MCP patterns
 │   ├── interactive-mode.txt     # Keyboard shortcuts, vim mode
+│   ├── common-workflows.txt     # Common workflows and patterns
+│   ├── when-to-use-features.txt # Feature comparison and selection guide
 │   ├── boris-workflow.txt       # Real-world workflow patterns
 │   └── ...                      # Additional reference docs
 ├── projects/
