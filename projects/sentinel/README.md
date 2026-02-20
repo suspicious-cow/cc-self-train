@@ -124,7 +124,7 @@ npm install -g @anthropic-ai/claude-code
 claude --version
 ```
 
-You need an [Anthropic API key](https://console.anthropic.com/) or a Max subscription.
+You need an [Anthropic API key](https://console.anthropic.com/) or a Claude subscription (Pro, Max, or Team).
 
 ---
 
