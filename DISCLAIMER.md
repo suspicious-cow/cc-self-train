@@ -8,7 +8,7 @@ See [LICENSE](LICENSE) for the full MIT license text.
 
 ## AI-Generated Content
 
-This project was co-authored with [Claude](https://claude.ai) by [Anthropic](https://anthropic.com). Portions of the code, documentation, and curriculum were generated or refined with AI assistance.
+This project was created by Zain Naboulsi and co-authored with [Claude](https://claude.ai) by [Anthropic](https://anthropic.com). Portions of the code, documentation, and curriculum were generated or refined with AI assistance.
 
 - AI-generated content should be reviewed before use in production environments.
 - Anthropic is not affiliated with, nor does it endorse, this project.

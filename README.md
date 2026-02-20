@@ -203,4 +203,4 @@ The `context/` folder contains detailed reference documentation for every CC fea
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE). Co-authored with [Claude](https://claude.ai) by Anthropic — see [DISCLAIMER.md](DISCLAIMER.md) for details on AI-generated content, warranty, and support.
+This project is created by Zain Naboulsi and licensed under the [MIT License](LICENSE). Co-authored with [Claude](https://claude.ai) by Anthropic — see [DISCLAIMER.md](DISCLAIMER.md) for details on AI-generated content, warranty, and support.
