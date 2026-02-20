@@ -132,7 +132,7 @@ Every project follows this same progression:
 | 7 | **Guard Rails** | PreToolUse, hook decision control, prompt-based hooks |
 | 8 | **Subagents** | .claude/agents/, subagent frontmatter, chaining, parallel, background |
 | 9 | **Tasks & TDD** | Tasks system, dependencies, cross-session persistence, TDD loops |
-| 10 | **Parallel Dev, Plugins & Evaluation** | Worktrees, plugins, eval, PermissionRequest hooks, continuous learning |
+| 10 | **Parallel Dev, Plugins & Evaluation** | Worktrees, agent teams (experimental), plugins, eval, PermissionRequest hooks, continuous learning |
 
 ## Feature Coverage Matrix
 
@@ -160,6 +160,7 @@ Every major CC feature is taught in all 4 projects:
 | Tasks system (dependencies, cross-session) | x | x | x | x | 9 |
 | TDD & verification loops | x | x | x | x | 9 |
 | Git worktrees, parallel dev | x | x | x | x | 10 |
+| Agent teams (experimental) | x | x | x | x | 10 |
 | Plugins (bundling everything) | x | x | x | x | 10 |
 | Evaluation framework | x | x | x | x | 10 |
 | Continuous learning patterns | x | x | x | x | 10 |
