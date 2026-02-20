@@ -1,7 +1,7 @@
 # Module 10 -- Parallel Dev, Plugins, and Evaluation
 
-**CC features:** Git worktrees, plugins, evaluation, PermissionRequest hooks,
-continuous learning
+**CC features:** Git worktrees, agent teams (experimental), plugins, evaluation,
+PermissionRequest hooks, continuous learning
 
 > **Persona — Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."
 
@@ -68,9 +68,29 @@ Both sessions see all tasks. When one completes a task, the other is notified.
 
 > **STOP -- What you just did:** You ran two Claude Code instances simultaneously, each in its own worktree with its own branch, sharing a single task list via `CLAUDE_CODE_TASK_LIST_ID`. This is the most powerful development pattern in Claude Code: parallel feature development with coordination. Each instance works independently but can see the other's progress. In a real team workflow, you might have three or four worktrees running simultaneously -- one per feature.
 
+### 10.5 Agent Teams
+
+> **Why this step:** You just coordinated two Claude instances manually -- separate terminals, shared task list, you managing both. Agent teams automate this: Claude spawns teammates, assigns tasks, and they message each other directly. It is the difference between you being the coordinator and Claude being the coordinator.
+
+Agent teams are an experimental feature. Enable them first:
+
+```
+! claude config set experiments.agentTeams true
+```
+
+Now tell Claude to create a team for a multi-agent task:
+
+> "Create an agent team to polish the portfolio. One teammate audits accessibility across all pages, another reviews CSS consistency, and a third checks content quality. They should share findings and coordinate fixes."
+
+Watch what happens: Claude creates a team, spawns teammates, assigns tasks, and the teammates message each other directly. You can observe the task list updating and messages flowing between agents.
+
+**Subagents vs agent teams:** Subagents report back to your main conversation only -- they cannot talk to each other. Agent teams communicate peer-to-peer through a shared task list and direct messages. Use subagents for focused delegation ("scan these files"), agent teams for collaborative work ("three specialists coordinating a review").
+
+> **STOP -- What you just did:** You used agent teams to coordinate multiple Claude instances automatically. Instead of managing separate terminals and a shared task list yourself, Claude handled the orchestration -- creating teammates, assigning work, and letting them communicate. This is an experimental feature with limitations: no session resume for teams, no nested teams, and the coordination overhead means it is best suited for tasks with genuine interdependencies, not simple parallelism.
+
 Ready to package everything into a reusable plugin?
 
-### 10.5 Plugin Creation
+### 10.6 Plugin Creation
 
 > **Why this step:** Plugins let you package everything you have built -- skills, agents, hooks -- into a single distributable unit. Instead of every new project needing to recreate these tools from scratch, you bundle them once and reuse them anywhere. This is how you go from "project-specific tooling" to "reusable toolkit."
 
@@ -90,7 +110,7 @@ web-dev-plugin/
   hooks/hooks.json
 ```
 
-### 10.6 Test the Plugin
+### 10.7 Test the Plugin
 
 Test your plugin locally:
 
@@ -114,7 +134,7 @@ prevent conflicts.
 > - [ ] `web-dev-plugin/agents/` contains your agents
 > - [ ] `--plugin-dir` loaded the plugin and skills work with the `web-dev:` prefix
 
-### 10.7 Evaluation
+### 10.8 Evaluation
 
 > **Why this step:** Building skills and agents is only half the job -- you need to verify they work correctly across different inputs. Evaluation suites test your tools systematically: does the `new-page` skill handle an empty name gracefully? Does the accessibility agent catch a missing alt attribute? This is how you catch regressions and build confidence in your toolkit.
 
@@ -128,7 +148,7 @@ Discuss with Claude which edge cases matter most to you and whether the scoring 
 
 Want to automate eval permissions with a PermissionRequest hook?
 
-### 10.8 PermissionRequest Hooks for Eval Automation
+### 10.9 PermissionRequest Hooks for Eval Automation
 
 During evaluation, auto-approve safe operations to avoid prompt fatigue. Tell Claude what you need:
 
@@ -140,7 +160,7 @@ Keep this in `settings.local.json` (not committed) and use only during eval.
 
 Shall we wrap up with continuous learning and a final review?
 
-### 10.9 Continuous Learning
+### 10.10 Continuous Learning
 
 Reflect on the full project and update your configuration. Ask Claude to help you review what you have built:
 
@@ -159,6 +179,8 @@ This is the continuous learning cycle: build, reflect, refine, repeat.
 - [ ] Blog engine renders markdown posts with tag filtering
 - [ ] Ran two Claude instances with a shared task list
 - [ ] Both instances could see and update the same tasks
+- [ ] (Experimental) Created an agent team with 2-3 teammates
+- [ ] Teammates communicated and coordinated through shared tasks
 - [ ] Plugin created with manifest, skills, agents, and hooks
 - [ ] Plugin tested with `--plugin-dir` and skills work with namespace prefix
 - [ ] Evaluation suite exists with test specs for skills and agents
@@ -191,6 +213,7 @@ Confirm you have touched every major Claude Code feature across all 10 modules:
 - [ ] TDD -- test-first development cycle
 - [ ] SubagentStop hooks -- verification of subagent output
 - [ ] Git worktrees -- parallel development with multiple Claude instances
+- [ ] Agent teams (experimental) -- created a team, observed messaging and task coordination
 - [ ] Plugins -- manifest, skills, agents, hooks, `--plugin-dir`
 - [ ] Evaluation -- test specs for skills and agents
 - [ ] PermissionRequest hooks -- auto-approval for eval automation
@@ -209,7 +232,8 @@ mode and think it through. This is cheaper than fixing mistakes.
 **Read the context files.** The `cc-self-train/context/` directory has detailed
 reference docs for every CC feature: `claudemd.txt`, `skillsmd.txt`,
 `hooks.txt`, `configure-hooks.txt`, `mcp.txt`, `skills-plus-mcp.txt`,
-`subagents.txt`, `tasks.txt`, `plugins.txt`, `interactive-mode.txt`,
+`subagents.txt`, `agent-teams.txt`, `tasks.txt`, `plugins.txt`,
+`interactive-mode.txt`, `common-workflows.txt`, `when-to-use-features.txt`,
 `boris-workflow.txt`.
 
 **Commit often.** Small, focused commits make it easy to revert mistakes and

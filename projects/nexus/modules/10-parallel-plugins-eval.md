@@ -1,6 +1,6 @@
 # Module 10 -- Parallel Dev, Plugins & Evaluation
 
-**CC features:** Worktrees, plugins, eval, PermissionRequest hooks, continuous learning
+**CC features:** Worktrees, agent teams (experimental), plugins, eval, PermissionRequest hooks, continuous learning
 
 > **Persona — Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."
 
@@ -39,7 +39,25 @@ Both instances share the task list. When one completes a task, the other sees th
 > - [ ] Tasks created in one terminal appear in the other
 > - [ ] Both instances are making progress on their respective features
 
-### Step 3: Create a Plugin -- "gateway-plugin"
+### Step 3: Agent Teams
+
+Agent teams are experimental. Enable them:
+
+```
+! claude config set experiments.agentTeams true
+```
+
+Tell Claude to create a team:
+
+> "Create an agent team for the gateway. One teammate builds a health dashboard endpoint, another adds request logging middleware, and a third writes load tests. They share a task list and coordinate."
+
+Watch the team work: Claude spawns teammates, assigns tasks, and they message each other directly. This automates the manual `CLAUDE_CODE_TASK_LIST_ID` pattern from Step 2.
+
+**Subagents vs agent teams:** Subagents report back to you only. Agent teams communicate peer-to-peer through shared tasks and direct messages. Use subagents for focused delegation, agent teams for collaborative parallel work.
+
+> **STOP -- What you just did:** You used agent teams to automate multi-instance coordination. Instead of managing separate terminals with a shared `CLAUDE_CODE_TASK_LIST_ID`, Claude handled the orchestration -- creating teammates, assigning work, and letting them communicate. This is experimental: no session resume for teams, no nested teams, and best suited for tasks with genuine interdependencies.
+
+### Step 4: Create a Plugin -- "gateway-plugin"
 
 > **Why this step:** Everything you have built -- skills, agents, hooks -- lives inside your project's `.claude/` directory. A plugin packages all of that into a portable bundle that can be shared, versioned, and reused across projects. If you build another gateway next month, you bring the plugin instead of recreating everything from scratch.
 
@@ -55,7 +73,7 @@ Test: `claude --plugin-dir ./gateway-plugin`, then try `/gateway-plugin:add-rout
 
 Ready to build an evaluation and scoring system?
 
-### Step 4: Evaluation -- Test Specs and Scoring
+### Step 5: Evaluation -- Test Specs and Scoring
 
 > **Why this step:** Evaluation is how you measure Claude's work against objective criteria. Instead of manually checking "does the gateway work?", you define test specs with pass/fail criteria and a scoring system. This pattern is essential for CI/CD pipelines where Claude runs headlessly via `claude -p` and you need automated quality assessment.
 
@@ -72,7 +90,7 @@ Claude will build the evaluation script and run it. This is a basic evaluation f
 > - [ ] The plugin works with `--plugin-dir` and skills have the namespace prefix
 > - [ ] Both worktree features are progressing (or completed)
 
-### Step 5: PermissionRequest Hooks
+### Step 6: PermissionRequest Hooks
 
 > **Why this step:** PermissionRequest hooks control the permission dialogs Claude shows you. Instead of clicking "allow" every time Claude wants to run tests, you auto-approve known-safe commands. And instead of trusting yourself to remember "do not edit the database directly," you auto-deny dangerous patterns. This is the final layer of automation: even the permission system is programmable.
 
@@ -87,7 +105,7 @@ The JSON output format for PermissionRequest hooks uses `hookSpecificOutput.deci
 
 Shall we capture what you learned in your project knowledge layer?
 
-### Step 6: Continuous Learning
+### Step 7: Continuous Learning
 
 > **Why this step:** This is not just a cleanup step -- it is the most important habit you will take from this course. Every project improves Claude's effectiveness by capturing what you learned: architecture decisions in CLAUDE.md, coding patterns in rules files, workflows in skills, specialized analysis in agents. The project you just built is not just a gateway -- it is a knowledge base that makes your next project faster.
 
@@ -99,6 +117,8 @@ The key insight: CLAUDE.md + rules + skills + agents + hooks form a complete "kn
 
 - [ ] Two git worktrees created for parallel feature development
 - [ ] Two Claude Code instances sharing a task list
+- [ ] (Experimental) Created an agent team with 2-3 teammates
+- [ ] Teammates communicated and coordinated through shared tasks
 - [ ] gateway-plugin created with skills, agents, and hooks
 - [ ] Plugin tested with `--plugin-dir` flag
 - [ ] Evaluation script runs and produces a score
@@ -158,6 +178,7 @@ Go through this list to confirm you have covered every major CC feature:
 
 **Advanced (Module 10)**
 - [ ] Git worktrees used for parallel development
+- [ ] Agent teams (experimental) -- created a team, observed messaging and task coordination
 - [ ] Plugin created and tested
 - [ ] Evaluation script produces a score
 - [ ] PermissionRequest hooks configured

@@ -70,6 +70,11 @@ Note `permissionMode: plan` -- this agent can only read and analyze, never modif
 | `permissionMode` | No | `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan` |
 | `skills` | No | Skills to preload into the agent's context |
 | `hooks` | No | Lifecycle hooks scoped to this agent |
+| `maxTurns` | No | Maximum number of agentic turns before the subagent stops |
+| `mcpServers` | No | MCP servers available to this subagent (named reference or inline config) |
+| `memory` | No | Persistent memory scope: `user`, `project`, or `local`. Enables cross-session learning |
+
+> **What about agents that talk to each other?** Subagents report back to your main conversation only -- they cannot communicate with each other. In Module 10 you will learn about **agent teams**, where multiple Claude instances share a task list and message each other directly. Subagents are for focused delegation; agent teams are for collaborative parallel work.
 
 ## 8.7 Invoke Subagents
 

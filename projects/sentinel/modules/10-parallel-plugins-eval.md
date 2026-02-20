@@ -1,6 +1,6 @@
 # Module 10 -- Parallel Dev, Plugins & Evaluation
 
-**CC features:** Worktrees, plugins, eval, PermissionRequest hooks, continuous learning
+**CC features:** Worktrees, agent teams (experimental), plugins, eval, PermissionRequest hooks, continuous learning
 
 > **Persona — Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."
 
@@ -57,7 +57,25 @@ Each session picks up a different task. They work in parallel on separate branch
 > - [ ] Each worktree has its own Claude Code session running
 > - [ ] Both sessions share the same task list via CLAUDE_CODE_TASK_LIST_ID
 
-### Step 3: Build a plugin
+### Step 3: Agent Teams
+
+Agent teams are experimental. Enable them:
+
+```
+! claude config set experiments.agentTeams true
+```
+
+Tell Claude to create a team:
+
+> "Create an agent team to harden Sentinel. One teammate adds new analysis rules for common vulnerabilities, another writes test fixtures with planted bugs, and a third improves the HTML report output. They share findings and coordinate."
+
+Observe: Claude spawns teammates, assigns tasks, and they message each other directly. This automates the manual `CLAUDE_CODE_TASK_LIST_ID` coordination from Step 2.
+
+**Subagents vs agent teams:** Subagents report back to you only. Agent teams communicate peer-to-peer through shared tasks and direct messages. Use subagents for focused delegation, agent teams for collaborative parallel work.
+
+> **STOP -- What you just did:** You used agent teams to coordinate multiple Claude instances automatically. Instead of managing separate terminals yourself, Claude handled the orchestration. This is experimental: no session resume for teams, no nested teams, and best suited for tasks with genuine interdependencies rather than simple parallelism.
+
+### Step 4: Build a plugin
 
 Ask Claude to bundle everything you have built into a distributable plugin. Describe what you want packaged -- skills, agents, hooks, and MCP config -- and the directory structure.
 
@@ -76,7 +94,7 @@ quality-tools/
 
 > **Why this step:** Plugins are how you distribute Claude Code customizations. Everything you built in Modules 4-8 -- skills, agents, hooks, MCP configs -- gets bundled into a single directory that anyone can load with `--plugin-dir`. This is how you share your work with teammates or the community.
 
-### Step 4: Test the plugin
+### Step 5: Test the plugin
 
 ```
 claude --plugin-dir ./quality-tools
@@ -92,7 +110,7 @@ Verify that skills are available under the `quality-tools:` namespace:
 
 Want to build an evaluation framework for Sentinel?
 
-### Step 5: Build an evaluation framework
+### Step 6: Build an evaluation framework
 
 > **Why this step:** Evaluation measures how well Sentinel actually works. Without it, you are guessing whether your analyzer catches real issues or produces false positives. By creating fixtures with planted bugs and comparing Sentinel's output to expected results, you get concrete accuracy metrics. This is the same approach used to evaluate AI models -- ground truth comparison.
 
@@ -106,7 +124,7 @@ Claude might ask about how many fixtures you want or what kinds of bugs to plant
 
 Shall we set up PermissionRequest hooks for auto-approvals?
 
-### Step 6: PermissionRequest hooks
+### Step 7: PermissionRequest hooks
 
 Ask Claude to create a PermissionRequest hook that auto-approves safe operations but still prompts for risky ones.
 
@@ -122,7 +140,7 @@ The hook matches on "Bash" and runs your approval script. The script outputs JSO
 > - [ ] The PermissionRequest hook auto-approves test runs and sentinel scans
 > - [ ] The PermissionRequest hook still prompts for writes to config files and git push
 
-### Step 7: Continuous learning
+### Step 8: Continuous learning
 
 > **Why this step:** This is the capstone pattern -- a feedback loop where Sentinel improves itself over time. Misclassifications from the eval are logged, loaded into Claude's context at session start, and used to guide future fixes. After each fix, the eval runs again to confirm the fix worked and check for regressions. This is how production ML systems improve, and you are applying the same principle to your code analyzer.
 
@@ -134,7 +152,7 @@ Ask Claude to build a feedback loop where eval results drive improvements. Descr
 
 Ready to clean up the worktrees and wrap up?
 
-### Step 8: Clean up worktrees
+### Step 9: Clean up worktrees
 
 After finishing parallel work:
 
@@ -149,6 +167,8 @@ Merge the feature branches back to main.
 
 - [ ] You created and used git worktrees for parallel development
 - [ ] You ran multiple Claude Code instances sharing a task list
+- [ ] (Experimental) Created an agent team with 2-3 teammates
+- [ ] Teammates communicated and coordinated through shared tasks
 - [ ] `quality-tools` plugin is built with skills, agents, hooks, and MCP config
 - [ ] Plugin works when loaded with `--plugin-dir`
 - [ ] Evaluation framework exists with fixtures, expected output, and scoring

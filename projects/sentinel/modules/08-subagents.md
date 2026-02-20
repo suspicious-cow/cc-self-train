@@ -49,7 +49,9 @@ Finally, create a reporter agent. Since formatting is a simpler task, this one c
 
 Ask Claude to walk you through all the available frontmatter fields for subagents.
 
-> "What frontmatter fields can I use in subagent files? Walk me through name, description, tools, disallowedTools, model, permissionMode, skills, and hooks."
+> "What frontmatter fields can I use in subagent files? Walk me through name, description, tools, disallowedTools, model, permissionMode, skills, hooks, maxTurns, mcpServers, and memory."
+
+> **What about agents that talk to each other?** Subagents report back to your main conversation only -- they cannot communicate with each other. In Module 10 you will learn about **agent teams**, where multiple Claude instances share a task list and message each other directly. Subagents are for focused delegation; agent teams are for collaborative parallel work.
 
 ### Step 6: Chain agents
 
