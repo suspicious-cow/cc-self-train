@@ -1,0 +1,6 @@
+# Auto detect text files and normalize line endings
+* text=auto
+
+# Force LF for scripts that must run on Unix
+*.js text eol=lf
+*.sh text eol=lf

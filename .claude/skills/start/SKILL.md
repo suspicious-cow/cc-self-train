@@ -335,14 +335,14 @@ Present the results as a clean table, filtered to the shortcuts most relevant fo
 
 **Group 1 — Basics:** How to send messages, stop responses, open menus, accept suggestions.
 
-**Group 2 — Working with files:** How to mention files (`@`), run terminal commands (`!`).
+**Group 2 — Working with files:** How to mention files (@), run terminal commands (!).
 
 **Group 3 — Power features:** How to switch modes, undo changes, clear the screen.
 
 After presenting all three groups, suggest they try a few:
-- "Type `/` to see available commands, then close the menu"
-- "Type `@` and look for the CLAUDE.md you created"
-- "Try `! git log --oneline` to see your commit"
+- "Type / to see available commands, then close the menu"
+- "Type @ and look for the CLAUDE.md you created"
+- "Try ! git log --oneline to see your commit"
 - "Press the mode-switch shortcut a couple times and watch the indicator at the bottom change — we'll cover plan mode in detail in Module 2"
 
 **Why teach it this way:** This shows the user that Claude can look things up in real time — they don't need to memorize everything. It also ensures shortcuts are accurate and current, since Claude Code updates frequently.
