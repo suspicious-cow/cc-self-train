@@ -155,6 +155,8 @@ This section is optional -- if you do not use any of these tools, skip ahead to 
 
 ### Checkpoint
 
+Claude Code now reaches beyond your local files. MCP servers give it access to databases, APIs, and tools you already use -- that's a big expansion of what's possible.
+
 - [ ] Filesystem MCP server is connected (`/mcp` shows it active)
 - [ ] Fetch MCP server is connected
 - [ ] You used Fetch to pull real data into the site

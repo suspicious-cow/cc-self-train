@@ -82,6 +82,8 @@ structured decision. They are powerful for nuanced, context-aware checks that wo
 
 ### Checkpoint
 
+Four guard patterns, all working. Claude now enforces your standards automatically -- even when you are not paying attention.
+
 - [ ] PreToolUse hook denies `<img>` tags without alt attributes
 - [ ] PreToolUse hook injects `additionalContext` when reading HTML files
 - [ ] PreToolUse hook uses `updatedInput` to inject meta tags on writes

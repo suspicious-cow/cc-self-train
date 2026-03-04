@@ -84,6 +84,8 @@ Prompt-based hooks send the context to a fast LLM which returns a JSON decision.
 
 ### Checkpoint
 
+Full guard rail system in place. Config validation, context injection, and AI-powered security review -- all running on every tool call.
+
 - [ ] PreToolUse hook blocks config writes that fail validation
 - [ ] PreToolUse hook injects context when reading route handlers
 - [ ] PreToolUse hook reminds Claude to add logging to route handlers

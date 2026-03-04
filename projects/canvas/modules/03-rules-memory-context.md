@@ -142,6 +142,8 @@ After building, run `/context` again to see how context changed. Then commit.
 
 ### Checkpoint
 
+You just taught Claude how your project works. Rules, memory, and imports mean Claude gets smarter about your codebase with every session.
+
 - [ ] `.claude/rules/` directory contains `html-rules.md`, `css-rules.md`, `js-rules.md`
 - [ ] Each rule file has correct path-scoped frontmatter
 - [ ] `CLAUDE.local.md` exists with personal preferences

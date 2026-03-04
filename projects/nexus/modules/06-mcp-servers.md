@@ -130,6 +130,8 @@ This section is optional -- if you do not use any of these tools, skip ahead to 
 
 ### Checkpoint
 
+Your gateway now has persistent storage and Claude can query it directly. MCP servers bridge the gap between Claude and the external tools your project depends on.
+
 - [ ] SQLite MCP server is connected (`/mcp` shows it)
 - [ ] Filesystem MCP server is connected
 - [ ] `.mcp.json` exists at the project root

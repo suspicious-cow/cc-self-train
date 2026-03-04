@@ -124,6 +124,8 @@ This shows all registered hooks and lets you review or approve changes.
 
 ### Checkpoint
 
+Your analyzer now watches itself. Hooks validate rules on write, run tests on stop, and inject context on start -- all automatically.
+
 - [ ] `.claude/settings.json` exists with hook configuration
 - [ ] SessionStart hook injects a quality summary at session start
 - [ ] PostToolUse hook validates rule files after writes

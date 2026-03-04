@@ -80,6 +80,8 @@ structured decision. They are powerful for nuanced, context-aware checks that wo
 
 ## Checkpoint
 
+Four guard patterns, all wired up. Your toolkit now prevents bad data, enforces conventions, and reviews quality -- without you asking.
+
 - [ ] PreToolUse hook denies invalid storage writes with a clear message
 - [ ] PreToolUse hook injects `additionalContext` when reading source files
 - [ ] PreToolUse hook uses `updatedInput` to inject timestamps on writes

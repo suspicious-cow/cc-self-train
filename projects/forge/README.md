@@ -1,12 +1,10 @@
 # Forge -- Personal Dev Toolkit
 
-A hands-on, project-based guide to mastering Claude Code. You will build a CLI
-for notes, snippets, bookmarks, and templates that grows into a searchable,
-pluggable personal knowledge base with an API layer.
+You're going to build a tool you'll actually use every day — a personal CLI for notes, snippets, bookmarks, and templates that grows into a searchable, pluggable knowledge base with an API layer. Along the way, you'll pick up every major Claude Code feature by putting it to work.
 
 **Who this is for:** Tool builders who want something they will actually use
-every day. If you enjoy building your own productivity tools, this is your
-project.
+after the course is over. If you enjoy building your own productivity tools,
+this is your project.
 
 **What you will learn:** All 10 modules cover the full Claude Code feature set,
 from CLAUDE.md and plan mode through skills, hooks, MCP servers, subagents,

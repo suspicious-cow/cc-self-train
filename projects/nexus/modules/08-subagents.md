@@ -92,6 +92,8 @@ While Claude is running a subagent, press `Ctrl+B` to send it to the background.
 
 ### Checkpoint
 
+Three specialized agents for your gateway. Routing, caching, and security -- each one focused on what it does best.
+
 - [ ] `.claude/agents/router-agent.md` exists and responds when invoked
 - [ ] `.claude/agents/cache-agent.md` exists and can query the cache database
 - [ ] `.claude/agents/security-agent.md` exists and produces an audit report

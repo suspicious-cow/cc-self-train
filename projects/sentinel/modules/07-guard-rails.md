@@ -84,6 +84,8 @@ This demonstrates stacking multiple Stop hooks -- the Module 5 hook checks that 
 
 ### Checkpoint
 
+Guard rails locked in. Schema validation, context injection, metadata stamps, and AI-reviewed test quality -- all automatic.
+
 - [ ] PreToolUse hook denies writes of invalid rule schemas
 - [ ] PreToolUse hook injects additionalContext when reading rule files
 - [ ] PreToolUse hook uses updatedInput to add metadata to test files

@@ -105,6 +105,8 @@ In the second session, you can see the same tasks and their current statuses. If
 
 ### Checkpoint
 
+Task graphs, TDD, cross-session persistence, and subagent verification. This is how real multi-session projects get coordinated.
+
 - [ ] Tasks were created with dependencies (task graph, not flat list)
 - [ ] You built the coverage parser using strict TDD (red-green-refactor)
 - [ ] All 5 tasks are complete with coverage tracking integrated

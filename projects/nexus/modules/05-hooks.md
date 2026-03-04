@@ -92,6 +92,8 @@ Ask Claude to show you the full input schema for each hook type you configured.
 
 ### Checkpoint
 
+Your gateway now has automated quality gates. Config validation, test runs, and status checks happen without you lifting a finger.
+
 - [ ] `.claude/settings.json` exists with hook configuration
 - [ ] SessionStart hook injects gateway status on session launch
 - [ ] PostToolUse hook validates config files after writes

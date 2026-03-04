@@ -136,6 +136,8 @@ Notice how Claude follows the testing rules you created in `.claude/rules/testin
 
 ## Checkpoint
 
+You just taught Claude how your toolkit works. Rules enforce your conventions automatically, and @imports keep documentation modular.
+
 - [ ] `.claude/rules/` directory contains `testing.md`, `source-code.md`, `storage.md`
 - [ ] Each rule file has correct path-scoped frontmatter
 - [ ] `CLAUDE.local.md` exists with personal preferences

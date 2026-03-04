@@ -155,6 +155,8 @@ This section is optional -- if you do not use any of these tools, skip ahead to 
 
 ## Checkpoint
 
+Your toolkit just got a real database. MCP servers let Claude reach beyond local files into databases, APIs, and tools you already use.
+
 - [ ] SQLite MCP server is connected (`/mcp` shows it active)
 - [ ] Filesystem MCP server is connected
 - [ ] You can query the SQLite database through Claude

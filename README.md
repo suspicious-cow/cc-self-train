@@ -1,6 +1,6 @@
 # Learn Claude Code by Doing
 
-A hands-on, project-based curriculum for mastering [Claude Code](https://docs.anthropic.com/en/docs/claude-code). You pick a project, pick your language, and learn every major CC feature by building something real.
+The best way to learn Claude Code is to build something real with it. Pick a project, pick your language, and work through 10 hands-on modules that teach you every major [Claude Code](https://docs.anthropic.com/en/docs/claude-code) feature — not by reading about them, but by using them to ship actual code.
 
 ## Quick Start
 
@@ -29,7 +29,7 @@ That's it. Claude will walk you through picking a project, checking your dev env
 
 ## Who This Is For
 
-You've installed Claude Code and maybe run `/init`. Now what? Pick one of 4 projects and work through 10 progressive modules that take you from "first session" to "multi-agent orchestration." Every project teaches every CC feature — you choose based on what you want to build.
+You've installed Claude Code and maybe run `/init`. Now what? This is your answer. Pick one of 4 projects and work through 10 progressive modules that take you from "first session" to "multi-agent orchestration." By the end, you won't just know what these features do — you'll have used every one of them to build something you're proud of.
 
 **No specific language required.** Forge, Nexus, and Sentinel describe *what* to build, not *how*. You choose Python, TypeScript, Go, Rust, or whatever you're comfortable with. Canvas uses plain HTML/CSS/JS — no build tools needed.
 
@@ -189,11 +189,11 @@ The `context/` folder contains detailed reference documentation for every CC fea
 
 ## Design Principles
 
-- **Language-agnostic:** Every project works in any language. You choose.
-- **Local-only:** No cloud services required (MCP connections are optional/local).
-- **Same curriculum, different domains:** All 3 projects teach the same features in the same order. Pick based on interest.
-- **Hands-on:** You learn by building, not by reading. Every module ends with verification.
-- **Real tools:** Every project produces something genuinely useful, not a toy.
+- **Learn by building.** You won't read a single tutorial. Every feature is taught through a real task in your project — you use it, see the result, and move on.
+- **Language-agnostic.** Every project works in any language. You choose.
+- **Local-only.** No cloud services required (MCP connections are optional/local).
+- **Same curriculum, different domains.** All 4 projects teach the same features in the same order. Pick based on interest.
+- **Real tools, not toys.** Every project produces something genuinely useful that you can keep using after you finish.
 
 ## Companion Resources
 

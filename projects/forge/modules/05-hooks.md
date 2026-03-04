@@ -95,6 +95,8 @@ Use `Ctrl+O` (verbose mode) to see hook execution details.
 
 ## Checkpoint
 
+Your toolkit now automates its own quality checks. Hooks catch mistakes the moment they happen -- no manual checking required.
+
 - [ ] `.claude/settings.json` exists with hook configuration
 - [ ] SessionStart hook injects project stats on session start
 - [ ] PostToolUse hook auto-formats files after writes/edits

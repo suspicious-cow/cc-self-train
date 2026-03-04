@@ -1,8 +1,6 @@
 # Canvas -- Personal Portfolio Site
 
-A hands-on, project-based guide to mastering Claude Code. You will build a
-multi-page personal portfolio site with responsive design, a blog, and a
-contact form using plain HTML, CSS, and JavaScript.
+You're going to build a real portfolio site — and learn every Claude Code feature along the way. By the end, you'll have a polished, multi-page site with responsive design, a blog, and a contact form. More importantly, you'll know Claude Code inside and out.
 
 **Who this is for:** Anyone who wants the simplest possible setup to focus
 purely on learning Claude Code. No build tools, no package managers, no

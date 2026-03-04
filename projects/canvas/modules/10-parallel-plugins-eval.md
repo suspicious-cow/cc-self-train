@@ -174,6 +174,8 @@ This is the continuous learning cycle: build, reflect, refine, repeat.
 
 ### Checkpoint
 
+You made it. Every major Claude Code feature, learned by building something real.
+
 - [ ] Created git worktrees for parallel feature development
 - [ ] Dark mode works with toggle, localStorage persistence, and system preference detection
 - [ ] Blog engine renders markdown posts with tag filtering
@@ -263,19 +265,14 @@ operations (tests, builds, agents) and keep working on something else.
 
 ## What Is Next
 
-You have built a complete personal portfolio site and mastered every major
-Claude Code feature. Here are paths forward:
+Take a second to appreciate what you just did. You built a complete personal portfolio site from scratch — and along the way, you used every major Claude Code feature: CLAUDE.md, plan mode, rules, skills, hooks, MCP servers, guard rails, subagents, tasks, worktrees, plugins, and evaluation. That's not a tutorial you read. That's a real project you shipped.
 
-- **Extend your portfolio:** Add features you actually want -- a resume page,
-  project case studies, animations, a real blog with RSS feed. The canvas is
-  yours.
-- **Deploy it:** Host on GitHub Pages, Netlify, or Vercel for free. Your
-  portfolio is already a static site -- it just works.
-- **Try another project:** The other projects in `cc-self-train/` explore
-  different domains while reinforcing the same CC features.
-- **Share your plugin:** Distribute the web-dev plugin to your team or the
-  community.
-- **Build from scratch:** Take a project idea you have been putting off and
-  build it with Claude Code. You now have the full toolkit.
+You're not a beginner anymore. You know how to make Claude Code work for you.
 
-The best way to solidify what you learned is to use it on real problems.
+Here are paths forward:
+
+- **Deploy your portfolio.** Host it on GitHub Pages, Netlify, or Vercel for free. Your site is already static — it just works.
+- **Keep building on it.** Add a resume page, project case studies, animations, a real blog with RSS feed. The canvas is yours now.
+- **Try another project.** Forge, Nexus, and Sentinel cover the same features through different domains — and you'll move through them faster this time.
+- **Share your plugin.** If your web-dev plugin is useful, distribute it to your team or the community.
+- **Build something new.** Take a project idea you've been putting off and build it with Claude Code. You have the full toolkit now — go use it.

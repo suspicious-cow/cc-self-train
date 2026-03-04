@@ -81,6 +81,8 @@ Your CLAUDE.md, rules, and project files persist between sessions. Conversation 
 
 ### Checkpoint
 
+You just set up a gateway project, configured Claude Code's memory, learned the keyboard shortcuts, and explored the memory hierarchy. That's a real foundation -- everything from here builds on it.
+
 - [ ] `workspace/nexus-gateway/` directory exists with `git init` completed
 - [ ] CLAUDE.md exists with project overview content
 - [ ] You ran `/init` successfully

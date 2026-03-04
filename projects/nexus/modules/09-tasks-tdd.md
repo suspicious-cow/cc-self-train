@@ -98,6 +98,8 @@ Add to `.claude/settings.json`:
 
 ### Checkpoint
 
+Tasks, TDD, and quality hooks -- the full automated development pipeline. Plan, decompose, implement, verify.
+
 - [ ] You created a task list with dependencies (Tasks 1-5)
 - [ ] Tasks display correctly with `Ctrl+T`
 - [ ] You completed the middleware system by working through tasks in order

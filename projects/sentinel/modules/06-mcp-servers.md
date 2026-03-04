@@ -133,6 +133,8 @@ This section is optional -- if you do not use any of these tools, skip ahead to 
 
 ### Checkpoint
 
+Your analyzer now has a real database backing it. Claude can query scan results, track trends, and connect to external tools -- all through MCP.
+
 - [ ] SQLite MCP server is connected (verify with `/mcp`)
 - [ ] Filesystem MCP server is connected
 - [ ] Database tables exist for scan_results, issues, and coverage

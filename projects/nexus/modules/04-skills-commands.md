@@ -92,6 +92,8 @@ Ask Claude to explain which of your skills it can invoke automatically and which
 
 ### Checkpoint
 
+You just built your own commands. Adding routes and testing endpoints is now one slash command away.
+
 - [ ] `.claude/skills/add-route/SKILL.md` exists and `/add-route` works
 - [ ] `.claude/skills/test-endpoint/SKILL.md` exists and `/test-endpoint /health GET` works
 - [ ] `.claude/skills/status-report/SKILL.md` exists and `/status-report` works

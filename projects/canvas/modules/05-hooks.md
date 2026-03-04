@@ -99,6 +99,8 @@ Use `Ctrl+O` (verbose mode) to see hook execution details.
 
 ### Checkpoint
 
+Your site now has automated quality gates. Hooks catch mistakes the moment they happen -- you will never go back to checking manually.
+
 - [ ] `.claude/settings.json` exists with hook configuration
 - [ ] SessionStart hook injects site summary on session start
 - [ ] PostToolUse hook validates HTML structure after writes/edits

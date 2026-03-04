@@ -1,6 +1,6 @@
 # Nexus -- Local API Gateway
 
-An intermediate Claude Code project where you build an HTTP gateway with routing, rate limiting, SQLite caching, and health checks -- growing it into a full-featured local service mesh.
+You're going to build the thing that sits between services and makes them work together — a real API gateway with routing, rate limiting, SQLite caching, and health checks. Along the way, you'll learn every major Claude Code feature by using it to build something most developers never look under the hood of.
 
 **Who this is for:** Backend developers and service builders who want hands-on practice with every major Claude Code feature.
 

@@ -1,6 +1,6 @@
 # Sentinel -- Code Analyzer & Test Generator
 
-A hands-on project for learning Claude Code by building a real tool. You will construct a code analysis engine that scans source files for issues, generates tests, tracks coverage, and produces quality reports. Along the way, you will use every major Claude Code feature -- from CLAUDE.md and plan mode through subagents, tasks, plugins, and evaluation.
+You're going to build a tool that makes all your other code better — a code analysis engine that scans source files for issues, generates tests, tracks coverage, and produces quality reports. Along the way, you'll master every major Claude Code feature by putting each one to work on a real problem.
 
 **Level:** Intermediate-Advanced
 **Time:** 3-5 sessions (8-15 hours)
@@ -236,14 +236,18 @@ Review this checklist to confirm you have experienced every major Claude Code fe
 
 ## What's Next?
 
-You have now used every major Claude Code feature. Here are paths forward:
+Take a second to appreciate what you just did. You built a real code analysis engine from scratch — one that scans files, enforces rules, generates tests, tracks coverage, and produces reports — and along the way, you mastered every major Claude Code feature: CLAUDE.md, plan mode, rules, skills, hooks, MCP servers, guard rails, subagents, tasks, worktrees, plugins, and evaluation. That's not a walkthrough you followed. That's a real tool you built.
+
+You're not a beginner anymore. You know how to make Claude Code work for you.
+
+Here are paths forward:
 
 **Extend Sentinel.** Add support for more languages, more rules, a web dashboard, CI integration, or GitHub PR comments via MCP.
 
-**Try another project:** [Forge](../forge/) if you want to build a personal dev toolkit, or [Nexus](../nexus/) if you want to build a local API gateway. Both cover the same CC features through different domains.
+**Try another project.** [Forge](../forge/) if you want to build a personal dev toolkit, or [Nexus](../nexus/) if you want to build a local API gateway. Both cover the same features through different domains — and you'll move through them faster this time.
 
-**Build your own tools.** Take the patterns you learned -- skills, subagents, hooks, MCP, tasks -- and apply them to your real projects. Start with a CLAUDE.md and a few rules, then add skills and hooks as your workflow matures.
+**Build your own tools.** Take the patterns you learned — skills, subagents, hooks, MCP, tasks — and apply them to your real projects. Start with a CLAUDE.md and a few rules, then add skills and hooks as your workflow matures.
 
-**Share your plugin.** If your quality-tools plugin is useful, publish it for others. Create a marketplace or share the directory. See `context/plugins.txt` for distribution details.
+**Share your plugin.** If your quality-tools plugin is useful, publish it for others.
 
 **Contribute back.** If you found bugs, had ideas for improvements, or wrote useful patterns during this project, contribute them to the cc-self-train repository. Open an issue or PR.

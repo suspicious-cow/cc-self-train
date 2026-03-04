@@ -115,6 +115,8 @@ The key insight: CLAUDE.md + rules + skills + agents + hooks form a complete "kn
 
 ### Checkpoint
 
+You made it. A production-style gateway, built from scratch, using every major Claude Code feature.
+
 - [ ] Two git worktrees created for parallel feature development
 - [ ] Two Claude Code instances sharing a task list
 - [ ] (Experimental) Created an agent team with 2-3 teammates
@@ -205,10 +207,14 @@ Go through this list to confirm you have covered every major CC feature:
 
 ## What's Next?
 
-You have built a full-featured local API gateway and mastered every major Claude Code feature. Here are paths forward:
+Take a second to appreciate what you just did. You built a full-featured local API gateway from scratch — routing, rate limiting, caching, health checks, middleware — and along the way, you mastered every major Claude Code feature: CLAUDE.md, plan mode, rules, skills, hooks, MCP servers, guard rails, subagents, tasks, worktrees, plugins, and evaluation. That's not a walkthrough you followed. That's real infrastructure you built.
 
-**Extend the gateway:** WebSocket proxying, gRPC support, circuit breaker patterns, distributed rate limiting, request/response transformation middleware, OpenAPI spec generation from route configs.
+You're not a beginner anymore. You know how to make Claude Code work for you.
 
-**Go deeper with Claude Code:** Explore the `context/` directory in cc-self-train for advanced patterns. Build your own MCP server. Create and distribute plugins. Set up CI/CD pipelines using `claude -p` (headless mode).
+Here are paths forward:
 
-**Try another project:** [Forge](../forge/) if you want to build a personal dev toolkit, or [Sentinel](../sentinel/) if you want to build a code analyzer and test generator. Both cover the same CC features through different domains.
+**Extend the gateway.** WebSocket proxying, gRPC support, circuit breaker patterns, distributed rate limiting, request/response transformation middleware, OpenAPI spec generation from route configs.
+
+**Go deeper with Claude Code.** Explore the `context/` directory in cc-self-train for advanced patterns. Build your own MCP server. Create and distribute plugins. Set up CI/CD pipelines using `claude -p` (headless mode).
+
+**Try another project.** [Forge](../forge/) if you want to build a personal dev toolkit, or [Sentinel](../sentinel/) if you want to build a code analyzer and test generator. Both cover the same features through different domains — and you'll move through them faster this time.

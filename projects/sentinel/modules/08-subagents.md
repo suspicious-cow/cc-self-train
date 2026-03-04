@@ -89,6 +89,8 @@ Claude resumes the agent with its full conversation history intact.
 
 ### Checkpoint
 
+Three agents that decompose your analyzer's workflow. Chain them for pipelines, parallel them for speed.
+
 - [ ] `.claude/agents/` directory has analyzer-agent.md, test-writer-agent.md, reporter-agent.md
 - [ ] Each agent has appropriate frontmatter (name, description, tools, model)
 - [ ] You chained analyzer -> test-writer successfully

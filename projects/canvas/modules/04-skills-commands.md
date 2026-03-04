@@ -108,6 +108,8 @@ Test it: `/page-brief "Services"`
 
 ### Checkpoint
 
+You just built your own commands. These skills will save you real time on every page you add from here on.
+
 - [ ] `.claude/skills/new-page/SKILL.md` exists with frontmatter and supporting files
 - [ ] `.claude/skills/component/SKILL.md` exists with component templates
 - [ ] `.claude/skills/check-site/SKILL.md` exists with `disable-model-invocation: true`

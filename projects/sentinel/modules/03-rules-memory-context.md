@@ -101,6 +101,8 @@ Notice how you can reference `@docs/rule-format.md` in your prompt -- Claude wil
 
 ### Checkpoint
 
+You just taught Claude how your analyzer works. Rules enforce your conventions automatically, and context management keeps sessions focused.
+
 - [ ] `.claude/rules/` directory exists with at least 3 path-scoped rule files
 - [ ] `CLAUDE.local.md` exists and is in .gitignore
 - [ ] `CLAUDE.md` uses `@imports` to reference docs/rule-format.md and docs/architecture.md

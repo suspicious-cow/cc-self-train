@@ -134,6 +134,8 @@ Want to commit and merge everything to main?
 
 ## Checkpoint
 
+You just went from an idea to a working CLI tool. Plan mode helped you think through the architecture first, and now `forge` actually runs.
+
 - [ ] You used plan mode to design the architecture before writing code
 - [ ] Data models exist for Note, Snippet, Bookmark, Template
 - [ ] Storage layer handles CRUD, search, and tag filtering

@@ -154,6 +154,8 @@ Your CLAUDE.md, rules, and project files persist between sessions. Conversation 
 
 ### Checkpoint
 
+You just set up a project, configured Claude Code's memory, learned the keyboard shortcuts, and made your first commit. That's a real foundation — everything from here builds on it.
+
 - [ ] `workspace/canvas-site/` directory exists with `git init` completed
 - [ ] `CLAUDE.md` exists and describes the project
 - [ ] `index.html`, `styles/main.css`, `scripts/main.js` exist

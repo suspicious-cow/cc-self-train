@@ -152,6 +152,8 @@ This is the continuous learning cycle: build, reflect, refine, repeat.
 
 ## Checkpoint
 
+You made it. A complete toolkit, built from scratch, using every major Claude Code feature.
+
 - [ ] Created git worktrees for parallel feature development
 - [ ] Ran two Claude instances with a shared task list
 - [ ] Both instances could see and update the same tasks
@@ -236,16 +238,13 @@ operations (tests, builds, agents) and keep working on something else.
 
 ## What Is Next
 
-You have built a complete personal dev toolkit and mastered every major Claude
-Code feature. Here are paths forward:
+Take a second to appreciate what you just did. You built a personal dev toolkit from scratch — one you'll actually use — and along the way, you mastered every major Claude Code feature: CLAUDE.md, plan mode, rules, skills, hooks, MCP servers, guard rails, subagents, tasks, worktrees, plugins, and evaluation. That's not a tutorial you followed. That's a real tool you built.
 
-- **Extend your toolkit:** Add features you actually want -- full-text search
-  with stemming, a web UI, import from Notion/Obsidian. The forge is yours.
-- **Try another project:** The other projects in `cc-self-train/` explore
-  different domains while reinforcing the same CC features.
-- **Share your plugin:** Distribute the knowledge-base plugin to your team or
-  the community.
-- **Build from scratch:** Take a project idea you have been putting off and
-  build it with Claude Code. You now have the full toolkit.
+You're not a beginner anymore. You know how to make Claude Code work for you.
 
-The best way to solidify what you learned is to use it on real problems.
+Here are paths forward:
+
+- **Keep extending your toolkit.** Add full-text search with stemming, a web UI, import from Notion or Obsidian. The forge is yours now.
+- **Try another project.** Canvas, Nexus, and Sentinel cover the same features through different domains — and you'll move through them faster this time.
+- **Share your plugin.** If your knowledge-base plugin is useful, distribute it to your team or the community.
+- **Build something new.** Take a project idea you've been putting off and build it with Claude Code. You have the full toolkit now — go use it.

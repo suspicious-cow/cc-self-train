@@ -84,6 +84,8 @@ This ensures subagents finish their work properly before returning results.
 
 ## Checkpoint
 
+Task pipelines, TDD, and subagent quality gates. Your toolkit now builds itself with the same rigor as production software.
+
 - [ ] You created a multi-step task pipeline with dependencies
 - [ ] Tasks appeared in the terminal status area (`Ctrl+T`)
 - [ ] Tasks executed in dependency order (blocked tasks waited)

@@ -99,6 +99,8 @@ Test your site by opening each page in the browser. Click through the navigation
 
 ### Checkpoint
 
+You just went from a blank page to a working website. Plan mode helped you think before building, and now you have real pages to show for it.
+
 - [ ] You used plan mode to design the architecture before writing code
 - [ ] CSS design system exists with custom properties for colors, fonts, spacing
 - [ ] Home page has a hero section, intro, and navigation

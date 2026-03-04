@@ -121,6 +121,8 @@ Ask Claude to commit everything on `feature/core` and merge it back to main.
 
 ### Checkpoint
 
+You just went from an empty directory to a working code scanner. Plan mode helped you design the architecture first, and now `sentinel scan` actually runs.
+
 - [ ] You used plan mode to design the architecture before writing code
 - [ ] The project has a clear directory structure with separate modules
 - [ ] File scanner works and filters by extension

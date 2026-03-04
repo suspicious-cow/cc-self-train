@@ -122,6 +122,8 @@ Claude resumes the previous agent with its full context preserved.
 
 ## Checkpoint
 
+Three agents that know your toolkit inside and out. Chain them, parallel them, resume them -- they are yours to orchestrate.
+
 - [ ] `.claude/agents/` contains `search-agent.md`, `format-agent.md`, `review-agent.md`
 - [ ] Each agent has correct frontmatter (name, description, tools, model)
 - [ ] You invoked each agent manually and it produced results

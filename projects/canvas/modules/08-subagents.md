@@ -119,6 +119,8 @@ Claude resumes the previous agent with its full context preserved.
 
 ### Checkpoint
 
+Three specialized agents, all yours. You can chain them, run them in parallel, and resume where they left off.
+
 - [ ] `.claude/agents/` contains `accessibility-agent.md`, `design-agent.md`, `content-agent.md`
 - [ ] Each agent has correct frontmatter (name, description, tools, model)
 - [ ] You invoked each agent manually and it produced results

@@ -97,6 +97,8 @@ This skill just executes a shell command. No AI processing needed. Test it:
 
 ### Checkpoint
 
+You just built your own commands. Running analysis and generating tests is now one slash command away.
+
 - [ ] `/analyze` skill exists and works with path arguments
 - [ ] `/generate-tests` skill exists, runs in a forked context, and produces tests
 - [ ] `/quality-report` skill exists with disable-model-invocation: true

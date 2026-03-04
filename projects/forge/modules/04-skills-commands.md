@@ -104,6 +104,8 @@ Test it: `/issue-template "Search returns wrong results"`
 
 ## Checkpoint
 
+You just built your own commands. These skills encode your workflow -- use them every time you add or search items.
+
 - [ ] `.claude/skills/add-item/SKILL.md` exists with frontmatter and supporting files
 - [ ] `.claude/skills/search/SKILL.md` exists with argument parsing
 - [ ] `.claude/skills/daily-summary/SKILL.md` exists with `disable-model-invocation: true`

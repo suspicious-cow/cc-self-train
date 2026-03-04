@@ -140,6 +140,8 @@ Your CLAUDE.md, rules, and project files persist between sessions. Conversation 
 
 ## Checkpoint
 
+You just set up your toolkit project, configured Claude Code's memory, learned the keyboard shortcuts, and made your first commit. That's a real foundation -- everything from here builds on it.
+
 - [ ] `workspace/forge-toolkit/` directory exists with `git init` completed
 - [ ] `CLAUDE.md` exists and describes the project
 - [ ] You ran `/init` and `/memory` successfully

@@ -72,6 +72,8 @@ Claude will implement the rate limiter and may ask about edge cases like what ha
 
 ### Checkpoint
 
+You just taught Claude how your gateway works. Rules, memory, and context management mean Claude understands your conventions and enforces them automatically.
+
 - [ ] `.claude/rules/` has at least 3 rule files with path-scoped frontmatter
 - [ ] CLAUDE.local.md exists and is in .gitignore
 - [ ] CLAUDE.md uses `@imports` to reference docs/routing.md and docs/config-format.md

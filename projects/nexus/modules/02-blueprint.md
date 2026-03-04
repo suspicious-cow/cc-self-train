@@ -118,6 +118,8 @@ Ask Claude to commit any remaining changes and merge the feature branch back to 
 
 ### Checkpoint
 
+You just went from an empty directory to a working gateway. Plan mode kept you focused on architecture, and now requests actually route through your server.
+
 - [ ] You used Plan mode to design before building
 - [ ] The gateway starts and listens on the configured port
 - [ ] Route matching works for at least 2 routes
