@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.0.0
+
+- Major content update: sync curriculum to Claude Code v2.1.43–v2.1.68 (26 releases)
+- New context file: `context/auto-memory.txt` covering the auto-memory system
+- Updated 8 context reference docs with new hook events (WorktreeCreate, WorktreeRemove, ConfigChange), HTTP hooks, auto-memory, new commands (/simplify, /batch, /copy, /memory), agent frontmatter (isolation: worktree, background: true), plugin settings.json, and model changes
+- Updated 16 module files across all 4 projects (Modules 1, 5, 8, 10) with new CC features matched to teaching personas
+- Added community cross-reference (affaan-m/everything-claude-code) to CLAUDE.md
+
 ## v1.2.0
 
 - Add self-updating curriculum sync (Step 0 in `/start`) — detects when Claude Code has shipped new features since the curriculum was last synced, researches them, and updates context files + module guides across all 4 projects before onboarding begins
