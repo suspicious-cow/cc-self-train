@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.7.4 (2026-03-05)
+
+- Add suggested next actions to onboarding step endings — each pause point in `/start` now ends with a bold suggested response (e.g., "let's go", "looks good", "ready") so beginners aren't left at a blank prompt
+
 ## v2.7.3 (2026-03-05)
 
 - Add environment variable troubleshooting entry to `context/ide-integration.txt` — covers VS Code/Cursor not inheriting shell env vars (model config, Bedrock/Vertex provider setup)
