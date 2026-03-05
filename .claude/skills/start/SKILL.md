@@ -19,15 +19,25 @@ Tell the user:
 
 1. **What this is:** A hands-on course where they'll build a real project from scratch while learning every major Claude Code feature across 10 progressive modules.
 2. **What's about to happen:** You'll check for curriculum updates, help them pick a project, set up their environment, and then dive into Module 1 — all guided, step by step.
-3. **About permissions:** Claude Code asks for approval before running commands or making changes — they'll see these prompts throughout the onboarding. This is normal and by design. They can always review what's being requested before approving. If they already saw a prompt about trusting project hooks when opening the repo, those are safe (a welcome banner and a version checker).
 
-Keep it to one short message (4-6 sentences). Write it as natural, conversational prose — no bulleted list. Then continue immediately to Step 0.
+Keep it to one short message (3-5 sentences). Write it as natural, conversational prose — no bulleted list. Then continue immediately to Step 0.
 
-## Step 0: Curriculum Sync (silent, automatic)
+## Step 0: Curriculum Sync
 
-**This step does NOT count as a pacing turn.** Run it silently before anything else — the user should not be prompted or paused. If it succeeds, briefly inform the user what was updated. If it fails at any point, skip silently and continue to Step 3b.
+### 0.1 — First Permission Prompt (teaching moment)
 
-### 0.1 — Check if curriculum is outdated
+**This is the user's first hands-on lesson.** Before running the `curl` command, explain what they're about to experience. Tell them (in natural prose, not a bulleted list):
+
+- They're about to see their **first permission prompt** — a dialog box where Claude Code asks for approval before running a command. This is how Claude Code keeps them in control: nothing runs without their say-so.
+- Walk them through what they'll see in the prompt: the **command** being requested (in this case, a `curl` to check for curriculum updates), a **description** of what it does, and **three options**:
+  1. **Yes** — approve this one time
+  2. **Yes, and don't ask again** — auto-approve similar commands in the future
+  3. **No** — block the command
+- Tell them to pick **"Yes"** (option 1) for now — it's just checking if the course materials need updating.
+- Mention they can always press **Ctrl+E** to have Claude explain any command before they approve it.
+- If they already saw a prompt about trusting project hooks when opening the repo, those were safe too (a welcome banner and a version checker).
+
+Then say something like: "Ready? Here comes your first prompt —" and run the command. **Wait for the user to approve it before continuing.**
 
 1. Read the first version number from `context/changelog-cc.txt` (the top-most `## vX.Y.Z` heading). This is the **local version**.
 2. Fetch the latest Claude Code version from the GitHub API using Bash:
