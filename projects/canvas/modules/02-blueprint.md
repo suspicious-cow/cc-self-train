@@ -1,6 +1,6 @@
 # Module 2 -- Blueprint and Build
 
-**CC features:** Plan mode, git integration, basic prompting
+**CC features:** Plan mode, model selection, git integration, basic prompting
 
 > **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
 
@@ -39,6 +39,26 @@ Still in plan mode, push back on the plan. Ask about the trade-offs Claude made.
 Claude does not get defensive about its plans -- ask hard questions and it will revise. If something does not feel right, say so. Refine the plan until you are satisfied with the architecture.
 
 > **STOP -- What you just did:** You used plan mode to design your entire site architecture before writing a single line of code. This is a pattern you will use constantly: plan first, then build. The back-and-forth questioning in step 2.3 is how you pressure-test a design. Claude does not get defensive about its plans -- ask hard questions and it will revise.
+
+### 2.3b Choose Your Model
+
+> **Why this step:** Claude Code is not one model -- it is three. Picking the right one for the task at hand saves time and money, and gets you better results.
+
+Type `/model` to open the model picker. You will see three tiers:
+
+- **Haiku** -- fastest and cheapest. Great for quick lookups, simple edits, and repetitive tasks.
+- **Sonnet** -- the balanced default. Handles ~90% of everyday coding: building features, fixing bugs, writing tests.
+- **Opus** -- deepest reasoning. Use it for architecture decisions, complex refactors, and security reviews.
+
+You just spent time in plan mode designing your site architecture. That kind of open-ended design thinking is where Opus shines -- deeper reasoning means better tradeoff analysis. Now that you are about to switch to execution mode and build pages, Sonnet is the right choice -- the instructions are clear and scoped.
+
+**Other useful commands:**
+
+- `Alt+P` (or `Option+P` on Mac) -- switch models without clearing your prompt
+- `/fast` -- toggle fast mode for quicker responses (same model, optimized output)
+- Effort levels (Opus only) -- control reasoning depth via `/model` menu: low for quick tasks, high for deep analysis
+
+> **STOP -- What you just did:** You learned that Claude Code is not one-size-fits-all. Planning benefits from Opus's deeper reasoning. Mechanical code generation can use Sonnet. Quick lookups can use Haiku. Matching the model to the task is a habit that saves time and money. Use Opus for design system architecture, Sonnet for building pages. See `context/models.txt` for the full reference.
 
 ### 2.4 Exit Plan Mode and Execute
 

@@ -1,0 +1,102 @@
+# Model Selection in Claude Code
+
+> Reference for choosing the right model, switching mid-session, and adjusting reasoning depth.
+
+## Model Tiers
+
+Claude Code supports three model tiers, each with different strengths:
+
+| Model | Best For | Speed | Cost | When to Use |
+|-------|----------|-------|------|-------------|
+| **Haiku** | Quick lookups, simple edits, read-only analysis | Fastest | Lowest | Clear instructions, repetitive tasks, bulk operations |
+| **Sonnet** | Everyday coding — features, bug fixes, tests | Balanced | Mid | Default for ~90% of coding work |
+| **Opus** | Architecture, complex refactors, security review | Slower | Highest | Design decisions, multi-file reasoning, when first attempt failed |
+
+### When to upgrade to Opus
+
+- Complex architecture or system design decisions
+- Multi-file refactors where context across files matters
+- Security-critical code (auth, payments, webhooks)
+- When Sonnet's first attempt missed something important
+- Tradeoff analysis ("should I use X or Y?")
+- Plan mode sessions where deeper reasoning pays off
+
+### When to downgrade to Haiku
+
+- Repetitive, well-defined tasks (rename variables, add boilerplate)
+- Read-only analysis or code explanation
+- Tasks with very clear, specific instructions
+- Bulk file operations where each step is simple
+- Documentation-only subagents
+
+## Switching Models
+
+### /model command
+
+Type `/model` during any session to open the model picker. Select a different model and continue your conversation — context is preserved.
+
+### Alt+P shortcut
+
+Press `Option+P` (macOS) or `Alt+P` (Windows/Linux) to switch models without clearing your prompt. Useful when you're mid-thought and realize you need a more capable model.
+
+### /fast mode
+
+Type `/fast` to toggle fast mode. This uses the same model but optimizes for faster output — useful when you want quick responses and don't need deep reasoning.
+
+## Effort Levels (Opus 4.6)
+
+Opus 4.6 supports adaptive reasoning through effort levels. These control how deeply Claude thinks before responding.
+
+| Level | Behavior | Best For |
+|-------|----------|----------|
+| **Low** | Minimal reasoning, quick responses | Simple lookups, straightforward edits |
+| **Medium** | Moderate reasoning | Standard coding tasks |
+| **High** (default) | Deep reasoning, explores alternatives | Architecture, debugging, complex logic |
+
+Configure effort level via:
+- `/model` menu — adjust alongside model selection
+- `CLAUDE_CODE_EFFORT_LEVEL` environment variable (set to `low`, `medium`, or `high`)
+
+Note: Effort levels only apply to Opus 4.6. Other models use fixed thinking budgets controlled by `MAX_THINKING_TOKENS`.
+
+## Prompting Strategies by Model
+
+Different models respond best to different prompting styles:
+
+### Haiku — Be specific and constrained
+
+Haiku works best with tight, unambiguous instructions. Provide examples, constrain scope, and tell it exactly what you want.
+
+```
+GOOD: "Rename the variable `x` to `userCount` in lines 15-30 of utils.js"
+BAD:  "Clean up the variable names in this file"
+```
+
+### Sonnet — Balanced prompts
+
+Sonnet handles moderate complexity well. You can give it a feature description and let it figure out the details, but still benefit from some structure.
+
+```
+GOOD: "Add a search function to the CLI that filters items by title and tags. Wire it up to the existing storage layer."
+```
+
+### Opus — Open-ended exploration
+
+Opus excels at open-ended questions, tradeoff analysis, and "why" questions. Give it room to reason.
+
+```
+GOOD: "I need to add caching to the API. What are my options? Consider complexity, consistency, and what makes sense for a single-server setup."
+GOOD: "Review this auth flow for security issues. Think about OWASP top 10."
+```
+
+## Default Recommendation
+
+Use **Sonnet** as your daily driver for ~90% of coding work. Switch to **Opus** for design decisions, plan mode sessions, and security reviews. Use **Haiku** for repetitive tasks and read-only analysis (especially in subagents).
+
+The key insight: model selection is a habit, not a one-time choice. Match the model to the task, and switch freely during a session as the nature of your work changes.
+
+## Related Features
+
+- **Extended thinking**: Enabled by default. Toggle with `Alt+T`. See thinking output with `Ctrl+O` (verbose mode).
+- **Subagent models**: When creating agents in `.claude/agents/`, you can specify which model each agent uses in its frontmatter.
+- **Plan mode**: Pairs naturally with Opus — deeper reasoning during planning, then switch to Sonnet for execution.
