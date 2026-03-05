@@ -30,10 +30,10 @@ Keep it to one short message (3-5 sentences). Write it as natural, conversationa
 
 - They're about to see their **first permission prompt** — a dialog box where Claude Code asks for approval before running a command. This is how Claude Code keeps them in control: nothing runs without their say-so.
 - Walk them through what they'll see in the prompt: the **command** being requested (in this case, a `curl` to check for curriculum updates), a **description** of what it does, and **three options**:
-  1. **Yes** — approve this one time
-  2. **Yes, and don't ask again** — auto-approve similar commands in the future
-  3. **No** — block the command
-- Tell them to pick **"Yes"** (option 1) for now — it's just checking if the course materials need updating.
+  1. **Yes** — approve this one time. Use for commands you want to review each time (e.g., git commits, file deletions, anything that changes your code).
+  2. **Yes, and don't ask again** — auto-approve similar commands in the future. Use for low-risk, read-only commands you'll see often (e.g., `curl` fetches, `git status`, listing files). Saves you from clicking approve on harmless commands over and over.
+  3. **No** — block the command. Use if something looks suspicious or you don't want it to run.
+- For this `curl` command, suggest they pick **"Yes, and don't ask again"** (option 2) — it's a safe, read-only fetch and they'll see similar commands throughout the course. Frame it as: "This is a good example of a low-risk command — it's just reading data, not changing anything. Approving it permanently saves you a click every time."
 - Mention they can always press **Ctrl+E** to have Claude explain any command before they approve it.
 - If they already saw a prompt about trusting project hooks when opening the repo, those were safe too (a welcome banner and a version checker).
 
@@ -45,14 +45,29 @@ Then say something like: "Ready? Here comes your first prompt —" and run the c
    curl -sf https://api.github.com/repos/anthropics/claude-code/releases/latest | grep -o '"tag_name"[^"]*"[^"]*"' | head -1 | grep -o '[0-9][0-9.]*'
    ```
 3. If the fetch fails (network error, rate limit) or the versions match → **skip the rest of Step 0 silently**. Continue to Step 3b.
+4. If the versions differ → an update is needed. **Do NOT run the update inline.** Instead:
 
-### 0.2 — Fetch & triage changelog
+   a. **Explain background agents** to the user (2-3 sentences, conversational). Something like: "There's a curriculum update available (v{local} → v{latest}). Rather than make you wait while I update the lesson materials, I'm going to hand this off to a **background agent** — think of it as a separate AI worker that handles the update in another tab while we keep talking here. You'll learn all about background agents in Module 8, but let's see one in action right now."
+
+   b. **Spawn a background agent** using the Agent tool with `subagent_type: "general-purpose"` and `run_in_background: true`. Pass it the full curriculum sync task as its prompt (the complete instructions from the "Background Agent Task" section below). Include the local version, latest version, and the working directory path in the prompt so the agent has everything it needs.
+
+   c. **Continue immediately** to Step 3b → Steps 1–4. Do not wait for the agent to finish.
+
+### Background Agent Task (passed as the agent's prompt)
+
+When spawning the background agent, give it these instructions as its prompt. The agent runs independently — it has access to all tools (Bash, Read, Edit, Write, Grep, Glob, WebSearch, WebFetch) and will work through the steps on its own.
+
+---
+
+**Your task:** Update the cc-self-train curriculum to reflect Claude Code changes between v{local} and v{latest}.
+
+**Step 1 — Fetch & triage changelog:**
 
 1. Fetch the raw CHANGELOG from GitHub:
    ```bash
    curl -sf https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md
    ```
-2. Extract all entries between the latest version and the local version.
+2. Extract all entries between v{latest} and v{local}.
 3. Triage each entry. **Skip**: bug fixes, IDE-specific changes, platform-specific tweaks, performance improvements, cosmetic changes. **Keep** and classify into one of three change types:
    - **Added** — new features, new tools, new commands, new hook events, new APIs
    - **Changed** — renamed commands, changed defaults, altered behavior, updated syntax
@@ -72,48 +87,48 @@ Then say something like: "Ready? Here comes your first prompt —" and run the c
    | Tasks, TDD, dependencies | 09 | `tasks.txt` |
    | Worktrees, plugins, eval, parallel dev | 10 | `plugins.txt` |
 
-5. If zero entries are curriculum-relevant → skip the rest of Step 0 silently.
+5. If zero entries are curriculum-relevant → stop here and report "No curriculum-relevant changes found."
 
-### 0.3 — Inform the user
-
-Tell the user briefly what's happening (one message, do NOT wait for a response):
-
-> "Hey there! I've noticed that Claude Code has been updated since this curriculum was last updated (v{old} → v{new}). I found {N} changes that affect the lessons — things like {2-3 examples of added/changed/removed features}. Let me update the materials before we get started."
-
-### 0.4 — Research & update files
-
-**Keep the user informed throughout this phase.** The research and file updates can take a few minutes, so print brief progress messages as you work. Do NOT wait for user responses between these — just print and continue.
+**Step 2 — Research & update files:**
 
 For each significant change (not just minor tweaks):
 
 1. **Research** it — use WebSearch for official docs, blog posts, or usage guides. Read existing context files to understand current coverage depth.
-   - Progress message: "Researching {feature name}... ({M} of {total} changes)"
 
 2. **Update `context/changelog-cc.txt`** — prepend new entries in the same format (version header + bullet list).
-   - Progress message: "Updating changelog..."
 
 3. **Update affected `context/*.txt` files** — read the file first, then apply the right action based on the change type:
    - **Added**: Add documentation for the new feature alongside existing content. Match format and depth.
    - **Changed**: Find the existing documentation and update it to reflect the new behavior, syntax, or defaults. Remove outdated information — don't leave both old and new versions.
    - **Removed**: Delete documentation for the removed feature. If a module exercise uses it, replace with the recommended alternative.
-   - Progress message: "Updating {filename}..."
 
 4. **Update affected module files across all 4 projects** — for each affected module, update all 4 variants (`projects/canvas/modules/`, `projects/forge/modules/`, `projects/nexus/modules/`, `projects/sentinel/modules/`). Read each file first to understand the project-specific context, then apply the right action:
    - **Added**: Add new feature coverage fitting the project's domain and the module's teaching persona (Modules 1-3 = guide, 4-6 = collaborator, 7-9 = peer, 10 = launcher).
    - **Changed**: Update existing references, examples, and exercises to use the new behavior/syntax.
    - **Removed**: Remove references to the deprecated feature. If an exercise depends on it, rewrite it to use the recommended alternative.
-   - Progress message: "Updating Module {N} guides across all 4 projects..."
 
-### 0.5 — Commit & continue
+**Step 3 — Commit:**
 
 1. Stage all changed files (context files + module files).
 2. Commit: `docs: sync curriculum with Claude Code v{latest}`
-3. Brief message to user: "All caught up! The lessons now cover the latest Claude Code features. Let's get started."
-4. Continue to Step 3b.
+3. Report back what you updated (list of files changed and a brief summary).
+
+---
+
+### 0.6 — Checkpoint (before scaffolding)
+
+**Insert this check between Step 4 (environment verification) and Step 5 (scaffold).** Before scaffolding the project, check if a background curriculum sync agent was spawned earlier:
+
+- If no background agent was spawned (versions matched or fetch failed in 0.1) → skip this step entirely.
+- If the background agent **has finished successfully** → brief message: "By the way — the curriculum update finished while we were setting up. All lessons are current with Claude Code v{latest}."
+- If the background agent **is still running** → tell the user: "Let me wait for the curriculum update to finish before we build your project..." and wait for it to complete. When it finishes, say: "Done! Lessons are up to date. Let's keep going."
+- If the background agent **failed** → graceful fallback: "The curriculum update ran into an issue — no worries, we'll use the current materials. Everything still works fine."
+
+**After the checkpoint (regardless of outcome), continue to Step 5.**
 
 ### Graceful failure
 
-If ANY phase fails (network error, API rate limit, parse error, etc.):
+If ANY phase fails (network error, API rate limit, parse error, background agent failure, etc.):
 - Tell the user: "Couldn't check for curriculum updates — continuing with the current version."
 - Continue to Step 3b normally.
 - **Never block onboarding because of an update failure.**
