@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.7.9 (2026-03-05)
+
+- Remove blocking checkpoint (Step 0.6) from onboarding — curriculum sync runs fully in the background and finishes well before Module 2
+- Add non-blocking status check at Module 1 completion (Step 6.8) for an informational update on sync progress
+- Tell users at spawn time that the agent will finish on its own — no need to wait or watch
+
 ## v2.7.8 (2026-03-05)
 
 - Fix checkpoint timing — ensure curriculum sync agent finishes before Module 1 starts by using blocking TaskOutput
