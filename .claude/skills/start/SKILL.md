@@ -349,7 +349,7 @@ That's all Canvas needs. No package.json, no build config, no dependencies. Open
 
 Only run the command for their detected OS. If the command fails (e.g., headless server, WSL without GUI access), fall back gracefully: "I couldn't open the browser automatically — navigate to the project folder and double-click `index.html` to open it."
 
-After scaffolding, **list every file you created with a one-line description of each** (the Write tool truncates previews, so the user may not have seen the full contents). For Canvas, also show how to open the site in their browser using the OS-appropriate command. Do NOT immediately continue into Module 1 — wait for the user to respond first.
+After scaffolding, **list every file you created with a one-line description of each** (the Write tool truncates previews, so the user may not have seen the full contents). For Canvas, also show how to open the site in their browser using the OS-appropriate command. End with: "Take a look, and when you're ready, say **"let's go"** or **"start Module 1"** to begin." Do NOT immediately continue into Module 1 — wait for the user to respond first.
 
 **For all other projects**, if their language needs a project file (package.json, go.mod, Cargo.toml, pyproject.toml, etc.), create it.
 
@@ -416,7 +416,7 @@ Explain the concept before creating anything. Keep it to a few sentences:
 - **Why it matters:** Without it, every session starts from zero. Claude won't remember your project, your preferences, or what you decided last time. CLAUDE.md fixes that.
 - **What goes in it:** A description of your project, what language you're using, how to build and test things, and any preferences you have.
 
-End by saying something like: "Let's create one for your project — I'll walk you through each part."
+End by saying something like: "Let's create one for your project — I'll walk you through each part. Say **"let's do it"** when you're ready."
 
 **STOP. Do not continue to 6.2. Wait for the user to respond.**
 
@@ -440,7 +440,7 @@ The file should include:
 
 After creating the file, **display the full file contents in a code block in your message**. The Write tool only previews the first few lines, so the user can't see everything — especially the pointers at the bottom. Show the complete file so they can see all sections.
 
-Then ask: "Does that make sense? Any sections you'd want to change?"
+Then ask: "Does that make sense? Any sections you'd want to change? Say **"looks good"** to continue, or tell me what to change."
 
 **STOP. Do not continue to 6.3. Wait for the user to respond.**
 
@@ -457,7 +457,7 @@ Explain that CLAUDE.md is one level in a bigger system. Keep it simple — four 
 
 The key insight: "If a teammate would benefit from knowing it, put it in CLAUDE.md. If it's just your workflow or progress, put it in CLAUDE.local.md."
 
-End with something like: "Makes sense? Ready to create your CLAUDE.local.md — the personal one that tracks your progress?"
+End with something like: "Makes sense? Say **"ready"** and I'll create your CLAUDE.local.md — the personal one that tracks your progress."
 
 **STOP. Do not continue to 6.4. Wait for the user to respond.**
 
@@ -492,7 +492,7 @@ For advanced CC users: skip fundamentals, focus on advanced patterns and best pr
 - Pre-compaction instruction — reminds Claude to save progress before context compression
 - The `@import` pulls your project's CLAUDE.md into this context automatically
 
-End with something like: "Your progress is now tracked. Ready to make your first git commit so you have a save point?"
+End with something like: "Your progress is now tracked. Say **"let's commit"** when you're ready to make your first git commit."
 
 **STOP. Do not continue to 6.5. Wait for the user to respond.**
 
@@ -523,7 +523,7 @@ git commit -m "Initial project setup with CLAUDE.md"
 
 After committing, mention: "If Claude ever makes a change you don't like, press `Esc` twice quickly. It rewinds the last changes — like an undo button."
 
-End with something like: "Your first commit is done — you've got a save point. Want to learn the keyboard shortcuts that make Claude Code faster?"
+End with something like: "Your first commit is done — you've got a save point. Say **"show me"** to learn the keyboard shortcuts that make Claude Code faster."
 
 **STOP. Do not continue to 6.6. Wait for the user to respond.**
 
@@ -551,7 +551,7 @@ After presenting all three groups, suggest they try a few:
 
 **Why teach it this way:** This shows the user that Claude can look things up in real time — they don't need to memorize everything. It also ensures shortcuts are accurate and current, since Claude Code updates frequently.
 
-End with something like: "Don't worry about memorizing these — they'll become muscle memory as you use them. Ready for one last exercise before we wrap up Module 1?"
+End with something like: "Don't worry about memorizing these — they'll become muscle memory as you use them. Say **"ready"** for one last exercise before we wrap up Module 1."
 
 **STOP. Do not continue to 6.7. Wait for the user to respond.**
 
@@ -577,7 +577,7 @@ git commit -m "Customize CLAUDE.md with personal preferences"
 
 Point out: "This is the **edit, check, commit** loop — you'll use it in every module."
 
-End with something like: "That's the core workflow — edit, check, commit. Shall I wrap up what you learned in Module 1?"
+End with something like: "That's the core workflow — edit, check, commit. Say **"wrap it up"** and I'll summarize what you learned in Module 1."
 
 **STOP. Do not continue to 6.8. Wait for the user to respond.**
 
