@@ -115,3 +115,12 @@ Run `claude` in each pane for independent CLI sessions. Useful for:
   Open the integrated terminal and run `claude` there.
 - **MCP servers not showing:** MCP configuration happens via the CLI. Run
   `claude mcp add` in the integrated terminal, then restart the extension.
+- **Environment variables not picked up by extension:** The VS Code/Cursor
+  extension does not inherit shell environment variables (from ~/.bashrc,
+  ~/.zshrc, etc.). If you use env vars for model configuration
+  (CLAUDE_CODE_EFFORT_LEVEL, MAX_THINKING_TOKENS) or provider setup
+  (Bedrock, Vertex), add them to your IDE settings:
+  - VS Code: Settings (Ctrl+, / Cmd+,) → search "Claude Code" → Environment
+  - Cursor: Add to ~/.cursor/settings.json
+  - Alternatively, launch VS Code from the terminal (`code .`) so it
+    inherits your shell environment.
