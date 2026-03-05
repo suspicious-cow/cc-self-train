@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.7.2 (2026-03-05)
+
+- Add model selection guidance to Module 2 curriculum (new Step 2.3b in all 4 projects)
+- New `context/models.txt` reference doc covering model tiers, `/model`, `/fast`, effort levels, and prompting strategies
+- Domain-specific model examples: Canvas (design system), Forge (storage format), Nexus (API gateway), Sentinel (analysis algorithm)
+
 ## v2.7.1 (2026-03-05)
 
 - Improve `/release` skill — auto-commits pending changes and runs end-to-end without confirmations
