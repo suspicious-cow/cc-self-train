@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.7.8 (2026-03-05)
+
+- Fix checkpoint timing — ensure curriculum sync agent finishes before Module 1 starts by using blocking TaskOutput
+- Add checkpoint reminder at end of Step 4 so Claude doesn't skip Step 0.6
+- Fix "in another tab" wording to "in the background"
+
 ## v2.7.7 (2026-03-05)
 
 - Fix agent viewing guidance timing — defer ↓/Esc/Ctrl+F instructions from spawn (Step 0.1) to checkpoint (Step 0.6), only shown when the agent is still running and there's something to watch
