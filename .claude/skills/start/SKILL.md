@@ -47,13 +47,9 @@ Then say something like: "Ready? Here comes your first prompt —" and run the c
 3. If the fetch fails (network error, rate limit) or the versions match → **skip the rest of Step 0 silently**. Continue to Step 3b.
 4. If the versions differ → an update is needed. **Do NOT run the update inline.** Instead:
 
-   a. **Explain background agents** to the user and teach them how to watch it work. Something like: "There's a curriculum update available (v{local} → v{latest}). Rather than make you wait while I update the lesson materials, I'm going to hand this off to a **background agent** — think of it as a separate AI worker that handles the update in another tab while we keep talking here. This can take a few minutes depending on how much has changed."
+   a. **Explain background agents briefly** (2-3 sentences, conversational). Something like: "There's a curriculum update available (v{local} → v{latest}). Rather than make you wait while I update the lesson materials, I'm going to hand this off to a **background agent** — think of it as a separate AI worker that handles the update in another tab while we keep talking here. You'll learn all about background agents in Module 8, but let's see one in action right now."
 
-      Then point out the status bar: "See that status bar at the bottom? It shows you have 1 background agent running. Here's a cool trick — press **↓** (down arrow) to open the agent manager. You can select the running agent and watch it work in real time — reading files, searching the web, updating lessons. Press **Esc** to come back to our conversation."
-
-      Mention the kill switch: "If you ever need to stop a background agent, press **Ctrl+F** twice to kill it."
-
-      Frame it as a preview: "You'll learn all about background agents in Module 8 — for now, just know they let Claude do two things at once."
+      **Do NOT explain how to view or manage the agent here.** Keep the spawn message short — the viewing instructions belong in Step 0.6 if the agent is still running when we get there. The user doesn't need to know about ↓, Esc, or Ctrl+F yet.
 
    b. **Spawn a background agent** using the Agent tool with `subagent_type: "general-purpose"` and `run_in_background: true`. Pass it the full curriculum sync task as its prompt (the complete instructions from the "Background Agent Task" section below). Include the local version, latest version, and the working directory path in the prompt so the agent has everything it needs.
 
@@ -127,7 +123,12 @@ For each significant change (not just minor tweaks):
 
 - If no background agent was spawned (versions matched or fetch failed in 0.1) → skip this step entirely.
 - If the background agent **has finished successfully** → brief message: "By the way — the curriculum update finished while we were setting up. All lessons are current with Claude Code v{latest}."
-- If the background agent **is still running** → make the wait interactive: "The curriculum update is still working — this can take a few minutes. While we wait, try pressing **↓** to watch the agent in action! You can see exactly what it's doing in real time — reading files, searching the web, updating content. Press **Esc** to come back here. I'll let you know as soon as it finishes." Then wait for it to complete. When it finishes, say: "Done! Lessons are up to date. Let's keep going."
+- If the background agent **is still running** → this is the teaching moment for agent viewing. Walk them through it conversationally:
+    1. Point out the status bar: "The curriculum update is still working. See the status bar at the bottom? It shows you have a background agent running."
+    2. Teach viewing: "Here's a cool trick — press **↓** (down arrow) to open the agent manager. You can select the running agent and watch it work in real time — reading files, searching the web, updating lessons. Press **Esc** to come back to our conversation."
+    3. Mention the kill switch: "If you ever need to stop a background agent, press **Ctrl+F** twice to kill it."
+    4. Frame it: "You'll learn all about background agents in Module 8 — for now, just know they let Claude do two things at once. Go ahead and try pressing **↓** while we wait!"
+    5. Wait for the agent to complete. When it finishes, say: "Done! Lessons are up to date. Let's keep going."
 - If the background agent **failed** → graceful fallback: "The curriculum update ran into an issue — no worries, we'll use the current materials. Everything still works fine."
 
 **After the checkpoint (regardless of outcome), continue to Step 5.**
