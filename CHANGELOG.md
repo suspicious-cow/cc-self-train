@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.7.7 (2026-03-05)
+
+- Fix agent viewing guidance timing — defer ↓/Esc/Ctrl+F instructions from spawn (Step 0.1) to checkpoint (Step 0.6), only shown when the agent is still running and there's something to watch
+
 ## v2.7.6 (2026-03-05)
 
 - Add agent viewing guidance to background curriculum sync — teach users to press ↓ to watch the background agent work in real time, Esc to return, and Ctrl+F twice to kill it
