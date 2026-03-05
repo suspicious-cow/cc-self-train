@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.7.6 (2026-03-05)
+
+- Add agent viewing guidance to background curriculum sync — teach users to press ↓ to watch the background agent work in real time, Esc to return, and Ctrl+F twice to kill it
+- Make checkpoint wait (Step 0.6) interactive — encourage users to explore the agent manager instead of passively waiting
+
 ## v2.7.5 (2026-03-05)
 
 - Run curriculum sync as a background agent — Steps 0.2–0.5 now execute in a background agent instead of blocking onboarding, so users start making choices immediately while the update runs
