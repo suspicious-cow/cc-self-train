@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.7.12 (2026-03-05)
+
+- Convert all key teaching messages in SKILL.md to verbatim output — prevents Claude from truncating or rewording carefully crafted content
+- Add "this is your space" welcome message — encourages students to ask questions, experiment, and go off-script anytime
+
 ## v2.7.11 (2026-03-05)
 
 - Add screenshot lesson to Module 2 — students paste their homepage into Claude Code for visual feedback
