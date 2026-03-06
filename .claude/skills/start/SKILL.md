@@ -576,9 +576,11 @@ End with something like: "Don't worry about memorizing these — they'll become 
 
 ### 6.7 Practice: Customize CLAUDE.md
 
-Print the following explanation exactly as written (do NOT use blockquote formatting — output as normal text):
+Print the following two paragraphs exactly as written (do NOT use blockquote formatting — output as normal text), then use AskUserQuestion:
 
-Right now your CLAUDE.md has the basics — project description, language, build commands. But the real power comes from teaching Claude *your* preferences. When you add rules like "keep functions short" or "never commit without asking me," Claude follows them in every response. Let's add one now.
+Right now your CLAUDE.md has the basics — project description, language, build commands. But the real power comes from teaching Claude *your* preferences.
+
+When you add rules like "keep functions short" or "never commit without asking me," Claude follows them in every response. Let's add one now — pick an improvement below.
 
 Use AskUserQuestion to let the user pick one improvement:
 
@@ -611,6 +613,12 @@ End with something like: "That's the core workflow — edit, check, commit. Say 
 
 This check is **informational only** — never block on it.
 
+**Version mismatch check:** If the curriculum was synced to a newer CC version, compare it against the student's installed version. Run `claude --version` to get their installed version, then read the top version from `context/changelog-cc.txt` (the curriculum version). If the curriculum version is newer than the installed version, print the following (do NOT use blockquote formatting):
+
+**Heads up:** The lessons now cover Claude Code v{curriculum_version} features, but you're running v{installed_version}. Some features taught in later modules might not be available until you update. You can update anytime by running `claude update` — it only takes a few seconds.
+
+If the versions match or the curriculum wasn't updated, skip this message.
+
 Print the following recap exactly as written (do NOT use blockquote formatting — output as normal text):
 
 **Module 1 complete!** Here's what you now know:
@@ -621,9 +629,6 @@ Print the following recap exactly as written (do NOT use blockquote formatting �
 - **Git integration** — commits are save points, and `Esc Esc` is your undo button
 
 When you're ready, say **"next module"** or **"let's do Module 2"**. Next up: **Plan Mode** — you'll design your first real feature and learn how Claude helps you think before you code.
-
-**Tip:** This curriculum is actively maintained. Run `git pull` in the cc-self-train directory periodically to get updated content.
-
 ## Important
 
 - Build the project in `workspace/<name>/` inside this repo. The `workspace/` directory is gitignored by cc-self-train.

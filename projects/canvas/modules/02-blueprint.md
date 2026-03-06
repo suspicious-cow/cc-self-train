@@ -49,13 +49,14 @@ Type `/model` to open the model picker. You will see three tiers:
 - **Sonnet** -- the balanced default. Handles ~90% of everyday coding: building features, fixing bugs, writing tests.
 - **Opus** -- deepest reasoning. Use it for architecture decisions, complex refactors, and security reviews.
 
+You will also see an **effort level** bar at the bottom of the picker (low / medium / high) when Opus or Sonnet is selected. Use the `←` `→` arrow keys to adjust it. Higher effort means deeper reasoning but slower responses. Medium is the default and works for most tasks. Try low for simple edits, high for complex design decisions.
+
 You just spent time in plan mode designing your site architecture. That kind of open-ended design thinking is where Opus shines -- deeper reasoning means better tradeoff analysis. Now that you are about to switch to execution mode and build pages, Sonnet is the right choice -- the instructions are clear and scoped.
 
 **Other useful commands:**
 
 - `Alt+P` (or `Option+P` on Mac) -- switch models without clearing your prompt
 - `/fast` -- toggle fast mode for quicker responses (same model, optimized output)
-- Effort levels (Opus only) -- control reasoning depth via `/model` menu: low for quick tasks, high for deep analysis
 
 > **STOP -- What you just did:** You learned that Claude Code is not one-size-fits-all. Planning benefits from Opus's deeper reasoning. Mechanical code generation can use Sonnet. Quick lookups can use Haiku. Matching the model to the task is a habit that saves time and money. Use Opus for design system architecture, Sonnet for building pages. See `context/models.txt` for the full reference.
 
@@ -103,11 +104,23 @@ Open each page in your browser. Test the navigation links between pages.
 
 > **STOP -- What you just did:** You gave Claude two separate, focused prompts to build two pages. Notice the pattern: each prompt specified the page structure, the content sections, and the CSS approach. The more specific your prompt, the closer the result matches what you want. You also tested in the browser after each page -- always verify Claude's output visually.
 
-### 2.8 Manual Testing
+### 2.8 Write and Run Tests
+
+> **Why this step:** Even static sites can have automated tests. Claude can write a validation script that checks for broken internal links, missing files, valid HTML structure, and consistent navigation -- catching issues that are easy to miss by eye. This is the same build-test-fix cycle you would use on any project.
+
+Ask Claude to write a test script for your site. Describe the checks you care about -- do all internal links point to files that exist, does every page have a title and meta description, is the navigation consistent across pages, do images have alt text?
+
+> "Write a test script that validates my site. Check that all internal links point to existing files, every page has a title tag, the navigation is consistent across all pages, and images have alt text. Then run it."
+
+Watch Claude write the script, run it, and fix any failures. You do not need a fancy test framework -- a simple script that exits with an error if something is wrong is all you need.
+
+> **STOP -- What you just did:** You just experienced the build-test-fix loop that will be your primary workflow for the rest of this project. Claude wrote tests, ran them, saw failures, fixed the code, and re-ran until everything passed. This tight feedback loop is why Claude Code is so effective -- Claude gets concrete error messages and fixes them immediately, rather than guessing. And yes, even a static HTML site benefits from automated checks.
+
+### 2.9 Manual Testing
 
 Test your site by opening each page in the browser. Click through the navigation, resize the window to check responsiveness, and look for anything that seems off. If you find issues -- broken links, layout problems, pages that look wrong on mobile -- tell Claude what you see and ask it to fix them.
 
-### 2.9 Commit and Merge
+### 2.10 Commit and Merge
 
 > **Why this step:** Committing through Claude Code (using `!` prefix for shell commands) keeps everything in one place. You do not need to switch terminals. The merge back to main means your feature branch work is now part of your stable codebase.
 
@@ -129,4 +142,5 @@ You just went from a blank page to a working website. Plan mode helped you think
 - [ ] Projects page has a responsive card grid
 - [ ] Navigation works between all pages
 - [ ] Layout is responsive (mobile, tablet, desktop)
+- [ ] Automated test script passes (links, titles, nav consistency)
 - [ ] Changes are committed and merged to main

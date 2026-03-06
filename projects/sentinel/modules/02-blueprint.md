@@ -48,13 +48,14 @@ Type `/model` to open the model picker. You will see three tiers:
 - **Sonnet** -- the balanced default. Handles ~90% of everyday coding: building features, fixing bugs, writing tests.
 - **Opus** -- deepest reasoning. Use it for architecture decisions, complex refactors, and security reviews.
 
+You will also see an **effort level** bar at the bottom of the picker (low / medium / high) when Opus or Sonnet is selected. Use the `←` `→` arrow keys to adjust it. Higher effort means deeper reasoning but slower responses. Medium is the default and works for most tasks. Try low for simple edits, high for complex design decisions.
+
 You just spent time in plan mode designing your analyzer's architecture. That kind of open-ended design thinking is where Opus shines -- deeper reasoning means better tradeoff analysis (like how rules should be structured and how the scanner should handle large codebases). Now that you are about to switch to execution mode and build the skeleton, Sonnet is the right choice -- the instructions are clear and scoped.
 
 **Other useful commands:**
 
 - `Alt+P` (or `Option+P` on Mac) -- switch models without clearing your prompt
 - `/fast` -- toggle fast mode for quicker responses (same model, optimized output)
-- Effort levels (Opus only) -- control reasoning depth via `/model` menu: low for quick tasks, high for deep analysis
 
 > **STOP -- What you just did:** You learned that Claude Code is not one-size-fits-all. Planning benefits from Opus's deeper reasoning. Mechanical code generation can use Sonnet. Quick lookups can use Haiku. Matching the model to the task is a habit that saves time and money. Use Opus for analysis algorithm design, Sonnet for report generation. See `context/models.txt` for the full reference.
 

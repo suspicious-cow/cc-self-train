@@ -43,21 +43,21 @@ Press `Option+P` (macOS) or `Alt+P` (Windows/Linux) to switch models without cle
 
 Type `/fast` to toggle fast mode. This uses the same model but optimizes for faster output — useful when you want quick responses and don't need deep reasoning.
 
-## Effort Levels (Opus 4.6)
+## Effort Levels
 
-Opus 4.6 supports adaptive reasoning through effort levels. These control how deeply Claude thinks before responding.
+Effort levels control how deeply Claude thinks before responding. They are available for Opus and Sonnet in the `/model` picker — use `←` `→` arrow keys to adjust. Not available for Haiku.
 
 | Level | Behavior | Best For |
 |-------|----------|----------|
 | **Low** | Minimal reasoning, quick responses | Simple lookups, straightforward edits |
-| **Medium** | Moderate reasoning | Standard coding tasks |
-| **High** (default) | Deep reasoning, explores alternatives | Architecture, debugging, complex logic |
+| **Medium** (default) | Moderate reasoning | Standard coding tasks |
+| **High** | Deep reasoning, explores alternatives | Architecture, debugging, complex logic |
 
 Configure effort level via:
-- `/model` menu — adjust alongside model selection
+- `/model` menu — adjust with `←` `→` arrow keys alongside model selection
 - `CLAUDE_CODE_EFFORT_LEVEL` environment variable (set to `low`, `medium`, or `high`)
 
-Note: Effort levels only apply to Opus 4.6. Other models use fixed thinking budgets controlled by `MAX_THINKING_TOKENS`.
+Opus 4.6 also supports a `max` effort level via the API for absolute maximum reasoning capability.
 
 ## Prompting Strategies by Model
 
