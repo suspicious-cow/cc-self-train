@@ -43,9 +43,15 @@ Ask Claude to walk you through the full memory hierarchy for this project. You w
 
 > "Show me the full memory hierarchy for this project -- what files get loaded, in what order, and which ones override which?"
 
-Claude should describe: managed policy (if any) -> user memory (~/.claude/CLAUDE.md) -> project memory (CLAUDE.md) -> project rules (.claude/rules/*.md) -> local project memory (CLAUDE.local.md).
+The hierarchy from highest to lowest precedence:
 
-> **STOP -- What you just did:** You explored the full memory hierarchy -- from global user settings down to local project preferences. Understanding this hierarchy matters because it determines what Claude knows and when. Managed policy overrides everything, then user memory, then project memory, then rules, then local memory. When Claude does something unexpected, checking which memory files are loaded is the first debugging step.
+1. Managed policy (organization-wide, system directory)
+2. Project memory (`./CLAUDE.md` or `./.claude/CLAUDE.md`)
+3. Project rules (`.claude/rules/*.md`)
+4. User memory (`~/.claude/CLAUDE.md`)
+5. Project local (`./CLAUDE.local.md`)
+
+> **STOP -- What you just did:** You explored the full memory hierarchy -- from managed policy down to local project preferences. Understanding this hierarchy matters because it determines what Claude knows and when. Managed policy overrides everything, then project memory, then project rules, then user memory, then local memory. When Claude does something unexpected, checking which memory files are loaded is the first debugging step.
 
 Want to try @imports to keep CLAUDE.md concise?
 
@@ -70,13 +76,26 @@ After Claude creates the files, open CLAUDE.md and verify the `@imports` are the
 
 ### Step 5: Check context usage with /context
 
+> **Why this step:** Claude has a finite context window -- think of it as Claude's working memory. Everything Claude needs to respond (your conversation history, CLAUDE.md, rules files, file contents it has read, tool outputs) has to fit in this window. When it fills up, Claude starts forgetting earlier parts of your conversation. The `/context` command shows you exactly what is using that space so you can manage it.
+
 Type in Claude Code:
 
 ```
 /context
 ```
 
-This shows a colored grid representing how much of Claude's context window is used. Notice how memory files, rules, and conversation history all consume context.
+You will see a colored grid and a breakdown of what is consuming context. Look at the output and identify:
+
+- **System prompt & instructions** -- CLAUDE.md, rules files, and skills. These load automatically every session and take up space even before you say anything.
+- **Conversation history** -- every message you have sent and every response Claude has given. This grows as you work.
+- **Tool results** -- file contents Claude has read, command outputs, search results. These can be large.
+- **Remaining capacity** -- how much room is left before Claude needs to compact.
+
+**What consumes the most context?** Conversation history and tool outputs. Every file Claude reads and every command it runs adds to context. A single large file read can consume more context than dozens of chat messages.
+
+**Tip:** Be specific about what you need. "Read lines 1-50 of analyzer.py" costs less context than "read analyzer.py" for a 500-line file. Similarly, targeted searches use less context than reading entire files.
+
+The percentage tells you how full the window is. Early in a session it will be low. After several rounds of building and testing, it climbs.
 
 ### Step 6: Manage context with /compact
 
@@ -85,6 +104,14 @@ This shows a colored grid representing how much of Claude's context window is us
 ```
 
 This compacts the conversation, keeping the parts most relevant to your focus instruction. Useful when your context window fills up during long sessions.
+
+**What happens automatically:** You do not have to run `/compact` manually every time. When your context reaches approximately 95% capacity, Claude auto-compacts the conversation. Here is what survives:
+
+- **Always preserved:** Your CLAUDE.md, rules files, and CLAUDE.local.md. These are re-read from disk after every compaction -- they always survive. This is the key insight: anything you put in these files is permanent. Anything you only said in chat is temporary.
+- **Mostly preserved:** Recent messages and code you were just working on.
+- **May be lost:** Detailed instructions from early in the conversation, older file reads, and verbose command outputs (tool outputs are cleared first to make room).
+
+**Key takeaway:** If a decision or convention is important enough to always remember, put it in CLAUDE.md or a rules file -- not in a chat message.
 
 ### Step 7: Check costs with /cost
 
@@ -97,6 +124,22 @@ This shows your token usage statistics for the current session. Get in the habit
 > **Note:** On Claude subscriptions (Pro/Max/Team), `/cost` may show limited or empty output due to known issues. If you see blank results, don't worry -- your token usage is still being tracked. API key users will see detailed cost breakdowns.
 
 > **STOP -- What you just did:** You learned the three context management commands: `/context` shows how full your context window is, `/compact` compresses conversation history to free up space, and `/cost` shows your token usage. These are essential for long sessions -- if Claude starts forgetting things or giving vague answers, your context window is probably full. Use `/compact` with a focus instruction to keep the most relevant context and discard the rest.
+
+### Step 7b: When Claude Forgets
+
+Sometimes Claude gives vague answers, forgets an earlier decision, or asks about something you already discussed. This is not a bug -- it means context is getting full.
+
+**Diagnosis:** Run `/context`. If usage is 80%+, older details are being compressed or lost.
+
+**Fix 1 -- Compact with focus:** Run `/compact` with a specific focus argument to preserve what matters:
+
+```
+/compact Preserve details about the rule engine and analyzer conventions
+```
+
+**Fix 2 -- Start fresh:** If compacting is not enough, start a new session by running `claude` again in your project directory. Your CLAUDE.md, rules, and CLAUDE.local.md reload automatically -- only conversation history is lost. This is often the fastest fix for a cluttered session.
+
+**Prevention:** If you find yourself repeatedly telling Claude the same thing, that is a sign it belongs in CLAUDE.md or a rules file, not in conversation. Chat is temporary; memory files are permanent.
 
 How about we build a new rule using all these tools together?
 

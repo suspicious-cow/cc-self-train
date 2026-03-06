@@ -39,6 +39,8 @@ Ready to create your CLAUDE.local.md?
 
 ## 3.3 Create CLAUDE.local.md
 
+> **Why this step:** CLAUDE.local.md is your *personal* preferences file. It gets added to `.gitignore`, which means git will never track or commit it -- your preferences stay on your machine and do not get pushed to the shared repository where they would affect other contributors. This is the split between team standards (CLAUDE.md, rules) and personal workflow (CLAUDE.local.md).
+
 Create a personal, non-committed preferences file. Tell Claude about your individual workflow preferences -- things like how you like test output formatted, your commit message style, and your language of choice. These are *your* preferences, not team rules.
 
 > "Create a CLAUDE.local.md with my personal preferences. I like [your test output style], [your commit style], and I'm working in [your language]. Also note any productivity tools I use regularly (like Notion or Linear) -- we'll connect them in Module 6. Make sure it's in .gitignore."
@@ -95,19 +97,26 @@ Want to explore the /context and /compact commands?
 
 ## 3.6 /context Deep Dive
 
+> **Why this step:** Claude has a finite context window -- think of it as Claude's working memory. Everything Claude needs to respond (your conversation history, CLAUDE.md, rules files, file contents it has read, tool outputs) has to fit in this window. When it fills up, Claude starts forgetting earlier parts of your conversation. The `/context` command shows you exactly what is using that space so you can manage it.
+
 Run:
 
 ```
 /context
 ```
 
-This shows a visual grid of your current context usage. Observe:
+You will see a colored grid and a breakdown of what is consuming context. Look at the output and identify:
 
-- How much context is used by CLAUDE.md and rules
-- How much is used by conversation history
-- How much remains available
+- **System prompt & instructions** -- CLAUDE.md, rules files, and skills. These load automatically every session and take up space even before you say anything.
+- **Conversation history** -- every message you have sent and every response Claude has given. This grows as you work.
+- **Tool results** -- file contents Claude has read, command outputs, search results. These can be large.
+- **Remaining capacity** -- how much room is left before Claude needs to compact.
 
-Understanding context is critical. As your session grows, context fills up.
+**What consumes the most context?** Conversation history and tool outputs. Every file Claude reads and every command it runs adds to context. A single large file read can consume more context than dozens of chat messages.
+
+**Tip:** Be specific about what you need. "Read lines 1-50 of storage.py" costs less context than "read storage.py" for a 500-line file. Similarly, targeted searches use less context than reading entire files.
+
+The percentage tells you how full the window is. Early in a session it will be low. After several rounds of building and testing, it climbs. When it gets high, Claude will auto-compact -- or you can do it manually with `/compact` (next step).
 
 ## 3.7 /compact with Focus Argument
 
@@ -122,6 +131,18 @@ When context gets large, use `/compact` to summarize the conversation:
 The argument tells Claude what to prioritize when compacting. Without it,
 Claude uses its own judgment.
 
+**What happens automatically:** You do not have to run `/compact` manually every time. When your context reaches approximately 95% capacity, Claude auto-compacts the conversation. Here is what survives:
+
+- **Always preserved:** Your CLAUDE.md, rules files, and CLAUDE.local.md. These are re-read from disk after every compaction -- they always survive. This is the key insight: anything you put in these files is permanent. Anything you only said in chat is temporary.
+- **Mostly preserved:** Recent messages and code you were just working on.
+- **May be lost:** Detailed instructions from early in the conversation, older file reads, and verbose command outputs (tool outputs are cleared first to make room).
+
+**Key takeaway:** If a decision or convention is important enough to always remember, put it in CLAUDE.md or a rules file -- not in a chat message.
+
+> **STOP -- What you just did:** You used `/context` to see how your session's context is distributed, then `/compact` to reclaim space. Context management is a real skill -- long sessions accumulate history, and eventually Claude "forgets" earlier details. Using `/compact` with a focus argument lets you control what survives the compression. Auto-compact handles this for you at ~95% capacity, but manual compacting with a focus argument gives you more control over what is preserved.
+
+Shall we check your token usage with /cost?
+
 ## 3.8 /cost Tracking
 
 Run:
@@ -135,7 +156,23 @@ understand how much context different operations consume.
 
 > **Note:** On Claude subscriptions (Pro/Max/Team), `/cost` may show limited or empty output due to known issues. If you see blank results, don't worry -- your token usage is still being tracked. API key users will see detailed cost breakdowns.
 
-## 3.9 Build a Feature Using These Tools
+## 3.9 When Claude Forgets
+
+Sometimes Claude gives vague answers, forgets an earlier decision, or asks about something you already discussed. This is not a bug -- it means context is getting full.
+
+**Diagnosis:** Run `/context`. If usage is 80%+, older details are being compressed or lost.
+
+**Fix 1 -- Compact with focus:** Run `/compact` with a specific focus argument to preserve what matters:
+
+```
+/compact Preserve details about the storage layer API and data models
+```
+
+**Fix 2 -- Start fresh:** If compacting is not enough, start a new session by running `claude` again in your project directory. Your CLAUDE.md, rules, and CLAUDE.local.md reload automatically -- only conversation history is lost. This is often the fastest fix for a cluttered session.
+
+**Prevention:** If you find yourself repeatedly telling Claude the same thing, that is a sign it belongs in CLAUDE.md or a rules file, not in conversation. Chat is temporary; memory files are permanent.
+
+## 3.10 Build a Feature Using These Tools
 
 Now put everything together by building the template rendering feature. Create a feature branch and describe to Claude what you want: a command that takes a template name and variable assignments, renders the template with those values, and validates that all required variables are provided.
 
