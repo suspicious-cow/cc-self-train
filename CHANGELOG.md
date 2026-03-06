@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.7.14 (2026-03-05)
+
+- Add automated test step (2.8) to Canvas Module 2 — validation script checks broken links, titles, nav consistency, alt text
+- Update effort level documentation across all 4 Module 2 files — available for Opus and Sonnet, medium default, arrow key controls
+- Rewrite effort levels section in context/models.txt
+- Add formatting rule to CLAUDE.md — no blockquote formatting for student-facing content
+- Add CC version mismatch warning to Step 6.8 in SKILL.md
+- Remove outdated git pull tip from Module 1 recap
+- Split Step 6.7 paragraph for readability
+
 ## v2.7.13 (2026-03-05)
 
 - Fix blockquote formatting in verbatim messages — `>` prefix renders as dim italics in the CLI, replaced with plain text output
