@@ -459,7 +459,7 @@ Explain that CLAUDE.md is one level in a bigger system. Keep it simple — four 
 1. **CLAUDE.md** (shared) — "What we just created. Anyone who works on this project sees it. Put project conventions here."
 2. **CLAUDE.local.md** (personal) — "Just for you — gitignored, so it won't be shared. Your progress, your notes. We'll create one next."
 3. **.claude/rules/** (organized) — "For bigger projects, you can split rules into separate files. We'll use this in Module 3."
-4. **~/.claude/CLAUDE.md** (global) — "Your preferences across ALL projects. Like 'I prefer concise responses.'"
+4. **~/.claude/CLAUDE.md** (global, in your OS user profile — `~` means `C:\Users\<you>` on Windows, `/Users/<you>` on macOS, `/home/<you>` on Linux) — "Your preferences across ALL projects. Like 'I prefer concise responses.'"
 
 The key insight: "If a teammate would benefit from knowing it, put it in CLAUDE.md. If it's just your workflow or progress, put it in CLAUDE.local.md."
 
@@ -527,7 +527,11 @@ git add -A
 git commit -m "Initial project setup with CLAUDE.md"
 ```
 
-After committing, mention: "If Claude ever makes a change you don't like, press `Esc` twice quickly. It rewinds the last changes — like an undo button."
+After committing, list the files that were tracked (e.g., for Canvas: `index.html`, `styles/main.css`, `scripts/main.js`, `.gitignore`, `CLAUDE.md`) so the user sees exactly what's in their first save point.
+
+Introduce the core workflow pattern: "What you just did — make a change, verify it works, commit — is the **edit, check, commit** loop. It's the rhythm you'll use in every module. Make a change, verify it works, save a checkpoint. That way you can always roll back if something breaks."
+
+Then mention: "If Claude ever makes a change you don't like, press `Esc` twice quickly. It rewinds the last changes — like an undo button."
 
 End with something like: "Your first commit is done — you've got a save point. Say **"show me"** to learn the keyboard shortcuts that make Claude Code faster."
 
@@ -565,7 +569,7 @@ End with something like: "Don't worry about memorizing these — they'll become 
 
 ### 6.7 Practice: Customize CLAUDE.md
 
-Explain: "A customized CLAUDE.md makes Claude much more helpful. Let's practice the **edit, check, commit** cycle you'll use in every module."
+Explain what this exercise is about before diving in: "Right now your CLAUDE.md has the basics — project description, language, build commands. But the real power comes from teaching Claude *your* preferences. When you add rules like 'keep functions short' or 'never commit without asking me,' Claude follows them in every response. Let's add one now and practice the **edit, check, commit** cycle you'll use in every module."
 
 Use AskUserQuestion to let the user pick one improvement:
 
