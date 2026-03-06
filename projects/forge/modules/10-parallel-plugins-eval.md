@@ -190,7 +190,7 @@ Confirm you have touched every major Claude Code feature across all 10 modules:
 - [ ] `.claude/rules/` -- path-scoped rules with YAML frontmatter
 - [ ] `CLAUDE.local.md` -- personal, non-committed preferences
 - [ ] `@imports` -- modular CLAUDE.md referencing external docs
-- [ ] `/context`, `/compact`, `/stats` or `/cost` -- context and usage management
+- [ ] `/context`, `/compact`, `/stats` or `/cost`, `/statusline` -- context and usage management
 - [ ] Custom skills -- `SKILL.md` with frontmatter, `$ARGUMENTS`, hot-reload
 - [ ] `disable-model-invocation` -- manual-only skills
 - [ ] Hooks -- SessionStart, PostToolUse, PreToolUse, Stop in `.claude/settings.json`

@@ -1,6 +1,6 @@
 # Module 3 -- Rules, Memory & Context
 
-**CC features:** .claude/rules/, CLAUDE.local.md, @imports, /context, /compact, /stats, /cost, memory hierarchy
+**CC features:** .claude/rules/, CLAUDE.local.md, @imports, /context, /compact, /stats, /cost, /statusline, memory hierarchy
 
 > **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
 
@@ -138,6 +138,16 @@ Run:
 ```
 
 This shows your token usage and cost in USD for the current session. API users pay per token, so checking `/cost` periodically helps you understand which operations are expensive. A single large file read can cost more than dozens of chat messages.
+
+**Make it persistent with /statusline:**
+
+Instead of running `/context` or `/cost` repeatedly, you can add a persistent status bar at the bottom of your terminal:
+
+```
+/statusline show context percentage, model name, and session cost
+```
+
+Claude generates a script and configures it automatically. The status line updates after each interaction, so you always know how full your context window is without running a command. Run `/statusline` again with a different description to change what it shows -- git branch, session duration, lines changed, or anything else you want at a glance.
 
 **Note:** Both groups should use `/context` (which you already learned) to manage the context window. `/stats` and `/cost` track your overall usage; `/context` tracks what Claude is currently "thinking about."
 
