@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.7.17 (2026-03-05)
+
+- Add `/statusline` teaching to Module 3 usage step across all 4 projects — persistent status bar for context/cost monitoring
+- Update all 4 README feature tables with `/statusline` in Module 3 CC features
+- Update Module 10 final checklists to include `/statusline`
+
 ## v2.7.16 (2026-03-05)
 
 - Add account-aware usage tracking step to Module 3 (all 4 projects) — teaches `/stats` for subscribers, `/cost` for API key users
