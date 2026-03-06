@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.7.13 (2026-03-05)
+
+- Fix blockquote formatting in verbatim messages — `>` prefix renders as dim italics in the CLI, replaced with plain text output
+
 ## v2.7.12 (2026-03-05)
 
 - Convert all key teaching messages in SKILL.md to verbatim output — prevents Claude from truncating or rewording carefully crafted content
