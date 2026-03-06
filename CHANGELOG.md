@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.7.11 (2026-03-05)
+
+- Add screenshot lesson to Module 2 — students paste their homepage into Claude Code for visual feedback
+- Add correct OS-specific image paste shortcuts (Alt+V on Windows, Ctrl+V on macOS/Linux)
+- Add "normal mode vs plan mode" framing to all 4 Module 2 variants with bolded key behavior
+- Add universal pacing rule to CLAUDE.md — one step per message, stop and wait for all modules
+- Explain ~ path in Step 6.3 with OS-specific examples so beginners understand the location
+- Introduce edit-check-commit loop in Step 6.5 when students first complete the cycle
+- Add context to Step 6.7 explaining why CLAUDE.md preferences shape Claude's behavior
+- List tracked files after first commit so beginners see exactly what's in their save point
+
 ## v2.7.10 (2026-03-05)
 
 - Fix Windows file-open command — replace `start` (CMD built-in) with `powershell.exe -Command "Start-Process"` which works from bash
