@@ -46,21 +46,11 @@ Then say something like: "Ready? Here comes your first prompt —" and run the c
    curl -sf https://api.github.com/repos/anthropics/claude-code/releases/latest | grep -o '"tag_name"[^"]*"[^"]*"' | head -1 | grep -o '[0-9][0-9.]*'
    ```
 3. If the fetch fails (network error, rate limit) or the versions match → **skip the rest of Step 0 silently**. Continue to Step 3b.
-4. If the versions differ → an update is needed. **Do NOT run the update inline.** Instead:
+4. If the versions differ → an update is needed. **Do NOT spawn the background agent yet.** Instead:
 
-   a. **Explain background agents briefly** (2-3 sentences, conversational). Something like: "There's a curriculum update available (v{local} → v{latest}). Rather than make you wait while I update the lesson materials, I'm going to hand this off to a **background agent** — think of it as a separate AI worker that handles the update in the background while we keep talking. You'll learn all about background agents in Module 8, but let's see one in action right now."
-
-      It'll finish on its own while we work through the setup — you don't need to wait or watch it. **Do NOT explain how to view or manage the agent here.** The user doesn't need to know about ↓, Esc, or Ctrl+F yet — those are taught in Module 8.
-
-   b. **Teach about background agent permissions** before spawning. Say something like: "When I launch this background agent, Claude Code will ask you to approve the tools it needs — things like **WebSearch** (to look up documentation online), **Edit** and **Write** (to update lesson files), and a few others. You'll see permission prompts for each tool. Since these are all read-and-update operations the agent needs to sync the curriculum, approving them is the right call — but notice you're making that choice for each one, just like you did with the `curl` command."
-
-      Then explain the *why*: "This is actually how background agents work in Claude Code: they request all their permissions **upfront** before launching, since they can't ask you mid-task while running in the background. You'll work with background agents hands-on in Module 8."
-
-      Then normalize it for the rest of the course: "You'll see these same tool permission prompts throughout the course as Claude Code uses new tools for the first time. Each one is just Claude Code being transparent about what it wants to do."
-
-   c. **Spawn a background agent** using the Agent tool with `subagent_type: "general-purpose"` and `run_in_background: true`. Pass it the full curriculum sync task as its prompt (the complete instructions from the "Background Agent Task" section below). Include the local version, latest version, and the working directory path in the prompt so the agent has everything it needs.
-
-   d. **Continue immediately** to Step 3b → Steps 1–4. Do not wait for the agent to finish.
+   - Silently store the local version, latest version, and the fact that an update is needed (you'll use these in Step 1a).
+   - Say one brief sentence to the user: "I noticed a curriculum update is available (v{local} → v{latest}) — I'll kick that off once we've picked your project."
+   - **Continue immediately** to Step 3b.
 
 ### Background Agent Task (passed as the agent's prompt)
 
@@ -68,7 +58,7 @@ When spawning the background agent, give it these instructions as its prompt. Th
 
 ---
 
-**Your task:** Update the cc-self-train curriculum to reflect Claude Code changes between v{local} and v{latest}.
+**Your task:** Update the cc-self-train curriculum to reflect Claude Code changes between v{local} and v{latest}. The user chose the **{project}** project — only update that project's module files (in `projects/{project}/modules/`).
 
 **Step 1 — Fetch & triage changelog:**
 
@@ -77,11 +67,13 @@ When spawning the background agent, give it these instructions as its prompt. Th
    curl -sf https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md
    ```
 2. Extract all entries between v{latest} and v{local}.
-3. Triage each entry. **Skip**: bug fixes, IDE-specific changes, platform-specific tweaks, performance improvements, cosmetic changes. **Keep** and classify into one of three change types:
+3. **Fetch the Anthropic blog index** using WebFetch on `https://claude.com/blog`. Identify any posts published since the repo was last updated (use the release date of v{local} as the cutoff — look it up from the GitHub releases API if needed, or estimate from the CHANGELOG dates). Focus on posts in the **Claude Code** and **Agents** categories.
+4. **For each relevant blog post**, fetch the full article with WebFetch. Extract any Claude Code features, behavioral changes, or new capabilities mentioned. Cross-reference with the CHANGELOG entries — the blog may provide richer context for changelog items, or surface features not prominently listed in the changelog. Add any net-new findings to the triage list from item 5.
+5. Triage each entry. **Skip**: bug fixes, IDE-specific changes, platform-specific tweaks, performance improvements, cosmetic changes. **Keep** and classify into one of three change types:
    - **Added** — new features, new tools, new commands, new hook events, new APIs
    - **Changed** — renamed commands, changed defaults, altered behavior, updated syntax
    - **Removed** — deprecated features, removed commands, deleted options
-4. Map each relevant entry to the affected module and context file:
+6. Map each relevant entry to the affected module and context file:
 
    | Feature Category | Module | Context File(s) |
    |---|---|---|
@@ -96,13 +88,13 @@ When spawning the background agent, give it these instructions as its prompt. Th
    | Tasks, TDD, dependencies | 09 | `tasks.txt` |
    | Worktrees, plugins, eval, parallel dev | 10 | `plugins.txt` |
 
-5. If zero entries are curriculum-relevant → stop here and report "No curriculum-relevant changes found."
+7. If zero entries are curriculum-relevant → stop here and report "No curriculum-relevant changes found."
 
 **Step 2 — Research & update files:**
 
 For each significant change (not just minor tweaks):
 
-1. **Research** it — use WebSearch for official docs, blog posts, or usage guides. Read existing context files to understand current coverage depth.
+1. **Research** it — use the blog context already gathered in Step 1, plus WebSearch for official docs or usage guides. Read existing context files to understand current coverage depth.
 
 2. **Update `context/changelog-cc.txt`** — prepend new entries in the same format (version header + bullet list).
 
@@ -111,23 +103,22 @@ For each significant change (not just minor tweaks):
    - **Changed**: Find the existing documentation and update it to reflect the new behavior, syntax, or defaults. Remove outdated information — don't leave both old and new versions.
    - **Removed**: Delete documentation for the removed feature. If a module exercise uses it, replace with the recommended alternative.
 
-4. **Append new steps to affected module files (safe insertion strategy)** — for each new feature that maps to a module, update all 4 project variants (`projects/canvas/modules/`, `projects/forge/modules/`, `projects/nexus/modules/`, `projects/sentinel/modules/`). **Never modify or renumber existing steps.** For each file:
+4. **Append new steps to affected module files (safe insertion strategy)** — for each new feature that maps to a module, update only the user's chosen project variant (e.g., `projects/canvas/modules/` if they chose Canvas). The chosen project name is provided in the agent prompt. **Never modify or renumber existing steps.** For each file:
 
    a. Read the file to understand its structure, existing steps, and the project's domain context.
 
-   b. Find the Checkpoint section at the bottom of the file. The heading varies by project:
-      - Canvas: `### Checkpoint`
-      - Forge: `## Checkpoint`
-      - Nexus: `### Checkpoint`
-      - Sentinel: `### Checkpoint`
+   b. Find the Checkpoint section at the bottom of the file. The heading style varies by project — reference this table for the chosen project:
+
+      | Project | Checkpoint Heading | Step Heading Style |
+      |---------|-------------------|--------------------|
+      | Canvas | `### Checkpoint` | `### X.N Title` (e.g., `### 5.8 Explore Hook Variables`) |
+      | Forge | `## Checkpoint` | `## X.N Title` (e.g., `## 5.8 Explore Hook Variables`) |
+      | Nexus | `### Checkpoint` | `### Step N: Title` or `### Step Nb: Title` |
+      | Sentinel | `### Checkpoint` | `### Step N: Title` or `### Step Nb: Title` |
 
    c. Determine the next sequential step number by reading the last step before Checkpoint.
 
-   d. Insert a new step **immediately before** the Checkpoint heading. Match the project's heading style:
-      - Canvas uses `### X.N Title` (e.g., `### 5.8 Explore Hook Variables`)
-      - Forge uses `## X.N Title` (e.g., `## 5.8 Explore Hook Variables`)
-      - Nexus uses `### Step N: Title` or `### Step Nb: Title` (e.g., `### Step 7: Explore Hook Variables`)
-      - Sentinel uses `### Step N: Title` or `### Step Nb: Title` (e.g., `### Step 7: Explore Hook Variables`)
+   d. Insert a new step **immediately before** the Checkpoint heading. Use the heading style from the table above for the chosen project.
 
    e. Match the module's teaching persona depth:
       - Modules 1-3 (Guide): Explain the concept before the exercise. Define terms. Be encouraging.
@@ -210,6 +201,28 @@ If the user passed a project number as $0, use that. Otherwise, ask them to pick
 All four projects teach every Claude Code feature through 10 progressive modules. They all cover the same CC skills — pick based on what sounds fun to build.
 
 Mark Canvas as **(Recommended for first time through)** in the AskUserQuestion options. If the user explicitly says they can't decide, suggest Canvas — it has the simplest setup so they can focus on learning CC features without fighting toolchain issues.
+
+## Step 1a: Curriculum Sync (conditional)
+
+**Only run this step if Step 0 flagged that a curriculum update is needed.** If no update is needed, skip to Step 1b.
+
+This also applies on resume (Step 3b): if the user is resuming from `.claude/onboarding-state.json` and Step 0 flagged an update, spawn the sync here using the project name from the state file — then skip to the resumed step.
+
+Now that the user has chosen a project, explain background agents and spawn the sync:
+
+1. **Explain background agents briefly** (2-3 sentences, conversational). Something like: "Remember I mentioned a curriculum update? Rather than make you wait, I'm going to hand this off to a **background agent** — think of it as a separate AI worker that handles the update in the background while we keep talking. You'll learn all about background agents in Module 8, but let's see one in action right now."
+
+   It'll finish on its own while we work through the setup — you don't need to wait or watch it. **Do NOT explain how to view or manage the agent here.** The user doesn't need to know about ↓, Esc, or Ctrl+F yet — those are taught in Module 8.
+
+2. **Teach about background agent permissions** before spawning. Say something like: "When I launch this background agent, Claude Code will ask you to approve the tools it needs — things like **WebSearch** (to look up documentation online), **Edit** and **Write** (to update lesson files), and a few others. You'll see permission prompts for each tool. Since these are all read-and-update operations the agent needs to sync the curriculum, approving them is the right call — but notice you're making that choice for each one, just like you did with the `curl` command."
+
+   Then explain the *why*: "This is actually how background agents work in Claude Code: they request all their permissions **upfront** before launching, since they can't ask you mid-task while running in the background. You'll work with background agents hands-on in Module 8."
+
+   Then normalize it for the rest of the course: "You'll see these same tool permission prompts throughout the course as Claude Code uses new tools for the first time. Each one is just Claude Code being transparent about what it wants to do."
+
+3. **Spawn a background agent** using the Agent tool with `subagent_type: "general-purpose"` and `run_in_background: true`. Pass it the full curriculum sync task as its prompt (the complete instructions from the "Background Agent Task" section below). Include the local version, latest version, the working directory path, **and the chosen project name** in the prompt so the agent only updates that project's modules.
+
+4. **Continue immediately** to Step 1b. Do not wait for the agent to finish.
 
 ## Step 1b: Detect Their Operating System
 
