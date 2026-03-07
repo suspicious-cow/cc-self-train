@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.9.3 (2026-03-07)
+
+- Reduce verbose terminal output during curriculum sync by instructing sync task to use `Write` (single "Wrote file" line) instead of `Edit` (multi-line diff) for module and context file updates
+- Add student-facing note in sync narration so file updates scrolling by feel expected, not alarming
+- Improve `/release` skill to offer version options (patch/minor/major with rationale) instead of asking open-ended questions
+
 ## v2.9.2 (2026-03-07)
 
 - Revert bash scripts back to inline `curl` commands so the first permission prompt shows a narrow `curl` scope instead of broad `bash:*`
