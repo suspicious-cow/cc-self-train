@@ -30,21 +30,22 @@ Keep it to one short message (4-6 sentences). Write it as natural, conversationa
 **This is the user's first hands-on lesson.** Before running the command, explain what they're about to experience. Tell them (in natural prose, not a bulleted list):
 
 - They're about to see their **first permission prompt** — a dialog box where Claude Code asks for approval before running a command. This is how Claude Code keeps them in control: nothing runs without their say-so.
-- Walk them through what they'll see in the prompt: the **command** being requested (in this case, a script that checks for curriculum updates), a **description** of what it does, and **three options**:
-  1. **Yes** — approve this one time. Use for commands you want to review each time.
-  2. **Yes, and don't ask again** — auto-approve similar commands in the future. **Read the scope carefully** — it shows what pattern will be auto-approved (e.g., `bash:*` would approve ALL bash commands, not just this one).
+- Walk them through what they'll see in the prompt: the **command** being requested (in this case, a `curl` to check for curriculum updates), a **description** of what it does, and **three options**:
+  1. **Yes** — approve this one time. Use for commands you want to review each time (e.g., git commits, file deletions, anything that changes your code).
+  2. **Yes, and don't ask again** — auto-approve similar commands in the future. Use for low-risk, read-only commands you'll see often (e.g., `curl` fetches, `git status`, listing files). Saves you from clicking approve on harmless commands over and over.
   3. **No** — block the command. Use if something looks suspicious or you don't want it to run.
-- For this command, suggest they pick **"Yes"** (option 1). Explain why: option 2 would auto-approve `bash:*` — meaning every future bash command would run without asking, including potentially destructive ones. This is a great example of reading the scope before auto-approving. Option 2 is best saved for narrow, specific patterns (like `git status` or `ls`), not broad categories like `bash:*`.
+- For this `curl` command, suggest they pick **"Yes, and don't ask again"** (option 2) — it's a safe, read-only fetch and they'll see similar commands throughout the course. Frame it as: "This is a good example of a low-risk command — it's just reading data, not changing anything. Approving it permanently saves you a click every time."
 - Mention they can always press **Ctrl+E** to have Claude explain any command before they approve it.
 - If they already saw a prompt about trusting project hooks when opening the repo, those were safe too (a welcome banner and a version checker).
 
 Then say something like: "Ready? Here comes your first prompt —" and run the command. **Wait for the user to approve it before continuing.**
 
 1. Read the first version number from `context/changelog-cc.txt` (the first line that is just a version number, e.g., `2.1.68`). This is the **local version**.
-2. Fetch the latest Claude Code version using Bash:
+2. Fetch the latest Claude Code version from the GitHub API using Bash:
    ```bash
-   bash .claude/scripts/fetch-latest-cc-version.sh
+   curl -sf https://api.github.com/repos/anthropics/claude-code/releases/latest
    ```
+   Then extract the version number from the `tag_name` field in the JSON response.
 3. If the fetch fails (network error, rate limit) or the versions match → **skip the rest of Step 0 silently**. Continue to Step 3b.
 4. If the versions differ → an update is needed. Silently store the local version, latest version, and the fact that an update is needed (you'll use these in Step 1a). Continue to Step 3b.
 
@@ -54,7 +55,7 @@ Follow these instructions to sync the curriculum. Work through each step sequent
 
 ---
 
-**Tools guidance:** Prefer Read, Write, Edit, WebFetch, and Grep tools over Bash commands during this sync. Use the provided scripts for fetching (`.claude/scripts/fetch-latest-cc-version.sh`, `.claude/scripts/fetch-cc-changelog.sh`). For blog fetching, use WebFetch. For parsing and extracting changelog sections, use Read on saved files and process the content directly — avoid complex `grep`, `sed`, or `awk` pipelines that trigger permission warnings for the student.
+**Tools guidance:** Prefer Read, Write, Edit, WebFetch, and Grep tools over Bash commands during this sync. For blog fetching, use WebFetch. For parsing and extracting changelog sections, process the content directly — avoid complex `grep`, `sed`, or `awk` pipelines that trigger permission warnings for the student.
 
 **Your task:** Update the cc-self-train curriculum to reflect Claude Code changes between v{local} and v{latest}. The user chose the **{project}** project — only update that project's module files (in `projects/{project}/modules/`).
 
@@ -62,7 +63,7 @@ Follow these instructions to sync the curriculum. Work through each step sequent
 
 1. Fetch the raw CHANGELOG from GitHub:
    ```bash
-   bash .claude/scripts/fetch-cc-changelog.sh
+   curl -sf https://raw.githubusercontent.com/anthropics/claude-code/main/CHANGELOG.md
    ```
 2. Extract all entries between v{latest} and v{local}.
 3. **Fetch the Anthropic blog index** using WebFetch on `https://claude.com/blog`. Identify any posts published since the repo was last updated (use the release date of v{local} as the cutoff — look it up from the GitHub releases API if needed, or estimate from the CHANGELOG dates). Focus on posts in the **Claude Code** and **Agents** categories.
@@ -204,7 +205,7 @@ Now that the user has chosen a project, run the curriculum sync — and make it 
    The goal is to **demystify what Claude is doing** — the student sees tool calls flying by and understands they're purposeful, not magic. This builds trust and sets expectations for the rest of the course.
 
 2. **Narrate as you work.** As you execute each phase of the sync task (from the "Curriculum Sync Task" section above), drop brief 1-sentence status updates so the student isn't staring at a wall of tool calls in silence:
-   - Before fetching: "Fetching the Claude Code changelog to see what's new..."
+   - Before fetching: "Fetching the Claude Code changelog to see what's new..." If this triggers a `bash` permission prompt (e.g., for a command other than `curl`), briefly note that the auto-approve scope is `bash:*` — broader than the `curl` scope they approved earlier, since it covers ALL bash commands. Let the student decide whether to auto-approve or approve one at a time.
    - Before blog check: "Checking the Anthropic blog for any feature announcements..."
    - Before triage: "Found X entries — filtering out bug fixes and keeping the features that affect your lessons..."
    - Before file updates: "N features are relevant — updating the lesson files now..."
