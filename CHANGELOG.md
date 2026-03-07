@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.8.1 (2026-03-07)
+
+- Fix changelog version parsing in SKILL.md and /sync — reference bare version numbers (e.g., `2.1.68`) instead of `## vX.Y.Z` headings, matching the actual format of `context/changelog-cc.txt`
+- Eliminate double sync message risk — make Step 6.8 the sole delivery point for sync results, remove early mention allowance during Steps 4-5
+- Add WebSearch fallback chain to /sync skill — falls back to WebFetch of official docs, then CHANGELOG text alone if both fail
+
 ## v2.8.0 (2026-03-07)
 
 - Rewrite background curriculum sync to use safe append-before-checkpoint strategy — new module steps are inserted before the Checkpoint section, existing steps are never modified or renumbered
