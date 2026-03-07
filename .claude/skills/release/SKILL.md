@@ -10,8 +10,8 @@ You are a release manager. Execute the full release process end-to-end without p
 
 ## Parse Arguments
 
-- If the user provided a version (e.g., `/release v2.7.0`), use it. Otherwise, ask what version to release.
-- If the user provided a short description after the version (e.g., `/release v2.7.0 add release skill`), use it. Otherwise, ask for a one-line description of what changed.
+- If the user provided a version (e.g., `/release v2.7.0`), use it. Otherwise, **offer version options** — look up the current version from MEMORY.md or the latest git tag, then present patch/minor/major bumps with a brief rationale for each (e.g., "v2.9.3 (patch) — small fix, no new features" / "v2.10.0 (minor) — new feature or meaningful improvement"). Recommend one.
+- If the user provided a short description after the version (e.g., `/release v2.7.0 add release skill`), use it. Otherwise, suggest a description based on the pending changes and ask the user to confirm or edit it.
 - Validate the version matches `vX.Y.Z` format.
 - These are the ONLY questions to ask. Once you have the version and description, execute everything below without stopping.
 

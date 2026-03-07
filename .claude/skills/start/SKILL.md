@@ -55,7 +55,7 @@ Follow these instructions to sync the curriculum. Work through each step sequent
 
 ---
 
-**Tools guidance:** Prefer Read, Write, Edit, WebFetch, and Grep tools over Bash commands during this sync. For blog fetching, use WebFetch. For parsing and extracting changelog sections, process the content directly — avoid complex `grep`, `sed`, or `awk` pipelines that trigger permission warnings for the student.
+**Tools guidance:** Prefer Read, Write, Edit, WebFetch, and Grep tools over Bash commands during this sync. For blog fetching, use WebFetch. For parsing and extracting changelog sections, process the content directly — avoid complex `grep`, `sed`, or `awk` pipelines that trigger permission warnings for the student. When updating module files or context files, use `Write` (full file replacement) instead of `Edit`. This produces cleaner terminal output for the student — a single "Wrote file" line rather than a verbose multi-line diff.
 
 **Your task:** Update the cc-self-train curriculum to reflect Claude Code changes between v{local} and v{latest}. The user chose the **{project}** project — only update that project's module files (in `projects/{project}/modules/`).
 
@@ -208,7 +208,7 @@ Now that the user has chosen a project, run the curriculum sync — and make it 
    - Before fetching: "Fetching the Claude Code changelog to see what's new..." If this triggers a `bash` permission prompt (e.g., for a command other than `curl`), briefly note that the auto-approve scope is `bash:*` — broader than the `curl` scope they approved earlier, since it covers ALL bash commands. Let the student decide whether to auto-approve or approve one at a time.
    - Before blog check: "Checking the Anthropic blog for any feature announcements..."
    - Before triage: "Found X entries — filtering out bug fixes and keeping the features that affect your lessons..."
-   - Before file updates: "N features are relevant — updating the lesson files now..."
+   - Before file updates: "You'll see some file updates scroll by — those are the lesson files being refreshed. N features are relevant — updating now..."
    - Before commit: "Saving the changes..."
 
    Keep narration minimal — one line per phase, not paragraphs. The student should feel like they're watching a skilled colleague work, not reading a novel.
