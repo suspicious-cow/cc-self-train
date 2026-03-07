@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.8.3 (2026-03-07)
+
+- Split onboarding welcome (Step 0a) into its own message — now waits for user acknowledgement before delivering the permissions teaching (Step 0.1), preventing a wall of text on first contact
+
 ## v2.8.2 (2026-03-07)
 
 - Fix consistency in background agent permissions teaching moment (Step 0, item 4b) — replace "Go ahead and approve each one" with language that reinforces the deliberate evaluation mindset from Step 0.1
