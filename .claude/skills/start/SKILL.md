@@ -52,9 +52,15 @@ Then say something like: "Ready? Here comes your first prompt —" and run the c
 
       It'll finish on its own while we work through the setup — you don't need to wait or watch it. **Do NOT explain how to view or manage the agent here.** The user doesn't need to know about ↓, Esc, or Ctrl+F yet — those are taught in Module 8.
 
-   b. **Spawn a background agent** using the Agent tool with `subagent_type: "general-purpose"` and `run_in_background: true`. Pass it the full curriculum sync task as its prompt (the complete instructions from the "Background Agent Task" section below). Include the local version, latest version, and the working directory path in the prompt so the agent has everything it needs.
+   b. **Teach about background agent permissions** before spawning. Say something like: "When I launch this background agent, Claude Code will ask you to approve the tools it needs — things like **WebSearch** (to look up documentation online), **Edit** and **Write** (to update lesson files), and a few others. You'll see permission prompts for each tool. Since these are all read-and-update operations the agent needs to sync the curriculum, approving them is the right call — but notice you're making that choice for each one, just like you did with the `curl` command."
 
-   c. **Continue immediately** to Step 3b → Steps 1–4. Do not wait for the agent to finish.
+      Then explain the *why*: "This is actually how background agents work in Claude Code: they request all their permissions **upfront** before launching, since they can't ask you mid-task while running in the background. You'll work with background agents hands-on in Module 8."
+
+      Then normalize it for the rest of the course: "You'll see these same tool permission prompts throughout the course as Claude Code uses new tools for the first time. Each one is just Claude Code being transparent about what it wants to do."
+
+   c. **Spawn a background agent** using the Agent tool with `subagent_type: "general-purpose"` and `run_in_background: true`. Pass it the full curriculum sync task as its prompt (the complete instructions from the "Background Agent Task" section below). Include the local version, latest version, and the working directory path in the prompt so the agent has everything it needs.
+
+   d. **Continue immediately** to Step 3b → Steps 1–4. Do not wait for the agent to finish.
 
 ### Background Agent Task (passed as the agent's prompt)
 
