@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.8.2 (2026-03-07)
+
+- Fix consistency in background agent permissions teaching moment (Step 0, item 4b) — replace "Go ahead and approve each one" with language that reinforces the deliberate evaluation mindset from Step 0.1
+- Soften Module 8 reference from specific ("You'll learn more about this") to general ("You'll work with background agents hands-on") to match actual Module 8 content
+
 ## v2.8.1 (2026-03-07)
 
 - Fix changelog version parsing in SKILL.md and /sync — reference bare version numbers (e.g., `2.1.68`) instead of `## vX.Y.Z` headings, matching the actual format of `context/changelog-cc.txt`
