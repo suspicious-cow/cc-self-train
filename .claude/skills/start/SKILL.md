@@ -46,15 +46,11 @@ Then say something like: "Ready? Here comes your first prompt —" and run the c
    curl -sf https://api.github.com/repos/anthropics/claude-code/releases/latest | grep -o '"tag_name"[^"]*"[^"]*"' | head -1 | grep -o '[0-9][0-9.]*'
    ```
 3. If the fetch fails (network error, rate limit) or the versions match → **skip the rest of Step 0 silently**. Continue to Step 3b.
-4. If the versions differ → an update is needed. **Do NOT spawn the background agent yet.** Instead:
+4. If the versions differ → an update is needed. Silently store the local version, latest version, and the fact that an update is needed (you'll use these in Step 1a). Continue to Step 3b.
 
-   - Silently store the local version, latest version, and the fact that an update is needed (you'll use these in Step 1a).
-   - Say one brief sentence to the user: "I noticed a curriculum update is available (v{local} → v{latest}) — I'll kick that off once we've picked your project."
-   - **Continue immediately** to Step 3b.
+### Curriculum Sync Task
 
-### Background Agent Task (passed as the agent's prompt)
-
-When spawning the background agent, give it these instructions as its prompt. The agent runs independently — it has access to all tools (Bash, Read, Edit, Write, Grep, Glob, WebSearch, WebFetch) and will work through the steps on its own.
+Follow these instructions to sync the curriculum. Work through each step sequentially.
 
 ---
 
@@ -88,7 +84,7 @@ When spawning the background agent, give it these instructions as its prompt. Th
    | Tasks, TDD, dependencies | 09 | `tasks.txt` |
    | Worktrees, plugins, eval, parallel dev | 10 | `plugins.txt` |
 
-7. If zero entries are curriculum-relevant → stop here and report "No curriculum-relevant changes found."
+7. If zero entries are curriculum-relevant → stop here and tell the user "No curriculum-relevant changes found."
 
 **Step 2 — Research & update files:**
 
@@ -168,19 +164,10 @@ Keep a list of all files that passed and all files that were reverted.
 
 ### Graceful failure
 
-If ANY phase fails (network error, API rate limit, parse error, background agent failure, etc.):
-- Tell the user: "Couldn't check for curriculum updates — continuing with the current version."
-- Continue to Step 3b normally.
+If ANY phase fails (network error, API rate limit, parse error, etc.):
+- Tell the user: "Couldn't sync the curriculum updates — no worries, the current materials work fine. We can always try again later."
+- Continue to Step 1b.
 - **Never block onboarding because of an update failure.**
-
-### After sync completes
-
-When the background agent finishes and the user is still in session (checked via `TaskOutput` with `block: false`):
-
-- **If curriculum-relevant changes were found:** Tell the user what new CC features were added to the curriculum. Keep it to 2-3 sentences, highlight the 2-3 most interesting new features. Frame it as a teaser — e.g., "By the way, the curriculum just synced and picked up some new Claude Code features! You'll get to learn about [feature X] in Module [N] and [feature Y] in Module [M]."
-- **If no relevant changes were found:** Say nothing.
-- **If the sync failed:** Say nothing (the graceful failure in Step 6.8 handles this).
-- **Timing:** Don't interrupt a step in progress. Always defer to Step 6.8's check — do not mention the sync result before then, even if the agent finishes early. Step 6.8 handles all three outcomes (success, still running, failure).
 
 ## Step 1: Pick a Project
 
@@ -206,23 +193,32 @@ Mark Canvas as **(Recommended for first time through)** in the AskUserQuestion o
 
 **Only run this step if Step 0 flagged that a curriculum update is needed.** If no update is needed, skip to Step 1b.
 
-This also applies on resume (Step 3b): if the user is resuming from `.claude/onboarding-state.json` and Step 0 flagged an update, spawn the sync here using the project name from the state file — then skip to the resumed step.
+This also applies on resume (Step 3b): if the user is resuming from `.claude/onboarding-state.json` and Step 0 flagged an update, run the sync here using the project name from the state file — then skip to the resumed step.
 
-Now that the user has chosen a project, explain background agents and spawn the sync:
+Now that the user has chosen a project, run the curriculum sync — and make it a learning experience:
 
-1. **Explain background agents briefly** (2-3 sentences, conversational). Something like: "Remember I mentioned a curriculum update? Rather than make you wait, I'm going to hand this off to a **background agent** — think of it as a separate AI worker that handles the update in the background while we keep talking. You'll learn all about background agents in Module 8, but let's see one in action right now."
+1. **Explain what's about to happen and why** (conversational, 3-4 sentences). Something like: "Before we set up your environment, I noticed the lesson materials are a few versions behind your Claude Code install. I'm going to update them now so the exercises match the features you actually have. You'll see me fetch a changelog, check the Anthropic blog for announcements, and update lesson files — it's the same kind of 'read data, make decisions, edit files' workflow you'll be doing throughout this course. This should take about a minute."
 
-   It'll finish on its own while we work through the setup — you don't need to wait or watch it. **Do NOT explain how to view or manage the agent here.** The user doesn't need to know about ↓, Esc, or Ctrl+F yet — those are taught in Module 8.
+   The goal is to **demystify what Claude is doing** — the student sees tool calls flying by and understands they're purposeful, not magic. This builds trust and sets expectations for the rest of the course.
 
-2. **Teach about background agent permissions** before spawning. Say something like: "When I launch this background agent, Claude Code will ask you to approve the tools it needs — things like **WebSearch** (to look up documentation online), **Edit** and **Write** (to update lesson files), and a few others. You'll see permission prompts for each tool. Since these are all read-and-update operations the agent needs to sync the curriculum, approving them is the right call — but notice you're making that choice for each one, just like you did with the `curl` command."
+2. **Narrate as you work.** As you execute each phase of the sync task (from the "Curriculum Sync Task" section above), drop brief 1-sentence status updates so the student isn't staring at a wall of tool calls in silence:
+   - Before fetching: "Fetching the Claude Code changelog to see what's new..."
+   - Before blog check: "Checking the Anthropic blog for any feature announcements..."
+   - Before triage: "Found X entries — filtering out bug fixes and keeping the features that affect your lessons..."
+   - Before file updates: "N features are relevant — updating the lesson files now..."
+   - Before commit: "Saving the changes..."
 
-   Then explain the *why*: "This is actually how background agents work in Claude Code: they request all their permissions **upfront** before launching, since they can't ask you mid-task while running in the background. You'll work with background agents hands-on in Module 8."
+   Keep narration minimal — one line per phase, not paragraphs. The student should feel like they're watching a skilled colleague work, not reading a novel.
 
-   Then normalize it for the rest of the course: "You'll see these same tool permission prompts throughout the course as Claude Code uses new tools for the first time. Each one is just Claude Code being transparent about what it wants to do."
+3. **Handle failure gracefully:** If any phase fails (network error, API rate limit, parse error), tell the user: "Couldn't sync the curriculum updates — no worries, the current materials work fine. We can always try again later." Then continue to Step 1b.
 
-3. **Spawn a background agent** using the Agent tool with `subagent_type: "general-purpose"` and `run_in_background: true`. Pass it the full curriculum sync task as its prompt (the complete instructions from the "Background Agent Task" section below). Include the local version, latest version, the working directory path, **and the chosen project name** in the prompt so the agent only updates that project's modules.
+4. **Deliver a summary** when the sync succeeds:
+   - If curriculum-relevant changes were found: Tell the user what was updated. Keep it to 2-3 sentences — highlight the 2-3 most interesting new features and which modules they'll appear in. Example: "All synced! The lessons now cover [feature X] (you'll see it in Module [N]) and [feature Y] (Module [M]). These are new Claude Code capabilities that weren't around when this course was last updated."
+   - If no relevant changes were found: "All checked — the curriculum is already up to date with the latest Claude Code features. Nothing to change."
 
-4. **Continue immediately** to Step 1b. Do not wait for the agent to finish.
+5. **Version mismatch check:** Compare the synced curriculum version against the student's installed CC version. Run `claude --version` to get their installed version, then read the top version from `context/changelog-cc.txt`. If the curriculum is newer, tell them: "Heads up: the lessons now cover CC v{curriculum_version} features, but you're running v{installed_version}. You can update anytime with `claude update`."
+
+6. **Continue** to Step 1b.
 
 ## Step 1b: Detect Their Operating System
 
@@ -684,19 +680,6 @@ End with something like: "That's the core workflow — edit, check, commit. Say 
 ---
 
 ### 6.8 Module 1 Complete
-
-**Before the recap**, if a background curriculum sync agent was spawned in Step 0.1, do a **non-blocking** status check using `TaskOutput` with `block: false`:
-- If the agent **finished successfully** → add a brief note in your recap: "By the way, that curriculum update from earlier finished — all lessons are current with v{latest}."
-- If the agent is **still running** (unlikely after 15+ minutes) → don't mention it. It'll finish before they reach Module 2.
-- If the agent **failed** → brief note: "The curriculum update ran into an issue — no worries, the current materials work fine."
-
-This check is **informational only** — never block on it.
-
-**Version mismatch check:** If the curriculum was synced to a newer CC version, compare it against the student's installed version. Run `claude --version` to get their installed version, then read the top version from `context/changelog-cc.txt` (the curriculum version). If the curriculum version is newer than the installed version, print the following (do NOT use blockquote formatting):
-
-**Heads up:** The lessons now cover Claude Code v{curriculum_version} features, but you're running v{installed_version}. Some features taught in later modules might not be available until you update. You can update anytime by running `claude update` — it only takes a few seconds.
-
-If the versions match or the curriculum wasn't updated, skip this message.
 
 Print the following recap exactly as written (do NOT use blockquote formatting — output as normal text):
 
