@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.9.1 (2026-03-07)
+
+- Extract inline `curl | grep` pipelines in SKILL.md into dedicated scripts (`.claude/scripts/fetch-latest-cc-version.sh`, `.claude/scripts/fetch-cc-changelog.sh`) to eliminate backslash-escaped-whitespace permission warnings during onboarding
+- Add tools guidance note to curriculum sync task steering Claude toward Read/Write/WebFetch/Grep over complex bash pipelines
+
 ## v2.9.0 (2026-03-07)
 
 - Move curriculum sync from background agent to inline main flow (Step 1a) — sync now runs directly with narrated status updates, replacing the unreliable background agent approach
