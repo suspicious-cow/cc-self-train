@@ -27,14 +27,14 @@ Keep it to one short message (4-6 sentences). Write it as natural, conversationa
 
 ### 0.1 — First Permission Prompt (teaching moment)
 
-**This is the user's first hands-on lesson.** Before running the `curl` command, explain what they're about to experience. Tell them (in natural prose, not a bulleted list):
+**This is the user's first hands-on lesson.** Before running the command, explain what they're about to experience. Tell them (in natural prose, not a bulleted list):
 
 - They're about to see their **first permission prompt** — a dialog box where Claude Code asks for approval before running a command. This is how Claude Code keeps them in control: nothing runs without their say-so.
-- Walk them through what they'll see in the prompt: the **command** being requested (in this case, a `curl` to check for curriculum updates), a **description** of what it does, and **three options**:
-  1. **Yes** — approve this one time. Use for commands you want to review each time (e.g., git commits, file deletions, anything that changes your code).
-  2. **Yes, and don't ask again** — auto-approve similar commands in the future. Use for low-risk, read-only commands you'll see often (e.g., `curl` fetches, `git status`, listing files). Saves you from clicking approve on harmless commands over and over.
+- Walk them through what they'll see in the prompt: the **command** being requested (in this case, a script that checks for curriculum updates), a **description** of what it does, and **three options**:
+  1. **Yes** — approve this one time. Use for commands you want to review each time.
+  2. **Yes, and don't ask again** — auto-approve similar commands in the future. **Read the scope carefully** — it shows what pattern will be auto-approved (e.g., `bash:*` would approve ALL bash commands, not just this one).
   3. **No** — block the command. Use if something looks suspicious or you don't want it to run.
-- For this `curl` command, suggest they pick **"Yes, and don't ask again"** (option 2) — it's a safe, read-only fetch and they'll see similar commands throughout the course. Frame it as: "This is a good example of a low-risk command — it's just reading data, not changing anything. Approving it permanently saves you a click every time."
+- For this command, suggest they pick **"Yes"** (option 1). Explain why: option 2 would auto-approve `bash:*` — meaning every future bash command would run without asking, including potentially destructive ones. This is a great example of reading the scope before auto-approving. Option 2 is best saved for narrow, specific patterns (like `git status` or `ls`), not broad categories like `bash:*`.
 - Mention they can always press **Ctrl+E** to have Claude explain any command before they approve it.
 - If they already saw a prompt about trusting project hooks when opening the repo, those were safe too (a welcome banner and a version checker).
 
