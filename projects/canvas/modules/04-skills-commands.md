@@ -3,7 +3,7 @@
 **CC features:** SKILL.md, frontmatter, custom slash commands, hot-reload,
 argument substitution, `disable-model-invocation`
 
-> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+**Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
 
 ### 4.1 Create the "new-page" Skill
 
@@ -11,16 +11,18 @@ Skills are reusable slash commands you define for your project. Instead of typin
 
 Describe the skill you want to Claude. You want a skill that scaffolds a new HTML page with your site's shared layout -- so every time you invoke `/new-page faq`, it reads your existing nav and footer, creates a new page with the right boilerplate, and reminds you to update links.
 
-> "Create a 'new-page' skill in .claude/skills/new-page/SKILL.md. It should take a page name as an argument (using $0), read index.html to get the shared nav and footer, then create a new HTML file with the full boilerplate and shared layout. Also create a page-template.md reference file showing the expected structure. Set allowed-tools to Read, Write, Edit, and Bash."
+```
+Create a 'new-page' skill in .claude/skills/new-page/SKILL.md. It should take a page name as an argument (using $0), read index.html to get the shared nav and footer, then create a new HTML file with the full boilerplate and shared layout. Also create a page-template.md reference file showing the expected structure. Set allowed-tools to Read, Write, Edit, and Bash.
+```
 
 Claude will ask you clarifying questions about the template structure or what the skill should do after creating the file. Answer based on how you want your pages to work.
 
-> **STOP -- What you just did:** You created a skill with a supporting file. The `SKILL.md` is the instruction template -- it tells Claude what to do when you invoke `/new-page`. The `page-template.md` is a reference document the skill can read for the HTML boilerplate. This pattern (instruction + reference files) is how you build skills that produce consistent, high-quality output every time.
+**STOP -- What you just did:** You created a skill with a supporting file. The `SKILL.md` is the instruction template -- it tells Claude what to do when you invoke `/new-page`. The `page-template.md` is a reference document the skill can read for the HTML boilerplate. This pattern (instruction + reference files) is how you build skills that produce consistent, high-quality output every time.
 
-> **Engineering value:**
-> - *Entry-level:* Skills turn multi-step prompts into one-word commands. Instead of explaining 'create a new page with the nav and footer and...' every time, you type `/new-page faq`.
-> - *Mid-level:* Skills are how you enforce team consistency. A `/new-component` skill ensures every component follows the same structure, naming, and testing pattern — no matter who creates it.
-> - *Senior+:* Skills are essentially codified workflows — the same concept as project templates, Yeoman generators, or `rails generate`, but defined in natural language and version-controlled with your project.
+**Engineering value:**
+- *Entry-level:* Skills turn multi-step prompts into one-word commands. Instead of explaining 'create a new page with the nav and footer and...' every time, you type `/new-page faq`.
+- *Mid-level:* Skills are how you enforce team consistency. A `/new-component` skill ensures every component follows the same structure, naming, and testing pattern — no matter who creates it.
+- *Senior+:* Skills are essentially codified workflows — the same concept as project templates, Yeoman generators, or `rails generate`, but defined in natural language and version-controlled with your project.
 
 Ready to build the component skill?
 
@@ -28,29 +30,33 @@ Ready to build the component skill?
 
 Now create a skill for generating reusable CSS components. This one should take a component type as an argument (like "card", "button", "hero") and create the CSS following your design system.
 
-> "Create a 'component' skill that takes a component type as $0, reads the existing CSS to understand our design tokens, then creates a new BEM-style CSS class with responsive styles and hover/focus states. Also create a component-templates.md reference with example HTML and CSS for common component types."
+```
+Create a 'component' skill that takes a component type as $0, reads the existing CSS to understand our design tokens, then creates a new BEM-style CSS class with responsive styles and hover/focus states. Also create a component-templates.md reference with example HTML and CSS for common component types.
+```
 
 Discuss with Claude what component types you want supported and how the CSS should be organized -- appended to the main file or in separate component files.
 
-> **Quick check before continuing:**
-> - [ ] `.claude/skills/new-page/SKILL.md` exists with frontmatter and a supporting template file
-> - [ ] `.claude/skills/component/SKILL.md` exists with a component templates reference
-> - [ ] Both skills use `$0` for argument substitution
+**Quick check before continuing:**
+- [ ] `.claude/skills/new-page/SKILL.md` exists with frontmatter and a supporting template file
+- [ ] `.claude/skills/component/SKILL.md` exists with a component templates reference
+- [ ] Both skills use `$0` for argument substitution
 
 ### 4.3 Create the "check-site" Skill
 
 This skill is different -- it validates your site without modifying anything. Describe the quality checks you want to Claude:
 
-> "Create a 'check-site' skill that scans all HTML pages and checks for common issues -- missing doctype, missing lang attribute, missing meta tags, heading hierarchy problems, images without alt text, broken internal links, missing title elements. Output a pass/fail report. Set disable-model-invocation to true so it only runs when I explicitly invoke it, and limit allowed-tools to Read, Bash, Grep, and Glob."
+```
+Create a 'check-site' skill that scans all HTML pages and checks for common issues -- missing doctype, missing lang attribute, missing meta tags, heading hierarchy problems, images without alt text, broken internal links, missing title elements. Output a pass/fail report. Set disable-model-invocation to true so it only runs when I explicitly invoke it, and limit allowed-tools to Read, Bash, Grep, and Glob.
+```
 
 Notice `disable-model-invocation: true` -- this skill can only be triggered
 by you typing `/check-site`. Claude will not invoke it automatically.
 
-> **STOP -- What you just did:** You created three skills with different purposes: `new-page` generates files, `component` creates CSS, and `check-site` validates without modifying anything. The `disable-model-invocation: true` flag on `check-site` is important -- it means Claude will never run this validation on its own, only when you explicitly ask. You will use this flag whenever a skill should be user-triggered only (like destructive operations or expensive checks).
+**STOP -- What you just did:** You created three skills with different purposes: `new-page` generates files, `component` creates CSS, and `check-site` validates without modifying anything. The `disable-model-invocation: true` flag on `check-site` is important -- it means Claude will never run this validation on its own, only when you explicitly ask. You will use this flag whenever a skill should be user-triggered only (like destructive operations or expensive checks).
 
-> **Engineering value:**
-> - *Entry-level:* `disable-model-invocation` is your safety switch — it means this skill only runs when YOU ask for it, never automatically.
-> - *Mid-level:* In production repos, you'll want destructive or expensive operations (database resets, deployment scripts, full test suites) as manual-only skills. This prevents accidental execution during normal conversation.
+**Engineering value:**
+- *Entry-level:* `disable-model-invocation` is your safety switch — it means this skill only runs when YOU ask for it, never automatically.
+- *Mid-level:* In production repos, you'll want destructive or expensive operations (database resets, deployment scripts, full test suites) as manual-only skills. This prevents accidental execution during normal conversation.
 
 Want to test all three skills in action?
 
@@ -72,7 +78,7 @@ claude --resume
 
 Claude picks up right where you left off -- your conversation history, CLAUDE.md, and rules are all still loaded. Type `/` and you should see your new skills (`new-page`, `component`, `check-site`) in the autocomplete list.
 
-> **STOP -- What you just did:** You learned how to exit and resume a Claude Code session. The `--resume` flag restores your full conversation context, so you never lose progress. This is essential whenever you need to restart -- whether for new skills to appear, to free up memory, or just to take a break.
+**STOP -- What you just did:** You learned how to exit and resume a Claude Code session. The `--resume` flag restores your full conversation context, so you never lose progress. This is essential whenever you need to restart -- whether for new skills to appear, to free up memory, or just to take a break.
 
 ### 4.5 Test Your Skills
 
@@ -105,7 +111,7 @@ Skills support these substitution variables:
 
 ### 4.7 Hot-Reload
 
-> **Why this step:** Hot-reload means you can iterate on your skills without restarting Claude Code. This makes skill development fast -- edit, save, test, repeat. No restart cycle.
+**Why this step:** Hot-reload means you can iterate on your skills without restarting Claude Code. This makes skill development fast -- edit, save, test, repeat. No restart cycle.
 
 With Claude Code still running, open `.claude/skills/check-site/SKILL.md` in a
 separate editor and add a line to the checks:
@@ -121,11 +127,13 @@ content takes effect immediately -- no restart needed.
 
 Create one more skill -- a page brief template that outputs a planning document for a new page without Claude processing it.
 
-> "Create a 'page-brief' skill with disable-model-invocation set to true. It should take a page name as $0 and output a planning template with fields like purpose, target audience, key sections, SEO keywords, and design notes."
+```
+Create a 'page-brief' skill with disable-model-invocation set to true. It should take a page name as $0 and output a planning template with fields like purpose, target audience, key sections, SEO keywords, and design notes.
+```
 
 Test it: `/page-brief "Services"`
 
-> **STOP -- What you just did:** You now have four custom skills that extend Claude Code's capabilities specifically for your portfolio project. The `new-page` and `component` skills are productivity multipliers -- what used to be a multi-paragraph prompt is now a single slash command. The `check-site` skill is a quality gate. The `page-brief` skill outputs raw text without Claude processing it (because of `disable-model-invocation`). Together, these skills form a custom toolkit tailored to your project.
+**STOP -- What you just did:** You now have four custom skills that extend Claude Code's capabilities specifically for your portfolio project. The `new-page` and `component` skills are productivity multipliers -- what used to be a multi-paragraph prompt is now a single slash command. The `check-site` skill is a quality gate. The `page-brief` skill outputs raw text without Claude processing it (because of `disable-model-invocation`). Together, these skills form a custom toolkit tailored to your project.
 
 ### Checkpoint
 

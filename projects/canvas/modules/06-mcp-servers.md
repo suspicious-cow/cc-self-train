@@ -2,11 +2,11 @@
 
 **CC features:** MCP servers, `.mcp.json`, scopes, skills+MCP, `claude mcp add`
 
-> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+**Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
 
 ### 6.1 What Is MCP
 
-> **Why this step:** Until now, Claude Code has only worked with local files and shell commands. MCP (Model Context Protocol) servers extend Claude's reach to external systems -- file servers, web APIs, databases, and more. This is what turns Claude Code from a code assistant into an integration platform.
+**Why this step:** Until now, Claude Code has only worked with local files and shell commands. MCP (Model Context Protocol) servers extend Claude's reach to external systems -- file servers, web APIs, databases, and more. This is what turns Claude Code from a code assistant into an integration platform.
 
 MCP (Model Context Protocol) is an open standard for connecting AI tools to
 external data sources and APIs. MCP servers give Claude Code access to
@@ -36,12 +36,12 @@ After adding, check the status:
 
 You should see `canvas-fs` listed and connected.
 
-> **STOP -- What you just did:** You connected your first MCP server and verified it with `/mcp`. The filesystem MCP server gives Claude enhanced file operations beyond the built-in Read/Write tools. The key command pattern is `claude mcp add --transport stdio <name> -- <command>`. You will use this same pattern to add any MCP server.
+**STOP -- What you just did:** You connected your first MCP server and verified it with `/mcp`. The filesystem MCP server gives Claude enhanced file operations beyond the built-in Read/Write tools. The key command pattern is `claude mcp add --transport stdio <name> -- <command>`. You will use this same pattern to add any MCP server.
 
-> **Engineering value:**
-> - *Entry-level:* MCP servers are like USB ports for Claude — they let you plug in new capabilities without changing Claude itself.
-> - *Mid-level:* In real engineering workflows, MCP connects Claude to your actual tools — Jira for ticket tracking, Figma for designs, Sentry for error monitoring. Claude stops being a code-only tool and becomes a full engineering assistant.
-> - *Senior+:* MCP is a standardized integration protocol — like LSP (Language Server Protocol) but for AI tool access. Building on open standards means your MCP configurations work across any AI tool that supports the protocol, not just Claude.
+**Engineering value:**
+- *Entry-level:* MCP servers are like USB ports for Claude — they let you plug in new capabilities without changing Claude itself.
+- *Mid-level:* In real engineering workflows, MCP connects Claude to your actual tools — Jira for ticket tracking, Figma for designs, Sentry for error monitoring. Claude stops being a code-only tool and becomes a full engineering assistant.
+- *Senior+:* MCP is a standardized integration protocol — like LSP (Language Server Protocol) but for AI tool access. Building on open standards means your MCP configurations work across any AI tool that supports the protocol, not just Claude.
 
 Shall we add a Fetch server to pull in real web content?
 
@@ -64,11 +64,15 @@ claude mcp add --transport stdio canvas-fetch -- npx -y @anthropic-ai/mcp-fetch
 
 Now try it out. Ask Claude to use the Fetch server to pull in real content for your portfolio. For example:
 
-> "Using the canvas-fetch MCP server, fetch my GitHub profile and use the data to populate the projects page with real project cards."
+```
+Using the canvas-fetch MCP server, fetch my GitHub profile and use the data to populate the projects page with real project cards.
+```
 
 Or if you do not have public repos, give Claude any URL and ask it to pull content from there:
 
-> "Use the fetch server to grab content from [your URL] and convert it to an HTML entry for the site."
+```
+Use the fetch server to grab content from [your URL] and convert it to an HTML entry for the site.
+```
 
 ### 6.4 Check MCP Status
 
@@ -79,12 +83,12 @@ Or if you do not have public repos, give Claude any URL and ask it to pull conte
 This shows all connected servers, their status, and available tools. You
 should see both `canvas-fs` and `canvas-fetch`.
 
-> **STOP -- What you just did:** You used the Fetch MCP server to pull real data from the web into your portfolio. This is a powerful pattern: instead of manually copying content, Claude can fetch, parse, and integrate external data directly. You used a natural language prompt ("fetch my GitHub profile") and Claude handled the MCP tool calls behind the scenes.
+**STOP -- What you just did:** You used the Fetch MCP server to pull real data from the web into your portfolio. This is a powerful pattern: instead of manually copying content, Claude can fetch, parse, and integrate external data directly. You used a natural language prompt ("fetch my GitHub profile") and Claude handled the MCP tool calls behind the scenes.
 
-> **Quick check before continuing:**
-> - [ ] `/mcp` shows both `canvas-fs` and `canvas-fetch` as connected
-> - [ ] You used the Fetch server to pull real content into your site
-> - [ ] The content rendered correctly in your browser
+**Quick check before continuing:**
+- [ ] `/mcp` shows both `canvas-fs` and `canvas-fetch` as connected
+- [ ] You used the Fetch server to pull real content into your site
+- [ ] The content rendered correctly in your browser
 
 ### 6.5 Create .mcp.json for Team Sharing
 
@@ -118,23 +122,25 @@ Commit this file so teammates get the same MCP setup.
 | **project** | `.mcp.json` in project root | Everyone (via version control) |
 | **user** | `~/.claude.json` | Only you, all projects |
 
-> **Why this step:** The three scopes (local, project, user) control who sees an MCP configuration. The `project` scope creates `.mcp.json` which gets committed to git -- every teammate who clones the repo gets the same MCP servers automatically. This is how you standardize a team's tool setup.
+**Why this step:** The three scopes (local, project, user) control who sees an MCP configuration. The `project` scope creates `.mcp.json` which gets committed to git -- every teammate who clones the repo gets the same MCP servers automatically. This is how you standardize a team's tool setup.
 
-> **Engineering value:**
-> - *Entry-level:* Committing `.mcp.json` means anyone who clones your repo gets the same MCP servers — no setup instructions to follow.
-> - *Mid-level:* Project-scoped MCP config is infrastructure-as-code for AI tooling. New team members clone, run `claude`, and everything just works.
+**Engineering value:**
+- *Entry-level:* Committing `.mcp.json` means anyone who clones your repo gets the same MCP servers — no setup instructions to follow.
+- *Mid-level:* Project-scoped MCP config is infrastructure-as-code for AI tooling. New team members clone, run `claude`, and everything just works.
 
 ### 6.7 Create a Skill That Orchestrates MCP Tools
 
 Create a "publish" skill that combines MCP tools with built-in tools to validate and package your site for deployment. Describe the workflow to Claude:
 
-> "Create a 'publish' skill that validates the site, generates a sitemap.xml, copies everything into a dist/ directory, minifies the CSS, and shows a deployment summary. Set disable-model-invocation to true and include mcp__canvas-fs__* in the allowed-tools so it can use the filesystem MCP server."
+```
+Create a 'publish' skill that validates the site, generates a sitemap.xml, copies everything into a dist/ directory, minifies the CSS, and shows a deployment summary. Set disable-model-invocation to true and include mcp__canvas-fs__* in the allowed-tools so it can use the filesystem MCP server.
+```
 
 Discuss the publish steps with Claude -- you might want different minification, or maybe you want to skip certain files. This is your deployment workflow.
 
 Test it: `/publish`
 
-> **STOP -- What you just did:** You created a skill that combines MCP tools with built-in tools into a single workflow. The `allowed-tools` frontmatter field (`mcp__canvas-fs__*`) grants the skill access to MCP server tools using the naming pattern `mcp__<server-name>__<tool-name>`. This is the Skills + MCP integration pattern -- your most powerful automation combines custom skills with external data sources.
+**STOP -- What you just did:** You created a skill that combines MCP tools with built-in tools into a single workflow. The `allowed-tools` frontmatter field (`mcp__canvas-fs__*`) grants the skill access to MCP server tools using the naming pattern `mcp__<server-name>__<tool-name>`. This is the Skills + MCP integration pattern -- your most powerful automation combines custom skills with external data sources.
 
 ### 6.8 Connect a Tool You Actually Use
 
@@ -159,7 +165,9 @@ claude mcp add --transport http figma-remote-mcp --scope user https://mcp.figma.
 
 After adding, run `/mcp` to authenticate and verify the connection. Then try it out:
 
-> "Using the Figma MCP server, look at my recent files and suggest which design tokens I should add to my portfolio's CSS custom properties."
+```
+Using the Figma MCP server, look at my recent files and suggest which design tokens I should add to my portfolio's CSS custom properties.
+```
 
 This section is optional -- if you do not use any of these tools, skip ahead to the checkpoint.
 

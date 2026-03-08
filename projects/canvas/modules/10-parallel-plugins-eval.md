@@ -3,11 +3,11 @@
 **CC features:** Git worktrees, agent teams (experimental), plugins, evaluation,
 PermissionRequest hooks, continuous learning
 
-> **Persona — Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."
+**Persona — Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."
 
 ### 10.1 Git Worktrees for Parallel Development
 
-> **Why this step:** Until now, you have worked on one feature at a time. Git worktrees let you have multiple branches checked out simultaneously in different directories -- each with its own Claude Code session. This is how you do true parallel development: two features being built at the same time by two Claude instances that can even share a task list.
+**Why this step:** Until now, you have worked on one feature at a time. Git worktrees let you have multiple branches checked out simultaneously in different directories -- each with its own Claude Code session. This is how you do true parallel development: two features being built at the same time by two Claude instances that can even share a task list.
 
 Git worktrees let you work on multiple branches simultaneously without
 switching. Each worktree is a separate directory pointing to the same repo.
@@ -30,7 +30,7 @@ Now you have three directories:
 - `../canvas-dark/` -- feature/dark-mode branch
 - `../canvas-blog/` -- feature/blog-engine branch
 
-> **STOP -- What you just did:** You created two separate working directories from the same git repository. Each worktree is a full checkout of a different branch. They share the same git history, but files in one worktree do not affect the other. This is fundamentally different from `git stash` or `git checkout` -- you do not lose any work when switching between features because they live in separate directories.
+**STOP -- What you just did:** You created two separate working directories from the same git repository. Each worktree is a full checkout of a different branch. They share the same git history, but files in one worktree do not affect the other. This is fundamentally different from `git stash` or `git checkout` -- you do not lose any work when switching between features because they live in separate directories.
 
 Want to start building dark mode in the first worktree?
 
@@ -38,7 +38,9 @@ Want to start building dark mode in the first worktree?
 
 In the `canvas-dark` worktree, tell Claude to build dark mode support. Describe the behavior you want:
 
-> "Add dark mode to the site. I want a toggle button in the header, CSS custom properties for both light and dark themes, localStorage to remember the preference, and detection of the system's preferred color scheme. Make the transitions smooth."
+```
+Add dark mode to the site. I want a toggle button in the header, CSS custom properties for both light and dark themes, localStorage to remember the preference, and detection of the system's preferred color scheme. Make the transitions smooth.
+```
 
 Claude will probably ask about your color choices for dark mode. Answer based on your design preferences -- this is your portfolio.
 
@@ -46,15 +48,17 @@ Claude will probably ask about your color choices for dark mode. Answer based on
 
 In the `canvas-blog` worktree, describe the blog engine you want to Claude:
 
-> "Build a markdown-powered blog engine. I want to write blog posts as .md files in a posts/ directory, and have vanilla JS render them as HTML. I need an index page listing all posts, individual post pages, tag filtering, and previous/next navigation between posts."
+```
+Build a markdown-powered blog engine. I want to write blog posts as .md files in a posts/ directory, and have vanilla JS render them as HTML. I need an index page listing all posts, individual post pages, tag filtering, and previous/next navigation between posts.
+```
 
 Discuss the implementation details with Claude -- how the markdown rendering should work, what the post format should look like, how tags should be organized. These design decisions are yours to make.
 
-> **Quick check before continuing:**
-> - [ ] `../canvas-dark/` directory exists with the feature/dark-mode branch checked out
-> - [ ] `../canvas-blog/` directory exists with the feature/blog-engine branch checked out
-> - [ ] You can open files in each worktree independently without affecting the other
-> - [ ] Dark mode and blog engine features are defined but may not be fully built yet
+**Quick check before continuing:**
+- [ ] `../canvas-dark/` directory exists with the feature/dark-mode branch checked out
+- [ ] `../canvas-blog/` directory exists with the feature/blog-engine branch checked out
+- [ ] You can open files in each worktree independently without affecting the other
+- [ ] Dark mode and blog engine features are defined but may not be fully built yet
 
 ### 10.4 Run Parallel Claude Instances
 
@@ -72,11 +76,11 @@ In Terminal 1, tell Claude to create tasks for dark mode -- design tokens, imple
 
 Both sessions see all tasks. When one completes a task, the other is notified.
 
-> **STOP -- What you just did:** You ran two Claude Code instances simultaneously, each in its own worktree with its own branch, sharing a single task list via `CLAUDE_CODE_TASK_LIST_ID`. This is the most powerful development pattern in Claude Code: parallel feature development with coordination. Each instance works independently but can see the other's progress. In a real team workflow, you might have three or four worktrees running simultaneously -- one per feature.
+**STOP -- What you just did:** You ran two Claude Code instances simultaneously, each in its own worktree with its own branch, sharing a single task list via `CLAUDE_CODE_TASK_LIST_ID`. This is the most powerful development pattern in Claude Code: parallel feature development with coordination. Each instance works independently but can see the other's progress. In a real team workflow, you might have three or four worktrees running simultaneously -- one per feature.
 
 ### 10.5 Agent Teams
 
-> **Why this step:** You just coordinated two Claude instances manually -- separate terminals, shared task list, you managing both. Agent teams automate this: Claude spawns teammates, assigns tasks, and they message each other directly. It is the difference between you being the coordinator and Claude being the coordinator.
+**Why this step:** You just coordinated two Claude instances manually -- separate terminals, shared task list, you managing both. Agent teams automate this: Claude spawns teammates, assigns tasks, and they message each other directly. It is the difference between you being the coordinator and Claude being the coordinator.
 
 Agent teams are an experimental feature. Enable them first:
 
@@ -86,7 +90,9 @@ Agent teams are an experimental feature. Enable them first:
 
 Now tell Claude to create a team for a multi-agent task:
 
-> "Create an agent team to polish the portfolio. One teammate audits accessibility across all pages, another reviews CSS consistency, and a third checks content quality. They should share findings and coordinate fixes."
+```
+Create an agent team to polish the portfolio. One teammate audits accessibility across all pages, another reviews CSS consistency, and a third checks content quality. They should share findings and coordinate fixes.
+```
 
 Watch what happens: Claude creates a team, spawns teammates, assigns tasks, and the teammates message each other directly. You can observe the task list updating and messages flowing between agents. Use `Shift+Down` to navigate between teammates.
 
@@ -94,17 +100,19 @@ Agent Teams also works on Bedrock, Vertex, and Foundry API providers -- not just
 
 **Subagents vs agent teams:** Subagents report back to your main conversation only -- they cannot talk to each other. Agent teams communicate peer-to-peer through a shared task list and direct messages. Use subagents for focused delegation ("scan these files"), agent teams for collaborative work ("three specialists coordinating a review").
 
-> **STOP -- What you just did:** You used agent teams to coordinate multiple Claude instances automatically. Instead of managing separate terminals and a shared task list yourself, Claude handled the orchestration -- creating teammates, assigning work, and letting them communicate. This is an experimental feature with limitations: no session resume for teams, no nested teams, and the coordination overhead means it is best suited for tasks with genuine interdependencies, not simple parallelism.
+**STOP -- What you just did:** You used agent teams to coordinate multiple Claude instances automatically. Instead of managing separate terminals and a shared task list yourself, Claude handled the orchestration -- creating teammates, assigning work, and letting them communicate. This is an experimental feature with limitations: no session resume for teams, no nested teams, and the coordination overhead means it is best suited for tasks with genuine interdependencies, not simple parallelism.
 
 Ready to package everything into a reusable plugin?
 
 ### 10.6 Plugin Creation
 
-> **Why this step:** Plugins let you package everything you have built -- skills, agents, hooks -- into a single distributable unit. Instead of every new project needing to recreate these tools from scratch, you bundle them once and reuse them anywhere. This is how you go from "project-specific tooling" to "reusable toolkit."
+**Why this step:** Plugins let you package everything you have built -- skills, agents, hooks -- into a single distributable unit. Instead of every new project needing to recreate these tools from scratch, you bundle them once and reuse them anywhere. This is how you go from "project-specific tooling" to "reusable toolkit."
 
 Package everything you have built into a reusable plugin. Tell Claude what you want to bundle:
 
-> "Create a plugin called 'web-dev-plugin' that packages all the skills, agents, and hooks we have built. It needs a .claude-plugin/plugin.json manifest, the skills and agents directories at the root level, and the hooks extracted into a hooks/hooks.json file."
+```
+Create a plugin called 'web-dev-plugin' that packages all the skills, agents, and hooks we have built. It needs a .claude-plugin/plugin.json manifest, the skills and agents directories at the root level, and the hooks extracted into a hooks/hooks.json file.
+```
 
 Claude will handle the file copying and manifest creation. Review the structure it creates against the expected layout:
 
@@ -136,25 +144,27 @@ Verify everything works:
 Note the namespacing: plugin skills are prefixed with the plugin name to
 prevent conflicts.
 
-> **STOP -- What you just did:** You packaged your skills, agents, and hooks into a plugin and tested it with `--plugin-dir`. Notice the namespacing: when loaded as a plugin, `/new-page` becomes `/web-dev:new-page`. This prevents conflicts when multiple plugins provide skills with similar names. The plugin directory structure (`.claude-plugin/plugin.json` at root, `skills/` and `agents/` alongside it) is the standard layout Claude Code expects.
+**STOP -- What you just did:** You packaged your skills, agents, and hooks into a plugin and tested it with `--plugin-dir`. Notice the namespacing: when loaded as a plugin, `/new-page` becomes `/web-dev:new-page`. This prevents conflicts when multiple plugins provide skills with similar names. The plugin directory structure (`.claude-plugin/plugin.json` at root, `skills/` and `agents/` alongside it) is the standard layout Claude Code expects.
 
-> **Quick check before continuing:**
-> - [ ] `web-dev-plugin/.claude-plugin/plugin.json` exists with name and version
-> - [ ] `web-dev-plugin/skills/` contains your skills (not nested inside `.claude-plugin/`)
-> - [ ] `web-dev-plugin/agents/` contains your agents
-> - [ ] `--plugin-dir` loaded the plugin and skills work with the `web-dev:` prefix
+**Quick check before continuing:**
+- [ ] `web-dev-plugin/.claude-plugin/plugin.json` exists with name and version
+- [ ] `web-dev-plugin/skills/` contains your skills (not nested inside `.claude-plugin/`)
+- [ ] `web-dev-plugin/agents/` contains your agents
+- [ ] `--plugin-dir` loaded the plugin and skills work with the `web-dev:` prefix
 
 ### 10.8 Evaluation
 
-> **Why this step:** Building skills and agents is only half the job -- you need to verify they work correctly across different inputs. Evaluation suites test your tools systematically: does the `new-page` skill handle an empty name gracefully? Does the accessibility agent catch a missing alt attribute? This is how you catch regressions and build confidence in your toolkit.
+**Why this step:** Building skills and agents is only half the job -- you need to verify they work correctly across different inputs. Evaluation suites test your tools systematically: does the `new-page` skill handle an empty name gracefully? Does the accessibility agent catch a missing alt attribute? This is how you catch regressions and build confidence in your toolkit.
 
 Ask Claude to help you build an evaluation suite for your toolkit. Describe the kinds of test cases you want:
 
-> "Create an evaluation suite for our skills and agents. I want test cases for the new-page skill (valid name, empty name, duplicate name), check-site skill (pages with issues, clean pages), accessibility-agent (missing alt text, missing labels, clean pages), and design-agent (inconsistent CSS, clean CSS). Each test should define input, expected output, and scoring criteria. Write a script that runs everything and reports pass/fail."
+```
+Create an evaluation suite for our skills and agents. I want test cases for the new-page skill (valid name, empty name, duplicate name), check-site skill (pages with issues, clean pages), accessibility-agent (missing alt text, missing labels, clean pages), and design-agent (inconsistent CSS, clean CSS). Each test should define input, expected output, and scoring criteria. Write a script that runs everything and reports pass/fail.
+```
 
 Discuss with Claude which edge cases matter most to you and whether the scoring criteria make sense.
 
-> **STOP -- What you just did:** You wrote evaluation test specs for your skills and agents. Each test case defines an input, expected output, and scoring criteria. This is the same pattern used in professional software testing -- define expectations, run the tool, compare results. The evaluation script gives you a pass/fail report you can run any time you change a skill or agent.
+**STOP -- What you just did:** You wrote evaluation test specs for your skills and agents. Each test case defines an input, expected output, and scoring criteria. This is the same pattern used in professional software testing -- define expectations, run the tool, compare results. The evaluation script gives you a pass/fail report you can run any time you change a skill or agent.
 
 Want to automate eval permissions with a PermissionRequest hook?
 
@@ -162,11 +172,13 @@ Want to automate eval permissions with a PermissionRequest hook?
 
 During evaluation, auto-approve safe operations to avoid prompt fatigue. Tell Claude what you need:
 
-> "Add a PermissionRequest hook to settings.local.json (not the committed settings file) that auto-approves Read, Grep, and Glob operations. Use a matcher of 'Read|Grep|Glob' and output hookSpecificOutput.decision.behavior 'allow'."
+```
+Add a PermissionRequest hook to settings.local.json (not the committed settings file) that auto-approves Read, Grep, and Glob operations. Use a matcher of 'Read|Grep|Glob' and output hookSpecificOutput.decision.behavior 'allow'.
+```
 
 Keep this in `settings.local.json` (not committed) and use only during eval.
 
-> **STOP -- What you just did:** You created a PermissionRequest hook that auto-approves safe, read-only operations during evaluation runs. Without this, every `Read` and `Grep` call would prompt you for permission -- making automated evaluation tedious and slow. The key safety decision: this lives in `settings.local.json` (not committed to git) and only covers read-only tools. You would never auto-approve `Write` or `Bash` in production.
+**STOP -- What you just did:** You created a PermissionRequest hook that auto-approves safe, read-only operations during evaluation runs. Without this, every `Read` and `Grep` call would prompt you for permission -- making automated evaluation tedious and slow. The key safety decision: this lives in `settings.local.json` (not committed to git) and only covers read-only tools. You would never auto-approve `Write` or `Bash` in production.
 
 Shall we wrap up with continuous learning and a final review?
 
@@ -174,7 +186,9 @@ Shall we wrap up with continuous learning and a final review?
 
 Reflect on the full project and update your configuration. Ask Claude to help you review what you have built:
 
-> "Review our CLAUDE.md, rules, skills, agents, and hooks. What worked well? What should we refine? Update each one based on what we learned -- better descriptions, missing edge cases, patterns to avoid, hook interaction notes."
+```
+Review our CLAUDE.md, rules, skills, agents, and hooks. What worked well? What should we refine? Update each one based on what we learned -- better descriptions, missing edge cases, patterns to avoid, hook interaction notes.
+```
 
 This is a conversation about your own tooling. Tell Claude what surprised you, what felt clunky, and what you would do differently. Then update the configuration together.
 
@@ -182,7 +196,7 @@ This is the continuous learning cycle: build, reflect, refine, repeat.
 
 Claude also saves useful context automatically across sessions via **auto-memory**. Use `/memory` to review what has been saved and verify it matches your understanding. Auto-memory complements CLAUDE.md -- it captures things you might forget to write down.
 
-> **STOP -- What you just did:** You completed the full loop: build tools, use them, evaluate them, then refine them based on what you learned. This is the most important pattern in all of Claude Code -- your CLAUDE.md, rules, skills, agents, and hooks are living documents. Every project teaches you something, and updating your configuration captures that knowledge for future sessions. The best Claude Code users are the ones who continuously refine their setup.
+**STOP -- What you just did:** You completed the full loop: build tools, use them, evaluate them, then refine them based on what you learned. This is the most important pattern in all of Claude Code -- your CLAUDE.md, rules, skills, agents, and hooks are living documents. Every project teaches you something, and updating your configuration captures that knowledge for future sessions. The best Claude Code users are the ones who continuously refine their setup.
 
 ### Checkpoint
 

@@ -3,11 +3,11 @@
 **CC features:** `.claude/agents/`, subagent frontmatter, chaining, parallel,
 background (`Ctrl+B`), resuming, `claude agents` CLI
 
-> **Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+**Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
 
 ### 8.1 What Are Subagents
 
-> **Why this step:** Until now, everything has happened in your main Claude Code conversation. Subagents are separate AI assistants that work in their own context windows. This is important because your main conversation has limited context space -- heavy analysis (like scanning every HTML file for accessibility issues) fills it up fast. Subagents do the heavy lifting in their own space and return just the results.
+**Why this step:** Until now, everything has happened in your main Claude Code conversation. Subagents are separate AI assistants that work in their own context windows. This is important because your main conversation has limited context space -- heavy analysis (like scanning every HTML file for accessibility issues) fills it up fast. Subagents do the heavy lifting in their own space and return just the results.
 
 Subagents are specialized AI assistants with their own context windows, system
 prompts, tool access, and permissions. When Claude encounters a task matching
@@ -30,16 +30,18 @@ Benefits:
 
 Tell Claude to create an accessibility scanning agent. Describe what you want it to check and how you want the output formatted:
 
-> "Create an accessibility-agent in .claude/agents/. It should scan all HTML files for WCAG issues -- missing alt text, missing form labels, skipped heading levels, missing ARIA landmarks, and anything else you think is important. Use haiku model since it only needs to read and report, and limit its tools to Read, Grep, and Glob. Output should be a report grouped by severity."
+```
+Create an accessibility-agent in .claude/agents/. It should scan all HTML files for WCAG issues -- missing alt text, missing form labels, skipped heading levels, missing ARIA landmarks, and anything else you think is important. Use haiku model since it only needs to read and report, and limit its tools to Read, Grep, and Glob. Output should be a report grouped by severity.
+```
 
 Claude will create the agent file. Notice it only has read-only tools -- this agent cannot modify your files, which is intentional.
 
-> **STOP -- What you just did:** You created a subagent with constrained tools (`Read, Grep, Glob` -- no `Write` or `Edit`) and a cheaper model (`haiku`). This is intentional: the accessibility agent only needs to *read and report*, not modify files. Using haiku instead of the default model saves tokens on a task that does not need the most powerful reasoning. Matching the model to the task complexity is a key cost optimization pattern.
+**STOP -- What you just did:** You created a subagent with constrained tools (`Read, Grep, Glob` -- no `Write` or `Edit`) and a cheaper model (`haiku`). This is intentional: the accessibility agent only needs to *read and report*, not modify files. Using haiku instead of the default model saves tokens on a task that does not need the most powerful reasoning. Matching the model to the task complexity is a key cost optimization pattern.
 
-> **Engineering value:**
-> - *Entry-level:* Subagents are specialists — instead of one generalist trying to do everything, you have focused experts that each do one thing well.
-> - *Mid-level:* Model selection matters for cost. A haiku-powered lint agent costs ~10x less than opus. Running 50 accessibility scans a day with haiku vs opus is the difference between $5/month and $50/month.
-> - *Senior+:* This is the microservices pattern applied to AI: decompose a monolithic conversation into specialized, independently scalable agents with defined interfaces and resource constraints.
+**Engineering value:**
+- *Entry-level:* Subagents are specialists — instead of one generalist trying to do everything, you have focused experts that each do one thing well.
+- *Mid-level:* Model selection matters for cost. A haiku-powered lint agent costs ~10x less than opus. Running 50 accessibility scans a day with haiku vs opus is the difference between $5/month and $50/month.
+- *Senior+:* This is the microservices pattern applied to AI: decompose a monolithic conversation into specialized, independently scalable agents with defined interfaces and resource constraints.
 
 Shall we create the design review agent next?
 
@@ -47,23 +49,27 @@ Shall we create the design review agent next?
 
 Create a design review agent focused on CSS consistency. Describe the kinds of issues you want it to catch:
 
-> "Create a design-agent that reviews CSS for consistency issues -- hardcoded values that should use custom properties, missing responsive breakpoints, spacing inconsistencies, missing hover/focus states. Use haiku model and read-only tools. It should output specific suggestions with code fixes."
+```
+Create a design-agent that reviews CSS for consistency issues -- hardcoded values that should use custom properties, missing responsive breakpoints, spacing inconsistencies, missing hover/focus states. Use haiku model and read-only tools. It should output specific suggestions with code fixes.
+```
 
 ### 8.5 Create: content-agent
 
 Create a content quality reviewer that checks for real-world issues like leftover placeholder text and missing SEO basics:
 
-> "Create a content-agent that reviews page content for quality -- leftover lorem ipsum, inconsistent tone, missing calls-to-action, SEO issues like missing meta descriptions, broken links, and placeholder images. Use sonnet model since it needs stronger reasoning for content quality, and set permissionMode to plan so it is read-only."
+```
+Create a content-agent that reviews page content for quality -- leftover lorem ipsum, inconsistent tone, missing calls-to-action, SEO issues like missing meta descriptions, broken links, and placeholder images. Use sonnet model since it needs stronger reasoning for content quality, and set permissionMode to plan so it is read-only.
+```
 
 Note `permissionMode: plan` -- this agent is read-only.
 
-> **STOP -- What you just did:** You created three agents with different specializations, tool access, and models. Notice the design: accessibility-agent uses haiku (cheap, fast scans), design-agent uses haiku (CSS analysis does not need heavy reasoning), and content-agent uses sonnet with `permissionMode: plan` (it needs stronger reasoning for content quality but should not modify files). Each agent is tuned for its specific job.
+**STOP -- What you just did:** You created three agents with different specializations, tool access, and models. Notice the design: accessibility-agent uses haiku (cheap, fast scans), design-agent uses haiku (CSS analysis does not need heavy reasoning), and content-agent uses sonnet with `permissionMode: plan` (it needs stronger reasoning for content quality but should not modify files). Each agent is tuned for its specific job.
 
-> **Quick check before continuing:**
-> - [ ] `.claude/agents/` contains three agent files
-> - [ ] Each agent has `name`, `description`, `tools`, and `model` in frontmatter
-> - [ ] content-agent has `permissionMode: plan` (read-only)
-> - [ ] accessibility-agent and design-agent use `haiku` model
+**Quick check before continuing:**
+- [ ] `.claude/agents/` contains three agent files
+- [ ] Each agent has `name`, `description`, `tools`, and `model` in frontmatter
+- [ ] content-agent has `permissionMode: plan` (read-only)
+- [ ] accessibility-agent and design-agent use `haiku` model
 
 ### 8.6 Subagent Frontmatter Reference
 
@@ -85,50 +91,62 @@ Note `permissionMode: plan` -- this agent is read-only.
 
 To verify your agents from the command line without starting a session, run `claude agents`. It lists all configured agents and their metadata.
 
-> **What about agents that talk to each other?** Subagents report back to your main conversation only -- they cannot communicate with each other. In Module 10 you will learn about **agent teams**, where multiple Claude instances share a task list and message each other directly. Subagents are for focused delegation; agent teams are for collaborative parallel work.
+**What about agents that talk to each other?** Subagents report back to your main conversation only -- they cannot communicate with each other. In Module 10 you will learn about **agent teams**, where multiple Claude instances share a task list and message each other directly. Subagents are for focused delegation; agent teams are for collaborative parallel work.
 
 ### 8.7 Invoke Subagents
 
 Try invoking your subagents. You can be explicit:
 
-> "Use the accessibility-agent to scan all HTML pages for WCAG issues."
+```
+Use the accessibility-agent to scan all HTML pages for WCAG issues.
+```
 
 Or you can just describe what you want and let Claude figure out which agent to use:
 
-> "Check my portfolio for accessibility problems."
+```
+Check my portfolio for accessibility problems.
+```
 
 Claude reads the agent's `description` field and matches it to your request. Try both approaches and notice whether Claude delegates automatically or handles it directly.
 
-> **Why this step:** You can invoke subagents explicitly ("Use the accessibility-agent") or let Claude auto-delegate based on the task description. Auto-delegation works because Claude reads the agent's `description` field and matches it to your request. Writing clear, specific descriptions in your agent frontmatter makes auto-delegation more reliable.
+**Why this step:** You can invoke subagents explicitly ("Use the accessibility-agent") or let Claude auto-delegate based on the task description. Auto-delegation works because Claude reads the agent's `description` field and matches it to your request. Writing clear, specific descriptions in your agent frontmatter makes auto-delegation more reliable.
 
 ### 8.8 Patterns: Chain, Parallel, Resume
 
 **Chaining:** Connect agents in sequence. Ask Claude to run one agent and then feed its results into another:
 
-> "Use the accessibility-agent to find all issues, then use the design-agent to suggest CSS fixes for the visual problems it found."
+```
+Use the accessibility-agent to find all issues, then use the design-agent to suggest CSS fixes for the visual problems it found.
+```
 
 **Parallel (background):** Press `Ctrl+B` to background a running agent,
 then start another task. Ask for one scan:
 
-> "Use the accessibility-agent to scan all pages."
+```
+Use the accessibility-agent to scan all pages.
+```
 
 While it runs, press `Ctrl+B`, then start another:
 
-> "Use the content-agent to review all page content."
+```
+Use the content-agent to review all page content.
+```
 
 Both agents work simultaneously. To kill background agents, press `Ctrl+F` (press twice to confirm).
 
 **Resuming:** After an agent completes, continue its work by asking a follow-up:
 
-> "Continue that accessibility review and now also check the contact form for keyboard navigation issues."
+```
+Continue that accessibility review and now also check the contact form for keyboard navigation issues.
+```
 
 Claude resumes the previous agent with its full context preserved.
 
-> **STOP -- What you just did:** You learned the three core subagent patterns. Chaining connects agents in sequence (accessibility finds issues, then design suggests fixes). Parallel runs agents simultaneously with `Ctrl+B` -- both work at the same time without blocking each other. Resuming continues a completed agent's work without losing its context. In real projects, you will use parallel agents for comprehensive code reviews (run accessibility + design + content checks simultaneously) and chaining for multi-step workflows.
+**STOP -- What you just did:** You learned the three core subagent patterns. Chaining connects agents in sequence (accessibility finds issues, then design suggests fixes). Parallel runs agents simultaneously with `Ctrl+B` -- both work at the same time without blocking each other. Resuming continues a completed agent's work without losing its context. In real projects, you will use parallel agents for comprehensive code reviews (run accessibility + design + content checks simultaneously) and chaining for multi-step workflows.
 
-> **Engineering value:**
-> - *Entry-level:* Running agents in parallel means a full code review (accessibility + design + content) takes the same time as one scan, not three.
-> - *Mid-level:* Chaining agents creates automated review pipelines: find issues → suggest fixes → verify fixes. This is the same find-fix-verify pattern used in CI/CD.
+**Engineering value:**
+- *Entry-level:* Running agents in parallel means a full code review (accessibility + design + content) takes the same time as one scan, not three.
+- *Mid-level:* Chaining agents creates automated review pipelines: find issues → suggest fixes → verify fixes. This is the same find-fix-verify pattern used in CI/CD.
 
 ### Checkpoint
 

@@ -3,16 +3,16 @@
 **CC features:** `.claude/rules/`, `CLAUDE.local.md`, `@imports`, `/context`,
 `/compact`, `/stats`, `/cost`, `/statusline`, memory hierarchy
 
-> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+**Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
 
 ### 3.1 Create Project Rules
 
-> **Why this step:** Rules are how you teach Claude your project's standards permanently. Instead of repeating "use semantic HTML" every session, you write it once in a rule file and Claude follows it automatically. Path-scoped rules only activate when Claude works on matching files, keeping context lean.
+**Why this step:** Rules are how you teach Claude your project's standards permanently. Instead of repeating "use semantic HTML" every session, you write it once in a rule file and Claude follows it automatically. Path-scoped rules only activate when Claude works on matching files, keeping context lean.
 
-> **Engineering value:**
-> - *Entry-level:* Rules are like linting configs but for Claude's behavior — they enforce your team's conventions automatically.
-> - *Mid-level:* Path-scoped rules mean your test files get different AI guidance than your production code. A rule in `tests/` can enforce test patterns without affecting `src/`.
-> - *Senior+:* This is the same configuration-as-code pattern used by .gitattributes (path-scoped git behavior) and CODEOWNERS (path-scoped review). Modular, composable, version-controlled.
+**Engineering value:**
+- *Entry-level:* Rules are like linting configs but for Claude's behavior — they enforce your team's conventions automatically.
+- *Mid-level:* Path-scoped rules mean your test files get different AI guidance than your production code. A rule in `tests/` can enforce test patterns without affecting `src/`.
+- *Senior+:* This is the same configuration-as-code pattern used by .gitattributes (path-scoped git behavior) and CODEOWNERS (path-scoped review). Modular, composable, version-controlled.
 
 Create the rules directory in your project:
 
@@ -29,21 +29,25 @@ Now you need three rule files -- one each for HTML, CSS, and JavaScript. Each fi
 
 Tell Claude what coding standards matter to you for each language. Think about the conventions you want enforced. Something like:
 
-> "Create three rule files in .claude/rules/. For HTML rules (scoped to *.html files), I want semantic elements, accessibility standards like alt attributes on images, proper heading hierarchy, and correct meta tags. For CSS rules (scoped to *.css and styles/**), I want mobile-first design, CSS custom properties for all design tokens, BEM naming, and visible focus styles. For JavaScript rules (scoped to *.js and scripts/**), I want vanilla JS only, addEventListener instead of inline handlers, const by default, and explicit error handling. Use path-scoped YAML frontmatter in each file."
+```
+Create three rule files in .claude/rules/. For HTML rules (scoped to *.html files), I want semantic elements, accessibility standards like alt attributes on images, proper heading hierarchy, and correct meta tags. For CSS rules (scoped to *.css and styles/**), I want mobile-first design, CSS custom properties for all design tokens, BEM naming, and visible focus styles. For JavaScript rules (scoped to *.js and scripts/**), I want vanilla JS only, addEventListener instead of inline handlers, const by default, and explicit error handling. Use path-scoped YAML frontmatter in each file.
+```
 
 Claude will create the rule files. Review them and adjust any rules that do not match your preferences -- these are *your* coding standards, not Claude's.
 
-> **STOP -- What you just did:** You created three rule files, each scoped to specific file types using YAML frontmatter. When Claude edits an `.html` file, it loads `html-rules.md` automatically. When it edits `.css`, it loads `css-rules.md`. This is how you enforce coding standards without repeating yourself -- and unlike CLAUDE.md instructions, path-scoped rules only consume context when relevant files are being worked on.
+**STOP -- What you just did:** You created three rule files, each scoped to specific file types using YAML frontmatter. When Claude edits an `.html` file, it loads `html-rules.md` automatically. When it edits `.css`, it loads `css-rules.md`. This is how you enforce coding standards without repeating yourself -- and unlike CLAUDE.md instructions, path-scoped rules only consume context when relevant files are being worked on.
 
 Ready to create your CLAUDE.local.md for personal preferences?
 
 ### 3.3 Create CLAUDE.local.md
 
-> **Why this step:** CLAUDE.local.md is your *personal* preferences file. It gets added to `.gitignore`, which means git will never track or commit it -- your preferences stay on your machine and do not get pushed to the shared repository where they would affect other contributors. This is the split between team standards (CLAUDE.md, rules) and personal workflow (CLAUDE.local.md).
+**Why this step:** CLAUDE.local.md is your *personal* preferences file. It gets added to `.gitignore`, which means git will never track or commit it -- your preferences stay on your machine and do not get pushed to the shared repository where they would affect other contributors. This is the split between team standards (CLAUDE.md, rules) and personal workflow (CLAUDE.local.md).
 
 Create a personal preferences file that will not be committed to git. Ask Claude to create `CLAUDE.local.md` and tell it about your personal workflow preferences -- your design taste, how you like commit messages, which browser you test in, anything that is about *you* rather than the project.
 
-> "Create a CLAUDE.local.md with my personal preferences. I like [describe your design style], I test in [your browser], and I prefer [your commit message style]. Also note any design tools I use regularly (like Figma or Canva) -- we'll connect them to Claude in Module 6."
+```
+Create a CLAUDE.local.md with my personal preferences. I like [describe your design style], I test in [your browser], and I prefer [your commit message style]. Also note any design tools I use regularly (like Figma or Canva) -- we'll connect them to Claude in Module 6.
+```
 
 Verify it was added to `.gitignore`:
 
@@ -53,7 +57,7 @@ Verify it was added to `.gitignore`:
 
 If `CLAUDE.local.md` is not listed, add it.
 
-> **STOP -- What you just did:** You created a personal preferences file that is not committed to git. This is the split between team standards (rules, CLAUDE.md) and personal preferences (CLAUDE.local.md). On a real team, everyone shares the same rules but can have different personal preferences -- like which browser they test in or what commit message style they prefer.
+**STOP -- What you just did:** You created a personal preferences file that is not committed to git. This is the split between team standards (rules, CLAUDE.md) and personal preferences (CLAUDE.local.md). On a real team, everyone shares the same rules but can have different personal preferences -- like which browser they test in or what commit message style they prefer.
 
 Want to see how the memory hierarchy works?
 
@@ -61,7 +65,9 @@ Want to see how the memory hierarchy works?
 
 Ask Claude to explain the memory hierarchy -- where each file lives, what order they are loaded in, and which ones are shared with a team versus kept private.
 
-> "Explain the full Claude Code memory hierarchy. Which files take precedence over which? Which ones get shared with teammates?"
+```
+Explain the full Claude Code memory hierarchy. Which files take precedence over which? Which ones get shared with teammates?
+```
 
 The hierarchy from highest to lowest precedence:
 
@@ -71,10 +77,10 @@ The hierarchy from highest to lowest precedence:
 4. User memory (`~/.claude/CLAUDE.md`)
 5. Project local (`./CLAUDE.local.md`)
 
-> **Quick check before continuing:**
-> - [ ] `.claude/rules/` contains three rule files with path-scoped frontmatter
-> - [ ] `CLAUDE.local.md` exists and is listed in `.gitignore`
-> - [ ] You can explain the five levels of the memory hierarchy
+**Quick check before continuing:**
+- [ ] `.claude/rules/` contains three rule files with path-scoped frontmatter
+- [ ] `CLAUDE.local.md` exists and is listed in `.gitignore`
+- [ ] You can explain the five levels of the memory hierarchy
 
 ### 3.5 Modularize CLAUDE.md with @imports
 
@@ -82,20 +88,22 @@ As your CLAUDE.md grows, it eats into your available context window. The solutio
 
 Ask Claude to create supporting docs for your project and wire them up:
 
-> "Create a docs/style-guide.md that documents our visual design system -- the color palette, typography, spacing, and component patterns. Also create docs/sitemap.md listing all pages and their components. Then add @imports to CLAUDE.md so Claude Code loads these when needed."
+```
+Create a docs/style-guide.md that documents our visual design system -- the color palette, typography, spacing, and component patterns. Also create docs/sitemap.md listing all pages and their components. Then add @imports to CLAUDE.md so Claude Code loads these when needed.
+```
 
 The `@path` syntax tells Claude Code to load those files as additional context
 when needed. Both relative and absolute paths work.
 
-> **Why this step:** As your CLAUDE.md grows, it eats into your available context window. The `@import` pattern keeps CLAUDE.md concise while making detailed documentation available on demand. Think of it like splitting a large function into smaller helpers -- same information, better organized.
+**Why this step:** As your CLAUDE.md grows, it eats into your available context window. The `@import` pattern keeps CLAUDE.md concise while making detailed documentation available on demand. Think of it like splitting a large function into smaller helpers -- same information, better organized.
 
-> **Engineering value:**
-> - *Entry-level:* Large projects have too much code for Claude to read at once. @imports let you point Claude at exactly the files it needs — like giving a new teammate the right docs before they start.
-> - *Mid-level:* /compact reclaims context space during long sessions. Without it, Claude loses track of earlier conversation — with it, you can run marathon refactoring sessions.
+**Engineering value:**
+- *Entry-level:* Large projects have too much code for Claude to read at once. @imports let you point Claude at exactly the files it needs — like giving a new teammate the right docs before they start.
+- *Mid-level:* /compact reclaims context space during long sessions. Without it, Claude loses track of earlier conversation — with it, you can run marathon refactoring sessions.
 
 ### 3.6 /context Deep Dive
 
-> **Why this step:** Claude has a finite context window -- think of it as Claude's working memory. Everything Claude needs to respond (your conversation history, CLAUDE.md, rules files, file contents it has read, tool outputs) has to fit in this window. When it fills up, Claude starts forgetting earlier parts of your conversation. The `/context` command shows you exactly what is using that space so you can manage it.
+**Why this step:** Claude has a finite context window -- think of it as Claude's working memory. Everything Claude needs to respond (your conversation history, CLAUDE.md, rules files, file contents it has read, tool outputs) has to fit in this window. When it fills up, Claude starts forgetting earlier parts of your conversation. The `/context` command shows you exactly what is using that space so you can manage it.
 
 Run:
 
@@ -135,7 +143,7 @@ Claude uses its own judgment.
 
 **Key takeaway:** If a decision or convention is important enough to always remember, put it in CLAUDE.md or a rules file -- not in a chat message.
 
-> **STOP -- What you just did:** You used `/context` to see how your session's context is distributed, then `/compact` to reclaim space. Context management is a real skill -- long sessions accumulate history, and eventually Claude "forgets" earlier details. Using `/compact` with a focus argument lets you control what survives the compression. Auto-compact handles this for you at ~95% capacity, but manual compacting with a focus argument gives you more control over what is preserved.
+**STOP -- What you just did:** You used `/context` to see how your session's context is distributed, then `/compact` to reclaim space. Context management is a real skill -- long sessions accumulate history, and eventually Claude "forgets" earlier details. Using `/compact` with a focus argument lets you control what survives the compression. Auto-compact handles this for you at ~95% capacity, but manual compacting with a focus argument gives you more control over what is preserved.
 
 ### 3.8 Check Your Usage
 
@@ -199,7 +207,9 @@ Now build the blog listing page to see your rules and context tools in action. C
 
 Then describe the blog page you want to Claude. Tell it about the layout, how blog post cards should look, and ask it to follow all the rules you just created:
 
-> "Build a blog listing page with post cards showing title, date, excerpt, and tags. Add a few sample posts so I can see how it looks. Make sure to follow our HTML, CSS, and JS rules."
+```
+Build a blog listing page with post cards showing title, date, excerpt, and tags. Add a few sample posts so I can see how it looks. Make sure to follow our HTML, CSS, and JS rules.
+```
 
 After building, run `/context` again to see how context changed. Then commit.
 
