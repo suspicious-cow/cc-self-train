@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.9.5 (2026-03-11)
+
+- Add step-level tracking to prevent skipped steps during module delivery — Claude now updates `Current Step` in CLAUDE.local.md after each numbered step
+- Add pre-module-advance check: Claude must cross-check current step against the module's Checkpoint before proposing to move on, catching any skipped steps
+- Include `Current Step` field in the CLAUDE.local.md template created during onboarding
+
 ## v2.9.4 (2026-03-08)
 
 - Convert ~189 blockquotes to readable formatting across all 10 Canvas module files — blockquotes render as dim italics in the CLI terminal, violating the CLAUDE.md formatting rule
