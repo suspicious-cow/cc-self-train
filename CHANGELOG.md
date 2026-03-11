@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.10.0 (2026-03-11)
+
+- Remove 645+ blockquotes from Forge, Nexus, and Sentinel modules — blockquotes render as dim italics in CLI, making content hard to read (Canvas was fixed in v2.9.4)
+- Normalize step headings to `### N.M` format across all projects — Forge used `## N.M` (wrong level), Nexus/Sentinel used `### Step N:` (wrong format)
+- Standardize persona lines to double dash (`--`) across all 40 module files — was inconsistent mix of em dash and double dash
+- Add `models.txt` to README reference docs table
+- Add `auto-memory.txt`, `ide-integration.txt`, `models.txt` to test fixture context file list
+
 ## v2.9.5 (2026-03-11)
 
 - Add step-level tracking to prevent skipped steps during module delivery — Claude now updates `Current Step` in CLAUDE.local.md after each numbered step
