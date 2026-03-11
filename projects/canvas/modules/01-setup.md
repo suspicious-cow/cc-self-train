@@ -37,6 +37,8 @@ Claude Code works in two modes. You can use either — or both at the same time.
 
 You do not have to choose one forever. The extension and CLI share the same conversation history and project configuration.
 
+**STOP -- What you just did:** You chose your development environment -- terminal, IDE, or both. This is a personal preference, not a locked-in decision. You can switch anytime because the CLI and extension share the same project configuration and conversation history.
+
 ### 1.3 Run /init
 
 Type this into Claude Code:
@@ -62,6 +64,8 @@ If it is sparse, that is fine. You will build it up throughout this project.
 - *Mid-level:* On teams, CLAUDE.md ensures every developer's Claude session follows the same conventions — consistent code style, correct build commands, shared architecture decisions.
 - *Senior+:* CLAUDE.md is declarative project configuration for AI tooling — the same pattern as .editorconfig, .eslintrc, or Makefile, but for your AI assistant. It scales across repos.
 
+**STOP -- What you just did:** You ran your first Claude Code command. `/init` created CLAUDE.md -- the file Claude reads at the start of every session. This is how Claude "remembers" your project. Every time you start a new session, Claude already knows what you told it here.
+
 ### 1.4 Tour of CLAUDE.md
 
 Ask Claude:
@@ -80,6 +84,8 @@ Key points to understand:
 - **User memory** (`~/.claude/CLAUDE.md`): your personal preferences across
   all projects
 - **Managed policy**: organization-wide, deployed by IT
+
+**STOP -- What you just did:** You now understand the memory hierarchy -- project, local, user, and managed. This matters because it controls what Claude knows and when. Project memory is shared with your team. Local memory is just for you. User memory follows you everywhere.
 
 ### 1.5 Keyboard Shortcuts
 
@@ -111,6 +117,8 @@ Try these now:
 - *Entry-level:* These shortcuts aren't just convenience — they're how you stay in flow. Switching between Claude and your terminal without reaching for the mouse keeps you productive.
 - *Mid-level:* Plan mode (Shift+Tab) is critical for code review workflows — you can have Claude analyze and propose changes without executing them, which is how you safely use AI on production code.
 
+**STOP -- What you just did:** You practiced the keyboard shortcuts that keep you in flow. The most important ones to internalize: `Shift+Tab` for plan mode, `@` for file mentions, and `!` for shell commands. These three will be your most-used shortcuts across every remaining module.
+
 ### 1.5b Slash Commands
 
 That `/` shortcut you just saw in the table opens up Claude Code's built-in commands. You already know `/init` -- here are a few more worth trying now:
@@ -123,6 +131,8 @@ That `/` shortcut you just saw in the table opens up Claude Code's built-in comm
 | `/batch` | Runs commands in batch mode for non-interactive automation |
 
 Try typing `/` and then pressing `Tab` -- you will see the full list of available commands autocomplete. This is a good habit: whenever you are wondering "can Claude Code do X?", type `/` and Tab to browse what is available.
+
+**STOP -- What you just did:** You explored slash commands and discovered Tab completion for the `/` menu. From here on, whenever you wonder "can Claude Code do X?", your first instinct should be to type `/` and Tab to check.
 
 ### 1.6 Explore /memory
 
@@ -143,6 +153,8 @@ in a browser.
 
 Save and close the editor.
 
+**STOP -- What you just did:** You edited CLAUDE.md through `/memory` and gave Claude persistent context about your project. This is how you teach Claude what it needs to know -- not by repeating yourself every session, but by writing it down once in CLAUDE.md.
+
 ### 1.7 Exercise
 
 Ask Claude:
@@ -153,6 +165,8 @@ Then suggest three improvements I could make to it for a portfolio site project.
 ```
 
 Review Claude's suggestions. Apply at least one of them by editing `CLAUDE.md`.
+
+**STOP -- What you just did:** You asked Claude to read and improve its own memory file. This is a powerful pattern -- Claude can analyze and suggest improvements to CLAUDE.md, and you decide what to keep. You are the editor, Claude is the drafter.
 
 ### 1.8 Create the Starting Files
 
@@ -167,12 +181,16 @@ with a comment placeholder.
 
 Open `index.html` in your browser to verify it works.
 
+**STOP -- What you just did:** You used Claude to create real project files from a natural language description. Notice how you described *what* you wanted, not *how* to build it -- Claude handled the HTML structure, CSS reset, and file organization. Verify it works in your browser before moving on.
+
 ### 1.9 First Commit
 
 ```
 ! git add -A
 ! git commit -m "Initial project setup with CLAUDE.md"
 ```
+
+**STOP -- What you just did:** You made your first commit. From Module 2 onward, you will commit after every significant step. Building a clean commit history is a professional habit -- it lets you rewind, review, and understand your project's evolution.
 
 ### Leaving and Coming Back
 

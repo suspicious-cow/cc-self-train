@@ -36,6 +36,8 @@ Claude Code works in two modes. You can use either — or both at the same time.
 
 You do not have to choose one forever. The extension and CLI share the same conversation history and project configuration.
 
+**STOP -- What you just did:** You chose your development environment -- terminal, IDE, or both. This is a personal preference, not a locked-in decision. You can switch anytime because the CLI and extension share the same project configuration and conversation history.
+
 ### 1.3 Run /init
 
 Type the following into Claude Code:
@@ -51,11 +53,15 @@ Claude will scan your directory and generate a `CLAUDE.md` file. Since the direc
 - *Mid-level:* On teams, CLAUDE.md ensures every developer's Claude session follows the same conventions -- consistent code style, correct build commands, shared architecture decisions.
 - *Senior+:* CLAUDE.md is declarative project configuration for AI tooling -- the same pattern as .editorconfig, .eslintrc, or Makefile, but for your AI assistant. It scales across repos.
 
+**STOP -- What you just did:** You ran your first Claude Code command. `/init` created CLAUDE.md -- the file Claude reads at the start of every session. This is how Claude "remembers" your project. Every time you start a new session, Claude already knows what you told it here.
+
 ### 1.4 Tour of CLAUDE.md
 
 Ask Claude: `Read CLAUDE.md and explain what each section does and why it matters`
 
 CLAUDE.md is Claude's persistent memory for your project. It loads automatically every session and can contain build commands, architecture notes, coding conventions, and workflow preferences.
+
+**STOP -- What you just did:** You now understand what CLAUDE.md does and why it matters. It is Claude's persistent memory for your project -- loaded every session, shared with your team, and the foundation for everything you will build in this curriculum.
 
 ### 1.5 Keyboard Shortcuts
 
@@ -78,6 +84,8 @@ Practice each shortcut in the table below. Do not skip this -- muscle memory wit
 - *Entry-level:* These shortcuts aren't just convenience -- they're how you stay in flow. Switching between Claude and your terminal without reaching for the mouse keeps you productive.
 - *Mid-level:* Plan mode (Shift+Tab) is critical for code review workflows -- you can have Claude analyze and propose changes without executing them, which is how you safely use AI on production code.
 
+**STOP -- What you just did:** You practiced the keyboard shortcuts that keep you in flow. The most important ones to internalize: `Shift+Tab` for plan mode, `@` for file mentions, and `!` for shell commands. These three will be your most-used shortcuts across every remaining module.
+
 ### 1.5b Slash Commands
 
 The `/` shortcut from the table above opens Claude Code's built-in commands. You used `/init` already -- here are a few more to know about:
@@ -91,15 +99,21 @@ The `/` shortcut from the table above opens Claude Code's built-in commands. You
 
 Try typing `/` and pressing `Tab` to see the full list. Tab completion works here just like it does for file paths -- it is the fastest way to discover commands you did not know existed.
 
+**STOP -- What you just did:** You explored slash commands and discovered Tab completion for the `/` menu. From here on, whenever you wonder "can Claude Code do X?", your first instinct should be to type `/` and Tab to check.
+
 ### 1.6 Explore /memory
 
 Type `/memory` to open CLAUDE.md in your system editor. Add a project overview, placeholder commands (start server, run tests, check health), and an architecture section to be filled in Module 2. Save and close -- Claude now has this context in every future session.
+
+**STOP -- What you just did:** You edited CLAUDE.md through `/memory` and gave Claude persistent context about your project. This is how you teach Claude what it needs to know -- not by repeating yourself every session, but by writing it down once in CLAUDE.md.
 
 ### 1.7 Exercise
 
 Ask Claude: `Explain what CLAUDE.md is, where it lives in the hierarchy, and how it differs from .claude/rules/ files. Show the memory hierarchy from most to least specific.`
 
 Verify Claude explains: CLAUDE.md (project) > CLAUDE.local.md (local/personal) > ~/.claude/CLAUDE.md (user-global), plus .claude/rules/ for modular, path-scoped rules.
+
+**STOP -- What you just did:** You asked Claude to explain its own memory system. This is a powerful pattern -- Claude can teach you about its own features. You now understand the full memory hierarchy from most specific (CLAUDE.local.md) to most general (user-level CLAUDE.md), plus .claude/rules/ for modular configuration.
 
 ### Leaving and Coming Back
 

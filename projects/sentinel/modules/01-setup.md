@@ -38,6 +38,8 @@ Claude Code works in two modes. You can use either — or both at the same time.
 
 You do not have to choose one forever. The extension and CLI share the same conversation history and project configuration.
 
+**STOP -- What you just did:** You chose your development environment -- terminal, IDE, or both. This is a personal preference, not a locked-in decision. You can switch anytime because the CLI and extension share the same project configuration and conversation history.
+
 ### 1.3 Run /init
 
 Type this inside Claude Code:
@@ -53,6 +55,8 @@ Claude will scan your (empty) project and generate a `CLAUDE.md` file. Since the
 - *Mid-level:* On teams, CLAUDE.md ensures every developer's Claude session follows the same conventions — consistent code style, correct build commands, shared architecture decisions.
 - *Senior+:* CLAUDE.md is declarative project configuration for AI tooling — the same pattern as .editorconfig, .eslintrc, or Makefile, but for your AI assistant. It scales across repos.
 
+**STOP -- What you just did:** You ran your first Claude Code command. `/init` created CLAUDE.md -- the file Claude reads at the start of every session. This is how Claude "remembers" your project. Every time you start a new session, Claude already knows what you told it here.
+
 ### 1.4 Tour of CLAUDE.md
 
 Open the generated CLAUDE.md and read it. This file is Claude's persistent memory for your project. Everything you put here, Claude reads at the start of every session.
@@ -64,6 +68,8 @@ What is CLAUDE.md and how does Claude Code use it? Explain the memory hierarchy.
 ```
 
 Claude should explain the four memory levels: managed policy, project memory (CLAUDE.md), project rules (.claude/rules/), user memory (~/.claude/CLAUDE.md), and local project memory (CLAUDE.local.md).
+
+**STOP -- What you just did:** You now understand the memory hierarchy -- project, local, user, and managed. This matters because it controls what Claude knows and when. Project memory is shared with your team. Local memory is just for you. User memory follows you everywhere.
 
 ### 1.5 Keyboard Shortcuts
 
@@ -86,6 +92,8 @@ Try each of these shortcuts now. Do not skip this -- muscle memory matters.
 - *Entry-level:* These shortcuts aren't just convenience — they're how you stay in flow. Switching between Claude and your terminal without reaching for the mouse keeps you productive.
 - *Mid-level:* Plan mode (Shift+Tab) is critical for code review workflows — you can have Claude analyze and propose changes without executing them, which is how you safely use AI on production code.
 
+**STOP -- What you just did:** You practiced the keyboard shortcuts that keep you in flow. The most important ones to internalize: `Shift+Tab` for plan mode, `@` for file mentions, and `!` for shell commands. These three will be your most-used shortcuts across every remaining module.
+
 ### 1.5b Slash Commands
 
 The `/` shortcut from the table above opens Claude Code's built-in commands. You have already used `/init` -- here are a few more to try now:
@@ -98,6 +106,8 @@ The `/` shortcut from the table above opens Claude Code's built-in commands. You
 | `/batch` | Runs commands in batch mode for non-interactive automation |
 
 Try typing `/` and pressing `Tab` to see the full list of available commands. Tab completion works here the same way it works for file paths -- it is the quickest way to discover what Claude Code can do.
+
+**STOP -- What you just did:** You explored slash commands and discovered Tab completion for the `/` menu. From here on, whenever you wonder "can Claude Code do X?", your first instinct should be to type `/` and Tab to check.
 
 ### 1.6 Explore /memory
 
@@ -123,6 +133,8 @@ Code analyzer and test generator CLI tool.
 
 Save and close the editor. Claude now has this context for every future session.
 
+**STOP -- What you just did:** You edited CLAUDE.md through `/memory` and gave Claude persistent context about your project. This is how you teach Claude what it needs to know -- not by repeating yourself every session, but by writing it down once in CLAUDE.md.
+
 ### 1.7 First Conversation
 
 Ask Claude something about your project plan:
@@ -134,6 +146,8 @@ high-level architecture for this kind of tool?
 ```
 
 Read the response. You do not need to act on it yet -- Module 2 is where you plan and build.
+
+**STOP -- What you just did:** You had your first real conversation with Claude about your project. Notice how Claude gave a structured, thoughtful response -- this is because it has context from CLAUDE.md. Without that file, Claude would have given a generic answer. Context is everything.
 
 ### Leaving and Coming Back
 
