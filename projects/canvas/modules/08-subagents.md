@@ -3,7 +3,7 @@
 **CC features:** `.claude/agents/`, subagent frontmatter, chaining, parallel,
 background (`Ctrl+B`), resuming, `claude agents` CLI
 
-**Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+**Persona -- Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
 
 ### 8.1 What Are Subagents
 

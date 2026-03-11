@@ -3,7 +3,7 @@
 **CC features:** Tasks system, `TaskCreate`, dependencies/blockedBy,
 cross-session persistence, TDD loops, SubagentStop
 
-**Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+**Persona -- Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
 
 ### 9.1 Tasks System Overview
 

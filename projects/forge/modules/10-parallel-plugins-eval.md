@@ -3,11 +3,11 @@
 **CC features:** Git worktrees, agent teams (experimental), plugins, evaluation,
 PermissionRequest hooks, continuous learning
 
-> **Persona — Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."
+**Persona -- Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."
 
-## 10.1 Git Worktrees for Parallel Development
+### 10.1 Git Worktrees for Parallel Development
 
-> **Why this step:** Until now, you have worked on one feature at a time: create a branch, build, merge, repeat. Git worktrees let you work on multiple features *simultaneously* in separate directories, each with its own Claude Code session. This is parallel development -- two features being built at the same time by two Claude instances, coordinating through a shared task list.
+**Why this step:** Until now, you have worked on one feature at a time: create a branch, build, merge, repeat. Git worktrees let you work on multiple features *simultaneously* in separate directories, each with its own Claude Code session. This is parallel development -- two features being built at the same time by two Claude instances, coordinating through a shared task list.
 
 Git worktrees let you work on multiple branches simultaneously without
 switching. Each worktree is a separate directory pointing to the same repo.
@@ -30,7 +30,7 @@ Now you have three directories:
 - `../forge-api/` -- feature/api branch
 - `../forge-export/` -- feature/export branch
 
-## 10.2 Run Parallel Claude Instances
+### 10.2 Run Parallel Claude Instances
 
 Open separate terminals. Share a task list across both:
 
@@ -48,17 +48,17 @@ the export feature (design formats, implement exporters, write tests).
 
 Both sessions see all tasks. When one completes a task, the other is notified.
 
-> **STOP -- What you just did:** You set up parallel development with two Claude instances sharing a task list via `CLAUDE_CODE_TASK_LIST_ID`. Each instance works in its own worktree on its own feature branch, but they can see each other's task progress. This is the most advanced workflow pattern in Claude Code -- it lets you multiply your throughput by running independent features in parallel. When one session completes a task that unblocks work in the other session, both see the update.
+**STOP -- What you just did:** You set up parallel development with two Claude instances sharing a task list via `CLAUDE_CODE_TASK_LIST_ID`. Each instance works in its own worktree on its own feature branch, but they can see each other's task progress. This is the most advanced workflow pattern in Claude Code -- it lets you multiply your throughput by running independent features in parallel. When one session completes a task that unblocks work in the other session, both see the update.
 
-> **Quick check before continuing:**
-> - [ ] Two worktree directories exist (`forge-api/` and `forge-export/`)
-> - [ ] Each has its own Claude Code session running
-> - [ ] Both sessions see the same shared task list
-> - [ ] Tasks created in one session appear in the other
+**Quick check before continuing:**
+- [ ] Two worktree directories exist (`forge-api/` and `forge-export/`)
+- [ ] Each has its own Claude Code session running
+- [ ] Both sessions see the same shared task list
+- [ ] Tasks created in one session appear in the other
 
-## 10.3 Agent Teams
+### 10.3 Agent Teams
 
-> **Why this step:** You just coordinated two Claude instances manually -- separate terminals, shared task list, you switching between them. Agent teams automate this: Claude spawns teammates, assigns tasks, and they message each other directly. Same coordination pattern, but Claude manages it instead of you.
+**Why this step:** You just coordinated two Claude instances manually -- separate terminals, shared task list, you switching between them. Agent teams automate this: Claude spawns teammates, assigns tasks, and they message each other directly. Same coordination pattern, but Claude manages it instead of you.
 
 Agent teams are experimental. Enable them:
 
@@ -68,7 +68,7 @@ Agent teams are experimental. Enable them:
 
 Tell Claude to create a team:
 
-> "Create an agent team to improve the forge toolkit. One teammate reviews the search system for edge cases, another adds missing export formats, and a third writes integration tests. They should coordinate through shared tasks."
+"Create an agent team to improve the forge toolkit. One teammate reviews the search system for edge cases, another adds missing export formats, and a third writes integration tests. They should coordinate through shared tasks."
 
 Observe the team in action: Claude creates teammates, they pick up tasks, message each other, and report back. You can watch via the task list and message notifications. Use `Shift+Down` to navigate between teammates.
 
@@ -76,15 +76,15 @@ Agent Teams also works on Bedrock, Vertex, and Foundry API providers -- not just
 
 **Subagents vs agent teams:** Subagents report back to you only -- they cannot communicate with each other. Agent teams message peer-to-peer and share a task list. Use subagents for focused delegation, agent teams for collaborative work requiring coordination.
 
-> **STOP -- What you just did:** You let Claude orchestrate a team of agents instead of managing parallel sessions yourself. Agent teams automate the `CLAUDE_CODE_TASK_LIST_ID` pattern you used in 10.2 -- same idea, but Claude handles the spawning, assignment, and messaging. This is experimental: no session resume for teams, no nested teams, and coordination overhead makes it best for tasks with real interdependencies.
+**STOP -- What you just did:** You let Claude orchestrate a team of agents instead of managing parallel sessions yourself. Agent teams automate the `CLAUDE_CODE_TASK_LIST_ID` pattern you used in 10.2 -- same idea, but Claude handles the spawning, assignment, and messaging. This is experimental: no session resume for teams, no nested teams, and coordination overhead makes it best for tasks with real interdependencies.
 
-## 10.4 Plugin Creation
+### 10.4 Plugin Creation
 
-> **Why this step:** Everything you have built -- skills, agents, hooks -- lives inside your project. A plugin packages these components into a portable, reusable bundle that can be shared with other projects or other people. Think of it as turning your project-specific customizations into a distributable tool.
+**Why this step:** Everything you have built -- skills, agents, hooks -- lives inside your project. A plugin packages these components into a portable, reusable bundle that can be shared with other projects or other people. Think of it as turning your project-specific customizations into a distributable tool.
 
 Package everything you have built into a reusable plugin. Describe to Claude what you want to include and let it figure out the plugin structure.
 
-> "Package my forge toolkit into a reusable plugin called knowledge-base-plugin. Include the add-item, search, daily-summary, and backup skills, the search, format, and review agents, and extract the relevant hooks into plugin format. Create a plugin.json manifest with name and version."
+"Package my forge toolkit into a reusable plugin called knowledge-base-plugin. Include the add-item, search, daily-summary, and backup skills, the search, format, and review agents, and extract the relevant hooks into plugin format. Create a plugin.json manifest with name and version."
 
 Plugins can also ship a `settings.json` for default configuration (hooks, permissions, etc.) and can be distributed via the npm registry for easy sharing.
 
@@ -98,7 +98,7 @@ knowledge-base-plugin/
   hooks/hooks.json
 ```
 
-## 10.5 Test the Plugin
+### 10.5 Test the Plugin
 
 Test your plugin locally:
 
@@ -114,53 +114,53 @@ Verify everything works:
 Note the namespacing: plugin skills are prefixed with the plugin name to
 prevent conflicts.
 
-> **STOP -- What you just did:** You packaged your forge toolkit's skills, agents, and hooks into a standalone plugin with a manifest file. The plugin can be loaded into any project with `--plugin-dir`, and all skills are automatically namespaced (e.g., `/knowledge-base:add-item`) to prevent conflicts with the host project's own skills. This is how you share Claude Code customizations across projects and teams.
+**STOP -- What you just did:** You packaged your forge toolkit's skills, agents, and hooks into a standalone plugin with a manifest file. The plugin can be loaded into any project with `--plugin-dir`, and all skills are automatically namespaced (e.g., `/knowledge-base:add-item`) to prevent conflicts with the host project's own skills. This is how you share Claude Code customizations across projects and teams.
 
 Ready to build an evaluation suite for your skills and agents?
 
-## 10.6 Evaluation
+### 10.6 Evaluation
 
-> **Why this step:** How do you know your skills and agents actually work well? Evaluation gives you a systematic way to test them with defined inputs, expected outputs, and scoring criteria. This is not the same as unit testing your code -- it is testing your *Claude Code configuration*: do skills produce the right output? Do agents make good decisions?
+**Why this step:** How do you know your skills and agents actually work well? Evaluation gives you a systematic way to test them with defined inputs, expected outputs, and scoring criteria. This is not the same as unit testing your code -- it is testing your *Claude Code configuration*: do skills produce the right output? Do agents make good decisions?
 
 Describe to Claude the test cases you want for each skill and agent. Think about what "correct behavior" looks like for each one -- both the happy path and the failure cases.
 
-> "Create an evaluation suite for the forge toolkit. I want test cases for each skill and agent with defined inputs, expected outputs, and scoring criteria. For add-item: test with a valid note, an empty title, and missing fields. For the search agent: test exact title match, tag search, and no-results behavior. For the review agent: test with an incomplete item and duplicates. Write a script that runs each test and reports pass/fail."
+"Create an evaluation suite for the forge toolkit. I want test cases for each skill and agent with defined inputs, expected outputs, and scoring criteria. For add-item: test with a valid note, an empty title, and missing fields. For the search agent: test exact title match, tag search, and no-results behavior. For the review agent: test with an incomplete item and duplicates. Write a script that runs each test and reports pass/fail."
 
 Claude may ask about how strict the scoring should be or what counts as "close enough." These are your standards -- discuss them.
 
-> **STOP -- What you just did:** You created an evaluation suite that tests your Claude Code configuration the same way you would test code. Each test case specifies what to input, what output to expect, and how to score the result. This closes the feedback loop: you built skills and agents in earlier modules, and now you have a way to measure whether they work correctly. In real projects, run evaluations after any change to skills, agents, or hooks to catch regressions.
+**STOP -- What you just did:** You created an evaluation suite that tests your Claude Code configuration the same way you would test code. Each test case specifies what to input, what output to expect, and how to score the result. This closes the feedback loop: you built skills and agents in earlier modules, and now you have a way to measure whether they work correctly. In real projects, run evaluations after any change to skills, agents, or hooks to catch regressions.
 
 Shall we set up auto-approval hooks for eval runs?
 
-## 10.7 PermissionRequest Hooks for Eval Automation
+### 10.7 PermissionRequest Hooks for Eval Automation
 
-> **Why this step:** Running evaluations means invoking many tool calls in rapid succession. Without auto-approval, you would have to manually confirm every Read, Grep, and Bash command -- dozens of permission prompts that slow everything down. PermissionRequest hooks let you auto-approve safe operations during eval while keeping the safety prompts during normal development.
+**Why this step:** Running evaluations means invoking many tool calls in rapid succession. Without auto-approval, you would have to manually confirm every Read, Grep, and Bash command -- dozens of permission prompts that slow everything down. PermissionRequest hooks let you auto-approve safe operations during eval while keeping the safety prompts during normal development.
 
 During evaluation, auto-approve safe operations to avoid prompt fatigue. Ask Claude to set up the auto-approval hook in your local settings (not the shared project settings).
 
-> "Add a PermissionRequest hook to .claude/settings.local.json that auto-approves Read, Grep, Glob, and forge commands during evaluation. Use a matcher for those specific tools and output a decision with behavior: allow. Keep it in settings.local.json since this is a personal workflow choice."
+"Add a PermissionRequest hook to .claude/settings.local.json that auto-approves Read, Grep, Glob, and forge commands during evaluation. Use a matcher for those specific tools and output a decision with behavior: allow. Keep it in settings.local.json since this is a personal workflow choice."
 
-> **STOP -- What you just did:** You used a PermissionRequest hook to auto-approve safe operations (Read, Grep, Glob, and forge commands) during evaluation. Notice this hook lives in `settings.local.json` -- not committed to version control -- because auto-approval is a personal workflow choice, not a team policy. This is a good example of the local vs. project settings distinction: safety-reducing configurations stay local.
+**STOP -- What you just did:** You used a PermissionRequest hook to auto-approve safe operations (Read, Grep, Glob, and forge commands) during evaluation. Notice this hook lives in `settings.local.json` -- not committed to version control -- because auto-approval is a personal workflow choice, not a team policy. This is a good example of the local vs. project settings distinction: safety-reducing configurations stay local.
 
-> **Quick check before continuing:**
-> - [ ] Your plugin loads with `--plugin-dir` and skills work with namespace prefix
-> - [ ] Evaluation suite exists with test cases for skills and agents
-> - [ ] PermissionRequest hook auto-approves safe operations during eval
-> - [ ] The auto-approval hook is in `settings.local.json`, not `settings.json`
+**Quick check before continuing:**
+- [ ] Your plugin loads with `--plugin-dir` and skills work with namespace prefix
+- [ ] Evaluation suite exists with test cases for skills and agents
+- [ ] PermissionRequest hook auto-approves safe operations during eval
+- [ ] The auto-approval hook is in `settings.local.json`, not `settings.json`
 
-## 10.8 Continuous Learning
+### 10.8 Continuous Learning
 
-> **Why this step:** This is the most important habit you can build. Claude Code's effectiveness comes from its configuration -- CLAUDE.md, rules, skills, agents, hooks. Every time you discover a pattern that works or a mistake to avoid, capturing it in your configuration makes every future session better. This is compound learning: each session builds on everything that came before.
+**Why this step:** This is the most important habit you can build. Claude Code's effectiveness comes from its configuration -- CLAUDE.md, rules, skills, agents, hooks. Every time you discover a pattern that works or a mistake to avoid, capturing it in your configuration makes every future session better. This is compound learning: each session builds on everything that came before.
 
 Reflect on the full project and have a conversation with Claude about what you have learned. Ask it to review your configuration and suggest improvements based on how things actually worked.
 
-> "Review our CLAUDE.md, rules, skills, agents, and hooks. What patterns worked well? What should we refine? Are there edge cases we missed or descriptions that could be clearer? Help me update everything based on what we've learned building this project."
+"Review our CLAUDE.md, rules, skills, agents, and hooks. What patterns worked well? What should we refine? Are there edge cases we missed or descriptions that could be clearer? Help me update everything based on what we've learned building this project."
 
 This is the continuous learning cycle: build, reflect, refine, repeat.
 
 Claude also saves useful context automatically across sessions via **auto-memory**. Use `/memory` to review what has been saved and verify it matches your understanding. Auto-memory complements CLAUDE.md -- it captures things you might forget to write down.
 
-> **STOP -- What you just did:** You completed the full learning loop. Over 10 modules, you built a personal dev toolkit while systematically learning every major Claude Code feature. This final step -- reviewing and refining your configuration -- is what separates people who use Claude Code from people who master it. Your CLAUDE.md, rules, skills, agents, and hooks are a living system that gets better with every session. Keep updating them.
+**STOP -- What you just did:** You completed the full learning loop. Over 10 modules, you built a personal dev toolkit while systematically learning every major Claude Code feature. This final step -- reviewing and refining your configuration -- is what separates people who use Claude Code from people who master it. Your CLAUDE.md, rules, skills, agents, and hooks are a living system that gets better with every session. Keep updating them.
 
 ## Checkpoint
 

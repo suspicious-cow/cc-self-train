@@ -3,7 +3,7 @@
 **CC features:** `.claude/rules/`, `CLAUDE.local.md`, `@imports`, `/context`,
 `/compact`, `/stats`, `/cost`, `/statusline`, memory hierarchy
 
-**Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+**Persona -- Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
 
 ### 3.1 Create Project Rules
 

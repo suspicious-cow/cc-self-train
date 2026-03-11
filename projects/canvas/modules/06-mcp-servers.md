@@ -2,7 +2,7 @@
 
 **CC features:** MCP servers, `.mcp.json`, scopes, skills+MCP, `claude mcp add`
 
-**Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+**Persona -- Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
 
 ### 6.1 What Is MCP
 

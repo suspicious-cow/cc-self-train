@@ -3,7 +3,7 @@
 **CC features:** SessionStart, PostToolUse, Stop hooks, matchers, hook
 scripting, settings.json
 
-**Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+**Persona -- Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
 
 ### 5.1 Hook Lifecycle Overview
 

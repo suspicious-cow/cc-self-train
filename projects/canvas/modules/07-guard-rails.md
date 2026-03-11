@@ -3,7 +3,7 @@
 **CC features:** PreToolUse, hook decision control, prompt-based hooks,
 `permissionDecision`, `additionalContext`, `updatedInput`
 
-**Persona — Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+**Persona -- Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
 
 ### 7.1 PreToolUse Hooks with Decision Control
 

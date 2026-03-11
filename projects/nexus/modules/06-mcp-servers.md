@@ -2,15 +2,15 @@
 
 **CC features:** MCP servers, .mcp.json, scopes, skills+MCP, claude mcp add
 
-> **Persona — Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"
+**Persona -- Collaborator:** Ask before telling, give pointers not answers. "What do you think...", "Try this and tell me..."
 
-### Step 1: What is MCP
+### 6.1 What is MCP
 
 MCP (Model Context Protocol) connects Claude Code to external tools, databases, and APIs. Skills teach Claude **what to do**; MCP gives Claude **access to things**.
 
-> **Why this step:** Without MCP, Claude can only interact with your database through your application code. With an MCP server connected, Claude can directly query, inspect, and manage the database -- like giving it a database client. This is the difference between "Claude can read your code" and "Claude can read your data."
+**Why this step:** Without MCP, Claude can only interact with your database through your application code. With an MCP server connected, Claude can directly query, inspect, and manage the database -- like giving it a database client. This is the difference between "Claude can read your code" and "Claude can read your data."
 
-### Step 2: Add the SQLite MCP Server
+### 6.2 Add the SQLite MCP Server
 
 Connect an MCP server so Claude can directly inspect and manage the cache database:
 
@@ -24,7 +24,7 @@ claude mcp add --transport stdio sqlite -- cmd /c npx -y @anthropic-ai/mcp-sqlit
 
 If a SQLite MCP server is not available, ask Claude: `Help me set up an MCP server for a SQLite database at ./cache.db for my platform.`
 
-### Step 3: Add the Filesystem MCP Server
+### 6.3 Add the Filesystem MCP Server
 
 ```
 # macOS / Linux
@@ -34,22 +34,22 @@ claude mcp add --transport stdio filesystem -- npx -y @anthropic-ai/mcp-filesyst
 claude mcp add --transport stdio filesystem -- cmd /c npx -y @anthropic-ai/mcp-filesystem --root .
 ```
 
-> **STOP -- What you just did:** You connected two MCP servers that give Claude new capabilities: direct SQLite database access and filesystem operations. The `claude mcp add` command registered them, and now Claude can use their tools alongside its built-in tools. Think of MCP servers as "plugins for Claude's toolbox" -- each one adds new abilities.
+**STOP -- What you just did:** You connected two MCP servers that give Claude new capabilities: direct SQLite database access and filesystem operations. The `claude mcp add` command registered them, and now Claude can use their tools alongside its built-in tools. Think of MCP servers as "plugins for Claude's toolbox" -- each one adds new abilities.
 
-> **Engineering value:**
-> - *Entry-level:* MCP servers are like USB ports for Claude — they let you plug in new capabilities without changing Claude itself.
-> - *Mid-level:* In real engineering workflows, MCP connects Claude to your actual tools — Jira for ticket tracking, Figma for designs, Sentry for error monitoring. Claude stops being a code-only tool and becomes a full engineering assistant.
-> - *Senior+:* MCP is a standardized integration protocol — like LSP (Language Server Protocol) but for AI tool access. Building on open standards means your MCP configurations work across any AI tool that supports the protocol, not just Claude.
+**Engineering value:**
+- *Entry-level:* MCP servers are like USB ports for Claude -- they let you plug in new capabilities without changing Claude itself.
+- *Mid-level:* In real engineering workflows, MCP connects Claude to your actual tools -- Jira for ticket tracking, Figma for designs, Sentry for error monitoring. Claude stops being a code-only tool and becomes a full engineering assistant.
+- *Senior+:* MCP is a standardized integration protocol -- like LSP (Language Server Protocol) but for AI tool access. Building on open standards means your MCP configurations work across any AI tool that supports the protocol, not just Claude.
 
 Ready to verify your MCP connections?
 
-### Step 4: Verify MCP Connections
+### 6.4 Verify MCP Connections
 
 Inside Claude Code, run `/mcp` to see both servers with their status. Also verify with `claude mcp list`.
 
-> **Why this step:** The `claude mcp add` command you just used stored the server config locally (just for you). A `.mcp.json` file at the project root makes the config shareable -- anyone who clones the repo gets the same MCP servers automatically. This is the difference between "works on my machine" and "works for the team."
+**Why this step:** The `claude mcp add` command you just used stored the server config locally (just for you). A `.mcp.json` file at the project root makes the config shareable -- anyone who clones the repo gets the same MCP servers automatically. This is the difference between "works on my machine" and "works for the team."
 
-### Step 5: Create .mcp.json for the Project
+### 6.5 Create .mcp.json for the Project
 
 For team sharing, create a project-scoped `.mcp.json` at the project root:
 
@@ -67,7 +67,7 @@ For team sharing, create a project-scoped `.mcp.json` at the project root:
 
 Or use: `claude mcp add --scope project sqlite-cache -- npx -y @anthropic-ai/mcp-sqlite --db-path ./cache.db`
 
-### Step 6: Understand MCP Scopes
+### 6.6 Understand MCP Scopes
 
 | Scope | Storage Location | Shared With | Use Case |
 |-------|-----------------|-------------|----------|
@@ -75,42 +75,48 @@ Or use: `claude mcp add --scope project sqlite-cache -- npx -y @anthropic-ai/mcp
 | project | .mcp.json in project root | Team (via git) | Shared project servers |
 | user | ~/.claude.json (global) | Just you (all projects) | Personal utilities |
 
-> **Quick check before continuing:**
-> - [ ] `/mcp` shows both SQLite and filesystem servers with green status
-> - [ ] `.mcp.json` exists at the project root
-> - [ ] You can explain the difference between local, project, and user scopes
+**Quick check before continuing:**
+- [ ] `/mcp` shows both SQLite and filesystem servers with green status
+- [ ] `.mcp.json` exists at the project root
+- [ ] You can explain the difference between local, project, and user scopes
 
-> **Engineering value:**
-> - *Entry-level:* Committing `.mcp.json` means anyone who clones your repo gets the same MCP servers — no setup instructions to follow.
-> - *Mid-level:* Project-scoped MCP config is infrastructure-as-code for AI tooling. New team members clone, run `claude`, and everything just works.
+**Engineering value:**
+- *Entry-level:* Committing `.mcp.json` means anyone who clones your repo gets the same MCP servers -- no setup instructions to follow.
+- *Mid-level:* Project-scoped MCP config is infrastructure-as-code for AI tooling. New team members clone, run `claude`, and everything just works.
 
-### Step 7: Build the Caching Layer with MCP
+### 6.7 Build the Caching Layer with MCP
 
 Now use the SQLite MCP server to build the caching layer. Describe the caching behavior you want and let Claude design the schema and implementation. Tell Claude to use MCP to inspect the database as it builds.
 
-> "I want to add response caching to the gateway using SQLite. Cache GET request responses with a configurable TTL per route. If a cached response exists and hasn't expired, return it without hitting the upstream. I also want CLI commands for cache stats and cache clear. Use the SQLite MCP tools to inspect the database as you build this."
+```
+I want to add response caching to the gateway using SQLite. Cache GET request responses with a configurable TTL per route. If a cached response exists and hasn't expired, return it without hitting the upstream. I also want CLI commands for cache stats and cache clear. Use the SQLite MCP tools to inspect the database as you build this.
+```
 
 Claude will design the cache table schema, implement the caching logic, and add the CLI commands. It may ask you about cache key strategy, what happens on TTL expiry, and whether you want cache size limits. Answer based on your preferences.
 
 After building, ask Claude to query the live database:
 
-> "Use the SQLite MCP server to show me what's in the cache. How many hits and misses have there been?"
+```
+Use the SQLite MCP server to show me what's in the cache. How many hits and misses have there been?
+```
 
-> **STOP -- What you just did:** You built a real caching layer and then used MCP to inspect it from inside Claude Code. This is a major shift: instead of writing one-off SQL queries or print statements to debug your cache, you asked Claude to query the live database directly. MCP turns Claude from a code assistant into a system operator that can see your running application's state.
+**STOP -- What you just did:** You built a real caching layer and then used MCP to inspect it from inside Claude Code. This is a major shift: instead of writing one-off SQL queries or print statements to debug your cache, you asked Claude to query the live database directly. MCP turns Claude from a code assistant into a system operator that can see your running application's state.
 
 Want to see how skills and MCP work together?
 
-### Step 8: Create a Skill That Uses MCP
+### 6.8 Create a Skill That Uses MCP
 
-> **Why this step:** This step combines two features you have already learned -- skills (Module 4) and MCP (this module). The skill provides the *workflow* ("check stats, find expired entries, format a table"), while MCP provides the *capability* ("query SQLite"). This skills+MCP pattern is how you build sophisticated developer tools inside Claude Code.
+**Why this step:** This step combines two features you have already learned -- skills (Module 4) and MCP (this module). The skill provides the *workflow* ("check stats, find expired entries, format a table"), while MCP provides the *capability* ("query SQLite"). This skills+MCP pattern is how you build sophisticated developer tools inside Claude Code.
 
 Ask Claude to create a skill that orchestrates MCP tools for cache inspection. Describe the kind of report you want -- totals, hit rates, top keys, expired entries.
 
-> "Create a cache-inspect skill that uses the SQLite MCP tools to query cache.db and generate a report. I want to see total entries, size, oldest and newest entries, hit/miss ratio, top 5 most-accessed keys, and any expired entries that haven't been cleaned up. If I pass a path argument, filter to matching entries. This one can be auto-invoked by Claude."
+```
+Create a cache-inspect skill that uses the SQLite MCP tools to query cache.db and generate a report. I want to see total entries, size, oldest and newest entries, hit/miss ratio, top 5 most-accessed keys, and any expired entries that haven't been cleaned up. If I pass a path argument, filter to matching entries. This one can be auto-invoked by Claude.
+```
 
 This demonstrates the skills+MCP pattern: the skill provides the workflow logic ("what to do"), while MCP provides the tool access ("ability to query SQLite").
 
-### Step 9: Connect a Tool You Actually Use
+### 6.9 Connect a Tool You Actually Use
 
 The MCP servers you added above are local utilities -- SQLite and filesystem. But MCP also connects to cloud tools you already use.
 
@@ -134,7 +140,9 @@ claude mcp add --transport http sentry --scope user https://mcp.sentry.dev/mcp
 
 After adding, run `/mcp` to authenticate and verify the connection. Then try it out:
 
-> "Using the Sentry MCP server, what are the most common errors in the last 24 hours?"
+```
+Using the Sentry MCP server, what are the most common errors in the last 24 hours?
+```
 
 This section is optional -- if you do not use any of these tools, skip ahead to the checkpoint.
 

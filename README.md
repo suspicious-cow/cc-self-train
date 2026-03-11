@@ -189,6 +189,7 @@ The `context/` folder contains detailed reference documentation for every CC fea
 | `context/sl-guide.txt` | Real-world CC patterns from daily use and hackathon experience |
 | `context/changelog-cc.txt` | Claude Code changelog (v2.0.0 — v2.1.68) |
 | `context/auto-memory.txt` | Auto-memory system reference |
+| `context/models.txt` | Model tiers (Haiku/Sonnet/Opus), selection guidance, effort levels |
 | `context/ide-integration.txt` | VS Code/Cursor extension, IDE setup, CLI vs extension features |
 
 ## Design Principles

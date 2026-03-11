@@ -2,11 +2,11 @@
 
 **CC features:** CLAUDE.md, /init, /memory, interactive mode, keyboard shortcuts
 
-> **Persona — Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"
+**Persona -- Guide:** Explain everything, define terms, celebrate small wins. "Let's try...", "Here's what that does..."
 
-> **Used `/start`?** Module 1 was completed during onboarding. Jump to [Module 2 -- Blueprint & Build](02-blueprint.md).
+**Used `/start`?** Module 1 was completed during onboarding. Jump to [Module 2 -- Blueprint & Build](02-blueprint.md).
 
-### Step 1: Create Your Project
+### 1.1 Create Your Project
 
 Open a terminal in the cc-self-train directory and create the project under `workspace/`:
 
@@ -16,7 +16,7 @@ cd workspace/nexus-gateway
 git init
 ```
 
-### Step 2: Launch Claude Code
+### 1.2 Launch Claude Code
 
 ```
 claude
@@ -24,7 +24,7 @@ claude
 
 You are now in an interactive Claude Code session. This is your primary interface for the entire project.
 
-### Step 2b: Terminal or IDE? Choose Your Setup
+### 1.2b Terminal or IDE? Choose Your Setup
 
 Claude Code works in two modes. You can use either — or both at the same time.
 
@@ -36,7 +36,7 @@ Claude Code works in two modes. You can use either — or both at the same time.
 
 You do not have to choose one forever. The extension and CLI share the same conversation history and project configuration.
 
-### Step 3: Run /init
+### 1.3 Run /init
 
 Type the following into Claude Code:
 
@@ -46,18 +46,18 @@ Type the following into Claude Code:
 
 Claude will scan your directory and generate a `CLAUDE.md` file. Since the directory is mostly empty, the file will be minimal. That is fine -- you will build it up throughout the project.
 
-> **Engineering value:**
-> - *Entry-level:* A CLAUDE.md is like onboarding docs for your AI pair programmer — it remembers your project so you don't re-explain it every session.
-> - *Mid-level:* On teams, CLAUDE.md ensures every developer's Claude session follows the same conventions — consistent code style, correct build commands, shared architecture decisions.
-> - *Senior+:* CLAUDE.md is declarative project configuration for AI tooling — the same pattern as .editorconfig, .eslintrc, or Makefile, but for your AI assistant. It scales across repos.
+**Engineering value:**
+- *Entry-level:* A CLAUDE.md is like onboarding docs for your AI pair programmer -- it remembers your project so you don't re-explain it every session.
+- *Mid-level:* On teams, CLAUDE.md ensures every developer's Claude session follows the same conventions -- consistent code style, correct build commands, shared architecture decisions.
+- *Senior+:* CLAUDE.md is declarative project configuration for AI tooling -- the same pattern as .editorconfig, .eslintrc, or Makefile, but for your AI assistant. It scales across repos.
 
-### Step 4: Tour of CLAUDE.md
+### 1.4 Tour of CLAUDE.md
 
 Ask Claude: `Read CLAUDE.md and explain what each section does and why it matters`
 
 CLAUDE.md is Claude's persistent memory for your project. It loads automatically every session and can contain build commands, architecture notes, coding conventions, and workflow preferences.
 
-### Step 5: Keyboard Shortcuts
+### 1.5 Keyboard Shortcuts
 
 Practice each shortcut in the table below. Do not skip this -- muscle memory with these shortcuts saves significant time across the remaining 9 modules.
 
@@ -74,11 +74,11 @@ Practice each shortcut in the table below. Do not skip this -- muscle memory wit
 | `Ctrl+O` | Toggle verbose output | See detailed tool usage |
 | `Ctrl+R` | Reverse search command history | Search through previous inputs |
 
-> **Engineering value:**
-> - *Entry-level:* These shortcuts aren't just convenience — they're how you stay in flow. Switching between Claude and your terminal without reaching for the mouse keeps you productive.
-> - *Mid-level:* Plan mode (Shift+Tab) is critical for code review workflows — you can have Claude analyze and propose changes without executing them, which is how you safely use AI on production code.
+**Engineering value:**
+- *Entry-level:* These shortcuts aren't just convenience -- they're how you stay in flow. Switching between Claude and your terminal without reaching for the mouse keeps you productive.
+- *Mid-level:* Plan mode (Shift+Tab) is critical for code review workflows -- you can have Claude analyze and propose changes without executing them, which is how you safely use AI on production code.
 
-### Step 5b: Slash Commands
+### 1.5b Slash Commands
 
 The `/` shortcut from the table above opens Claude Code's built-in commands. You used `/init` already -- here are a few more to know about:
 
@@ -91,11 +91,11 @@ The `/` shortcut from the table above opens Claude Code's built-in commands. You
 
 Try typing `/` and pressing `Tab` to see the full list. Tab completion works here just like it does for file paths -- it is the fastest way to discover commands you did not know existed.
 
-### Step 6: Explore /memory
+### 1.6 Explore /memory
 
 Type `/memory` to open CLAUDE.md in your system editor. Add a project overview, placeholder commands (start server, run tests, check health), and an architecture section to be filled in Module 2. Save and close -- Claude now has this context in every future session.
 
-### Step 7: Exercise
+### 1.7 Exercise
 
 Ask Claude: `Explain what CLAUDE.md is, where it lives in the hierarchy, and how it differs from .claude/rules/ files. Show the memory hierarchy from most to least specific.`
 
@@ -112,13 +112,13 @@ You can exit Claude Code at any time with `Ctrl+D` or `/exit`. To pick up where 
 
 Your CLAUDE.md, rules, and project files persist between sessions. Conversation history is restored when you resume, but you may need to re-approve permission prompts.
 
-> **Tip:** Before exiting a long session, run `/memory` to save any important context. Claude reads CLAUDE.md at the start of every session, so anything saved there carries forward automatically.
+**Tip:** Before exiting a long session, run `/memory` to save any important context. Claude reads CLAUDE.md at the start of every session, so anything saved there carries forward automatically.
 
-> **Pro tip: Multiple Claude sessions in your IDE.** In VS Code, you can open multiple Claude conversations: use the Command Palette (`Ctrl+Shift+P`) → "Claude Code: Open in New Tab" to run side-by-side conversations. In the terminal, split your terminal pane (`Ctrl+Shift+5` in VS Code) and run `claude` in each. This becomes especially useful in Module 10 when you work with git worktrees and parallel development.
+**Pro tip: Multiple Claude sessions in your IDE.** In VS Code, you can open multiple Claude conversations: use the Command Palette (`Ctrl+Shift+P`) --> "Claude Code: Open in New Tab" to run side-by-side conversations. In the terminal, split your terminal pane (`Ctrl+Shift+5` in VS Code) and run `claude` in each. This becomes especially useful in Module 10 when you work with git worktrees and parallel development.
 
-> **Engineering value:**
-> - *Entry-level:* Session persistence means you can work on a problem across days without losing context — like saving your game.
-> - *Mid-level:* Named sessions (`/rename`) let you maintain separate contexts for different workstreams — bug investigation in one, feature work in another.
+**Engineering value:**
+- *Entry-level:* Session persistence means you can work on a problem across days without losing context -- like saving your game.
+- *Mid-level:* Named sessions (`/rename`) let you maintain separate contexts for different workstreams -- bug investigation in one, feature work in another.
 
 ### Checkpoint
 
