@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.11.0 (2026-03-11)
+
+- Add STOP blocks to Module 1 across all 4 projects (Canvas: 9, Forge: 8, Nexus: 7, Sentinel: 7) — enforces one-step-at-a-time pacing that was missing from Module 1 but present in Modules 2-10
+- Add comprehensive error recovery troubleshooting section to `/start` skill — covers 9 failure scenarios (interrupted onboarding, existing workspace, git issues, permission errors, tool install failures, browser launch failures, state file corruption, network failures)
+
 ## v2.10.0 (2026-03-11)
 
 - Remove 645+ blockquotes from Forge, Nexus, and Sentinel modules — blockquotes render as dim italics in CLI, making content hard to read (Canvas was fixed in v2.9.4)
