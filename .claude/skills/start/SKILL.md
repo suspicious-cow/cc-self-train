@@ -679,10 +679,10 @@ Before committing, check that git knows who the user is:
 - Ask the user for their name and email using AskUserQuestion (the free-text "Other" option works fine for this)
 - Run `git config user.name "Their Name"` and `git config user.email "their@email.com"` in the project directory
 
-Then make the initial commit inside `workspace/<project>/`:
+Then make the initial commit. For BYOP, `cd` to the external project path; for tutorial projects, `cd` to `workspace/<project>/`:
 
 ```
-cd workspace/<project>
+cd <project-directory>
 git add -A
 git commit -m "Initial project setup with CLAUDE.md"
 ```
@@ -748,7 +748,7 @@ Use AskUserQuestion to let the user pick one improvement:
 After they pick and you apply it, commit:
 
 ```
-cd workspace/<project>
+cd <project-directory>
 git add CLAUDE.md
 git commit -m "Customize CLAUDE.md with personal preferences"
 ```
