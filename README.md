@@ -29,7 +29,7 @@ That's it. Claude will walk you through picking a project, checking your dev env
 
 ## Who This Is For
 
-You've installed Claude Code and maybe run `/init`. Now what? This is your answer. Pick one of 4 projects and work through 10 progressive modules that take you from "first session" to "multi-agent orchestration." By the end, you won't just know what these features do — you'll have used every one of them to build something you're proud of.
+You've installed Claude Code and maybe run `/init`. Now what? This is your answer. Pick one of 4 tutorial projects (or bring your own) and work through 10 progressive modules that take you from "first session" to "multi-agent orchestration." By the end, you won't just know what these features do — you'll have used every one of them to build something you're proud of.
 
 **No specific language required.** Forge, Nexus, and Sentinel describe *what* to build, not *how*. You choose Python, TypeScript, Go, Rust, or whatever you're comfortable with. Canvas uses plain HTML/CSS/JS — no build tools needed.
 
@@ -73,7 +73,7 @@ Each project covers all 10 modules. Pick based on what sounds fun to build.
 
 </details>
 
-## The 4 Projects
+## The 5 Options
 
 ### [Canvas — Personal Portfolio Site](projects/canvas/README.md) ⭐ Recommended for first-timers
 
@@ -115,7 +115,15 @@ Build a tool that scans code for problems, generates tests automatically, and tr
 
 ---
 
-All four projects are **local-only** and **genuinely useful**. Canvas uses HTML/CSS/JS (no setup needed); Forge, Nexus, and Sentinel are **language-agnostic** — you choose. They all teach the same CC features through the same 10 modules — pick based on interest, not difficulty.
+### [Bring Your Own Project](projects/byop/README.md) -- For Experienced Developers
+
+Already have a project you're working on? Learn every CC feature by applying it to YOUR existing codebase. Same 10 modules, but every exercise targets your real code instead of a tutorial project.
+
+**Best for:** Developers with an existing project who want practical CC skills, not another tutorial
+
+---
+
+All five options teach the same CC features through the same 10 modules. Canvas, Forge, Nexus, and Sentinel are **local-only** and **genuinely useful**. Canvas uses HTML/CSS/JS (no setup needed); Forge, Nexus, and Sentinel are **language-agnostic** — you choose. BYOP works with any existing project. Pick based on interest, not difficulty.
 
 ## The 10 Modules
 
@@ -136,34 +144,34 @@ Every project follows this same progression:
 
 ## Feature Coverage Matrix
 
-Every major CC feature is taught in all 4 projects:
+Every major CC feature is taught in all 5 options:
 
-| Feature | Canvas | Forge | Nexus | Sentinel | Module |
-|---------|:------:|:-----:|:-----:|:--------:|:------:|
-| CLAUDE.md, /init, /memory | x | x | x | x | 1 |
-| Interactive mode (shortcuts, @, /, !) | x | x | x | x | 1 |
-| Plan mode | x | x | x | x | 2 |
-| Git integration | x | x | x | x | 2 |
-| .claude/rules/ (path-scoped) | x | x | x | x | 3 |
-| CLAUDE.local.md, memory hierarchy | x | x | x | x | 3 |
-| @imports, /context, /compact | x | x | x | x | 3 |
-| Skills (SKILL.md, frontmatter, hot-reload) | x | x | x | x | 4 |
-| Custom slash commands ($0, $1) | x | x | x | x | 4 |
-| Hooks (SessionStart, PostToolUse, Stop) | x | x | x | x | 5 |
-| Hook scripting (matchers, timeouts) | x | x | x | x | 5 |
-| MCP servers (.mcp.json, scopes) | x | x | x | x | 6 |
-| Skills + MCP integration | x | x | x | x | 6 |
-| PreToolUse, hook decision control | x | x | x | x | 7 |
-| Prompt-based hooks (LLM quality gates) | x | x | x | x | 7 |
-| Subagents (.claude/agents/) | x | x | x | x | 8 |
-| Subagent chaining, parallel, background | x | x | x | x | 8 |
-| Tasks system (dependencies, cross-session) | x | x | x | x | 9 |
-| TDD & verification loops | x | x | x | x | 9 |
-| Git worktrees, parallel dev | x | x | x | x | 10 |
-| Agent teams (experimental) | x | x | x | x | 10 |
-| Plugins (bundling everything) | x | x | x | x | 10 |
-| Evaluation framework | x | x | x | x | 10 |
-| Continuous learning patterns | x | x | x | x | 10 |
+| Feature | Canvas | Forge | Nexus | Sentinel | BYOP | Module |
+|---------|:------:|:-----:|:-----:|:--------:|:----:|:------:|
+| CLAUDE.md, /init, /memory | x | x | x | x | x | 1 |
+| Interactive mode (shortcuts, @, /, !) | x | x | x | x | x | 1 |
+| Plan mode | x | x | x | x | x | 2 |
+| Git integration | x | x | x | x | x | 2 |
+| .claude/rules/ (path-scoped) | x | x | x | x | x | 3 |
+| CLAUDE.local.md, memory hierarchy | x | x | x | x | x | 3 |
+| @imports, /context, /compact | x | x | x | x | x | 3 |
+| Skills (SKILL.md, frontmatter, hot-reload) | x | x | x | x | x | 4 |
+| Custom slash commands ($0, $1) | x | x | x | x | x | 4 |
+| Hooks (SessionStart, PostToolUse, Stop) | x | x | x | x | x | 5 |
+| Hook scripting (matchers, timeouts) | x | x | x | x | x | 5 |
+| MCP servers (.mcp.json, scopes) | x | x | x | x | x | 6 |
+| Skills + MCP integration | x | x | x | x | x | 6 |
+| PreToolUse, hook decision control | x | x | x | x | x | 7 |
+| Prompt-based hooks (LLM quality gates) | x | x | x | x | x | 7 |
+| Subagents (.claude/agents/) | x | x | x | x | x | 8 |
+| Subagent chaining, parallel, background | x | x | x | x | x | 8 |
+| Tasks system (dependencies, cross-session) | x | x | x | x | x | 9 |
+| TDD & verification loops | x | x | x | x | x | 9 |
+| Git worktrees, parallel dev | x | x | x | x | x | 10 |
+| Agent teams (experimental) | x | x | x | x | x | 10 |
+| Plugins (bundling everything) | x | x | x | x | x | 10 |
+| Evaluation framework | x | x | x | x | x | 10 |
+| Continuous learning patterns | x | x | x | x | x | 10 |
 
 ## Reference Docs
 
@@ -197,7 +205,7 @@ The `context/` folder contains detailed reference documentation for every CC fea
 - **Learn by building.** You won't read a single tutorial. Every feature is taught through a real task in your project — you use it, see the result, and move on.
 - **Language-agnostic.** Every project works in any language. You choose.
 - **Local-only.** No cloud services required (MCP connections are optional/local).
-- **Same curriculum, different domains.** All 4 projects teach the same features in the same order. Pick based on interest.
+- **Same curriculum, different domains.** All 5 options teach the same features in the same order. Pick based on interest.
 - **Real tools, not toys.** Every project produces something genuinely useful that you can keep using after you finish.
 
 ## Staying Current

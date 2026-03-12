@@ -1,0 +1,95 @@
+# Module 7 -- Guard Rails
+
+**CC features:** PreToolUse, hook decision control, prompt-based hooks,
+`permissionDecision`, `additionalContext`, `updatedInput`
+
+**Persona -- Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
+
+### 7.1 PreToolUse Hooks with Decision Control
+
+**Why this step:** In Module 5 you built hooks that observe and report. PreToolUse hooks are fundamentally different -- they can *intercept and change* what Claude does before it happens. This is the most powerful hook type because it lets you enforce rules at the tool level, not just detect violations after the fact.
+
+PreToolUse hooks intercept tool calls before they execute. They can:
+- **Allow:** bypass the permission system entirely
+- **Deny:** block the tool call and tell Claude why
+- **Ask:** show the user a confirmation prompt
+- **Modify:** change the tool's input parameters
+
+### 7.2 Guard: Pattern Enforcer
+
+Create a PreToolUse hook that prevents Claude from violating your project's coding patterns. Think about the patterns that matter most in your codebase -- SQL injection risks, writes to production config files, import conventions, naming violations.
+
+Pick one or two rules that matter for your project and describe them to Claude:
+
+```
+Create a PreToolUse hook that blocks writes violating our project patterns. For example: [describe your rules -- e.g., "block any Write containing raw SQL string concatenation", "deny writes to production config files like .env.prod or deploy.yml", "block files that import from internal packages using relative paths instead of absolute"]. The script (.claude/hooks/enforce-patterns.py) should use permissionDecision 'deny' with a clear reason. Add it to settings.json with a 'Write' matcher.
+```
+
+Adapt the prompt to YOUR project's actual patterns. The specific rules do not matter as much as the mechanism -- you are teaching Claude to enforce your standards automatically.
+
+**STOP -- What you just did:** You created a guard that *prevents* Claude from writing code that violates your project's conventions. Unlike the PostToolUse feedback from Module 5 that reports issues after the file is already written, this PreToolUse hook blocks the write entirely. Claude receives the denial reason and must fix the content before trying again. This is the difference between detection and prevention -- and prevention is always better.
+
+How about we build a guard that injects context when reading your project's files?
+
+### 7.3 Guard: Context Injection
+
+Create a hook that nudges Claude's behavior by injecting reminders when it reads files in your project. Think about the patterns Claude should always keep in mind -- error handling conventions, ownership checks, architectural boundaries:
+
+```
+Create a PreToolUse hook with a 'Read' matcher that checks if the file matches [your pattern -- e.g., "a Python file in src/", "a Go file in internal/", "a TypeScript file in app/"]. If so, inject additionalContext reminding Claude about [your conventions -- e.g., "always use structured logging", "verify ownership through join tables", "follow the repository pattern for data access", "use error boundaries for React components"]. Don't block anything -- just add context.
+```
+
+The key is `hookSpecificOutput.additionalContext` -- it injects a string into Claude's context before the tool executes.
+
+**STOP -- What you just did:** You created a hook that does not block or modify anything -- it injects *extra context* before Claude reads a file. This is a subtle but powerful pattern: you are nudging Claude's behavior by giving it reminders at the exact moment they are relevant. The `additionalContext` field appears in Claude's context alongside the file contents, making it much more likely Claude will follow those guidelines.
+
+Want to see how hooks can silently fix content before it gets written?
+
+### 7.4 Guard: Auto-Fix Common Issues
+
+Create a hook that silently fixes common omissions for your language and project. Think about what Claude frequently forgets or gets wrong -- missing type annotations, incorrect import ordering, missing error handling boilerplate:
+
+```
+Create a PreToolUse hook with a 'Write' matcher that checks if a [your language] file is missing [your common issue -- e.g., "type annotations on function signatures", "the standard copyright header", "explicit error returns in Go", "use strict in JavaScript files"]. If so, use updatedInput to modify the content before it gets written. Set permissionDecision to 'allow' so the write proceeds with the fixed content.
+```
+
+The key is `hookSpecificOutput.updatedInput` -- it replaces the tool's input parameters before execution.
+
+**STOP -- What you just did:** You created a hook that silently modifies Claude's output before it is written to disk. The `updatedInput` field replaces the tool's input parameters -- in this case, injecting missing elements into the file content. Claude does not even know the modification happened. This is the most advanced hook pattern: invisible, automatic correction. Use it carefully -- it is powerful but can be confusing to debug if overused.
+
+**Quick check before continuing:**
+- [ ] You have three different PreToolUse hooks using three different mechanisms: `permissionDecision` (deny), `additionalContext` (inject), `updatedInput` (modify)
+- [ ] You understand the difference between these three approaches
+- [ ] All hooks are configured in `.claude/settings.json` with appropriate matchers
+
+### 7.5 Prompt-Based Quality Gate
+
+Now try a different kind of hook -- a prompt-based Stop hook that uses an LLM to evaluate quality instead of a Python script. Describe to Claude what you want checked:
+
+```
+Add a prompt-based Stop hook to settings.json. Use type 'prompt' with a timeout of 30 seconds. The prompt should review whether any files were modified this turn and, if so, check for [your project's quality standards -- e.g., "proper error handling", "test coverage for new functions", "documentation for public APIs", "consistent naming conventions"]. It should respond with ok true or ok false with a reason.
+```
+
+Prompt-based hooks use a fast LLM (Haiku) to evaluate context and return a structured decision. They are powerful for nuanced, context-aware checks that would be hard to write as a script.
+
+**Why this step:** Prompt-based hooks are a leap beyond script-based hooks. A Python script can check for a missing import with string matching, but it cannot evaluate whether error handling is *comprehensive enough*. A prompt-based hook uses an LLM to make nuanced judgments -- exactly the kind of check that is hard to write as code.
+
+### 7.6 Test Each Guard
+
+1. **Pattern enforcer:** Ask Claude to write a file that violates your rule (e.g., raw SQL concatenation, a write to a production config). Verify the hook blocks it.
+2. **Context injection:** Ask Claude to read one of your project files. Use `Ctrl+O` to verify the additional context was injected.
+3. **Auto-fix:** Ask Claude to write a file missing the element your hook fixes (e.g., missing type annotations, missing header). Verify the fix was auto-applied.
+4. **Quality gate:** Ask Claude to make a change that violates your quality standards and let it stop. Verify the stop hook catches it.
+
+**STOP -- What you just did:** You tested all four guard patterns: deny, inject context, modify input, and prompt-based evaluation. Together, these form a comprehensive guard rail system. The deny hook catches hard errors (pattern violations). The context hook nudges Claude toward good practices. The input modifier silently fixes common omissions. The prompt hook handles nuanced quality checks. In real projects, you will mix these patterns based on how strict the enforcement needs to be.
+
+### Checkpoint
+
+Four guard patterns, all working. Claude now enforces your project's standards automatically -- even when you are not paying attention.
+
+- [ ] PreToolUse hook denies writes that violate your project patterns
+- [ ] PreToolUse hook injects `additionalContext` when reading your project files
+- [ ] PreToolUse hook uses `updatedInput` to auto-fix common issues on writes
+- [ ] Prompt-based Stop hook reviews quality against your project's standards
+- [ ] Each guard was tested and verified working
+- [ ] You understand the difference between `permissionDecision`, `additionalContext`, and `updatedInput`

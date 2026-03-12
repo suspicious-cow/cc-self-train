@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.12.0 (2026-03-12)
+
+- Add BYOP (Bring Your Own Project) as 5th option — users learn CC features by applying them to their existing codebase instead of building a tutorial project
+- New `projects/byop/README.md` explaining BYOP prerequisites and how it differs from tutorial projects
+- New 10 module files in `projects/byop/modules/` — derived from Canvas modules, generified for any project type with "your project" framing
+- Update `/start` onboarding skill: add BYOP as option 5, new Step 1c for project path detection and language auto-detection, skip conditions for Steps 2-3, simplified Step 4 checks, Step 5 bypasses scaffolding, Step 6 branches for existing CLAUDE.md and external paths
+- Update README.md: "The 5 Options" section, BYOP entry, updated feature matrix with BYOP column
+- Update CLAUDE.md: reflect 5 options throughout, add BYOP to repository structure and onboarding flow
+
 ## v2.11.0 (2026-03-11)
 
 - Add STOP blocks to Module 1 across all 4 projects (Canvas: 9, Forge: 8, Nexus: 7, Sentinel: 7) — enforces one-step-at-a-time pacing that was missing from Module 1 but present in Modules 2-10

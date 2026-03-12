@@ -67,7 +67,7 @@ Use WebSearch for official docs, blog posts, or usage guides. If WebSearch is un
 
 ### 3c. Append new steps to module files (safe insertion strategy)
 
-For each new feature that maps to a module, update all 4 project variants (`projects/canvas/modules/`, `projects/forge/modules/`, `projects/nexus/modules/`, `projects/sentinel/modules/`). **Never modify or renumber existing steps.** For each file:
+For each new feature that maps to a module, update all 5 project variants (`projects/canvas/modules/`, `projects/forge/modules/`, `projects/nexus/modules/`, `projects/sentinel/modules/`, `projects/byop/modules/`). **Never modify or renumber existing steps.** For each file:
 
 1. Read the file to understand its structure, existing steps, and the project's domain context.
 
@@ -76,6 +76,7 @@ For each new feature that maps to a module, update all 4 project variants (`proj
    - Forge: `## Checkpoint`
    - Nexus: `### Checkpoint`
    - Sentinel: `### Checkpoint`
+   - BYOP: `### Checkpoint`
 
 3. Determine the next sequential step number by reading the last step before Checkpoint.
 
@@ -135,7 +136,7 @@ Synced from CC v{local} to v{latest} on {date}
 - `context/{file}.txt` — {one-line summary of change}
 
 ## Module Steps Appended
-- Module {N} ({title}): appended step {X.N} "{step title}" across all 4 projects
+- Module {N} ({title}): appended step {X.N} "{step title}" across all 5 projects
   - Feature: {brief description}
 
 ## Reverted Files (failed verification)

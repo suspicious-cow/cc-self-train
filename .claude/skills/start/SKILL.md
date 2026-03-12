@@ -114,6 +114,7 @@ For each significant change (not just minor tweaks):
       | Forge | `## Checkpoint` | `## X.N Title` (e.g., `## 5.8 Explore Hook Variables`) |
       | Nexus | `### Checkpoint` | `### Step N: Title` or `### Step Nb: Title` |
       | Sentinel | `### Checkpoint` | `### Step N: Title` or `### Step Nb: Title` |
+      | BYOP | `### Checkpoint` | `### X.N Title` (e.g., `### 5.8 Explore Hook Variables`) |
 
    c. Determine the next sequential step number by reading the last step before Checkpoint.
 
@@ -188,9 +189,44 @@ If the user passed a project number as $0, use that. Otherwise, ask them to pick
 4. **Sentinel** — Code Analyzer & Test Generator.
    A tool that makes your *other* code better. Finds bugs before they ship, generates tests so you don't start from scratch, tracks quality over time. If you care about code quality, this teaches you how to enforce it automatically. It's the "meta-tool" — a program that improves every other program you write.
 
-All four projects teach every Claude Code feature through 10 progressive modules. They all cover the same CC skills — pick based on what sounds fun to build.
+5. **Your Own Project** — Bring Your Own Project.
+   Already working on something real? Learn Claude Code by applying every feature to YOUR existing codebase. Same 10 modules, same CC skills, but every exercise targets your actual project. Not recommended for first-timers.
+
+All five options teach every Claude Code feature through 10 progressive modules. They all cover the same CC skills — pick based on what sounds fun to build.
 
 Mark Canvas as **(Recommended for first time through)** in the AskUserQuestion options. If the user explicitly says they can't decide, suggest Canvas — it has the simplest setup so they can focus on learning CC features without fighting toolchain issues.
+
+## Step 1c: BYOP Setup (conditional)
+
+**Only run this step if the user chose option 5 (Bring Your Own Project).** For all other projects, skip to Step 1a.
+
+1. **Ask for the project path.** Use AskUserQuestion (free-text) to ask: "What's the full path to your project?" Accept an absolute path (e.g., `C:\Users\me\projects\my-app` or `/home/me/projects/my-app`).
+
+2. **Validate the path exists.** Run `test -d "<path>"` (or the OS-appropriate equivalent). If it doesn't exist, tell the user and ask again.
+
+3. **Auto-detect the language.** Check for common project files in the given path:
+   - `package.json` → JavaScript/TypeScript
+   - `go.mod` → Go
+   - `Cargo.toml` → Rust
+   - `pyproject.toml` or `requirements.txt` or `setup.py` → Python
+   - `pom.xml` or `build.gradle` → Java
+   - `*.csproj` or `*.sln` → C#
+   - `Gemfile` → Ruby
+   - `composer.json` → PHP
+   - `mix.exs` → Elixir
+   - If none match, ask the user what language their project uses.
+
+4. **Check for existing project artifacts.** In the project directory, check for:
+   - `CLAUDE.md` or `.claude/CLAUDE.md` — existing Claude Code configuration
+   - `.git/` — git repository
+   - `.claude/` — existing Claude Code directory (rules, skills, etc.)
+   - Count total files and directories for a quick summary
+
+5. **Confirm to the user.** Print a summary: "I see a **[language]** project at `[path]` with **[N files]**. Git: [yes/no]. Existing CLAUDE.md: [yes/no]. Existing .claude/: [yes/no]."
+
+6. **Store the detected info.** Remember the project path, language, git status, and existing CLAUDE.md status for downstream steps. The project path will be used instead of `workspace/<name>/` throughout the rest of the onboarding.
+
+Continue to Step 1a.
 
 ## Step 1a: Curriculum Sync (conditional)
 
@@ -245,6 +281,8 @@ Remember the OS for all subsequent steps. Everywhere this skill shows OS-specifi
 
 **If the user chose Canvas, skip this step** — the project uses HTML, CSS, and JavaScript. No language choice needed.
 
+**If the user chose BYOP, skip this step** — the language was auto-detected in Step 1c.
+
 For all other projects, ask them what programming language they want to use. Common choices: Python, TypeScript/JavaScript, Go, Rust. Any language works.
 
 ## Step 2b: Experience Level
@@ -265,6 +303,8 @@ Remember their choice — it goes into CLAUDE.local.md and affects how modules a
 ## Step 3: Environment (Optional)
 
 **If the user chose Canvas, skip this step** — no environment isolation needed. HTML/CSS/JS runs directly in the browser.
+
+**If the user chose BYOP, skip this step** — the user already manages their own environment.
 
 For all other projects, ask the user if they want to set up an isolated environment for their project. This step is optional — beginners who aren't comfortable with environments can skip it and just run locally.
 
@@ -361,6 +401,8 @@ Run all required version checks in a single batch, then present a checklist to t
 
 **Canvas is simpler** — only check `git --version` and confirm they have a web browser (they almost certainly do — just mention they'll open HTML files in it). Skip everything else.
 
+**BYOP is simplified** — only check `git --version` and the detected language toolchain (from Step 1c). Skip environment isolation checks entirely since the user manages their own environment.
+
 Present the results as a clean checklist:
 
 ```
@@ -421,6 +463,16 @@ Suggested directory names by project:
 - Forge: `workspace/forge-toolkit`
 - Nexus: `workspace/nexus-gateway`
 - Sentinel: `workspace/sentinel`
+- BYOP: N/A — uses the external project path from Step 1c
+
+**If the user chose BYOP**, skip all scaffolding and directory creation. Instead:
+
+1. **Validate git.** Check if the project directory has a `.git/` directory. If not, offer to run `git init` in their project directory. Frame it as: "Git is needed for several CC features (branching, worktrees, commit integration). Want me to initialize it?"
+2. **Summarize the project.** Count files, directories, and total lines of code. Print a summary: "Your project has **N files** across **M directories** (~K lines of code). Language: **[detected]**. Git: **[yes/no]**. CLAUDE.md: **[yes/no]**."
+3. **Tell the user:** "Your project stays where it is — I'll reference it from here. No files will be copied or moved."
+4. **STOP and wait** for the user to respond before starting Module 1.
+
+Skip the rest of Step 5 (scaffolding, file creation, browser opening) for BYOP.
 
 **If the user chose Canvas**, scaffold these files (no language project file needed):
 
@@ -509,7 +561,11 @@ It contains a description of your project, what language you're using, how to bu
 
 ### 6.2 Create CLAUDE.md Together
 
-Create the `CLAUDE.md` file in `workspace/<project>/`. Walk through each section briefly as you write it:
+**If BYOP and the project already has a CLAUDE.md:** Don't create a new one. Instead, read the existing CLAUDE.md and walk through it with the user. Suggest improvements: "Let's review and enhance your existing CLAUDE.md." Add any missing sections (project description, language/stack, build/test commands, pointers to reference docs). Frame it as enhancing, not replacing.
+
+**If BYOP and no existing CLAUDE.md:** Create one in the user's project directory (the external path from Step 1c), not in `workspace/`. Base the content on the auto-detected language, project structure, and any README or docs found in the project.
+
+**For all other projects:** Create the `CLAUDE.md` file in `workspace/<project>/`. Walk through each section briefly as you write it:
 
 - "**Project description** — tells Claude what we're building so it gives relevant suggestions"
 - "**Language and stack** — so Claude writes code in the right language"
@@ -558,6 +614,27 @@ This file tracks YOUR progress. It's personal — not shared. When you come back
 
 Create `CLAUDE.local.md` in the **cc-self-train root directory** (NOT inside workspace/):
 
+**For BYOP projects**, use the absolute external path for Directory and @import:
+
+```
+# Active Project
+Project: BYOP | Language: <language> | OS: <detected-os> | Directory: <absolute-project-path> | Current Module: 1 | Current Step: 6.4
+Experience Level: <beginner/intermediate/advanced>
+
+When the user starts a session, greet them and offer to continue where they left off.
+When the user says "next module" or asks for the next module, read the current module file from projects/byop/modules/ (e.g., projects/byop/modules/02-blueprint.md) and walk them through it.
+Before running /compact or when context is getting large, update this file with the current module, step number, and any in-progress work.
+Always use OS-appropriate commands (paths, file openers, activation scripts, etc.).
+
+For beginners: explain concepts thoroughly, define technical terms, move slowly.
+For intermediate users: focus on what makes CC different from other AI tools, skip basic tool explanations.
+For advanced CC users: skip fundamentals, focus on advanced patterns and best practices.
+
+@import <absolute-project-path>/CLAUDE.md
+```
+
+**For all other projects**, use the workspace-relative path:
+
 ```
 # Active Project
 Project: <project> | Language: <language> | OS: <detected-os> | Directory: workspace/<project-dir> | Current Module: 1 | Current Step: 6.4
@@ -593,9 +670,11 @@ Print the following explanation exactly as written (do NOT use blockquote format
 
 Git tracks every change you make to your files — think of it like a save system in a game. A **commit** is a save point with a description of what changed. Claude Code has built-in git support, so you don't need to leave the conversation to use it.
 
+**If BYOP and the project already has git history:** Skip `git init` — it's already done. Instead, teach them `git log --oneline -5` and `git diff --stat` to show how Claude Code integrates with existing git history. If CLAUDE.md was created or enhanced in Step 6.2, commit those changes: `git add CLAUDE.md && git commit -m "Add/enhance CLAUDE.md for Claude Code"`. Then continue to Step 6.6.
+
 Before committing, check that git knows who the user is:
 
-- Run `git config user.name` and `git config user.email` inside `workspace/<project>/`
+- Run `git config user.name` and `git config user.email` inside the project directory (for BYOP: the external path; for others: `workspace/<project>/`)
 - If either is empty, print the following exactly: "Git tags every commit with your name and email so you can tell who made which change. This stays local — it's not sent anywhere."
 - Ask the user for their name and email using AskUserQuestion (the free-text "Other" option works fine for this)
 - Run `git config user.name "Their Name"` and `git config user.email "their@email.com"` in the project directory
@@ -764,11 +843,11 @@ If the browser command fails in Step 5 (common on WSL, headless servers, or remo
 
 ## Important
 
-- Build the project in `workspace/<name>/` inside this repo. The `workspace/` directory is gitignored by cc-self-train.
-- Ask what language they want — never assume (except Canvas, which is always HTML/CSS/JS).
+- Build the project in `workspace/<name>/` inside this repo, unless the user chose BYOP — in that case, the project stays at its external path. The `workspace/` directory is gitignored by cc-self-train.
+- Ask what language they want — never assume (except Canvas, which is always HTML/CSS/JS, and BYOP, where the language is auto-detected).
 - **OS-aware commands:** Always use the detected OS from Step 1b. Never show commands for all three operating systems — only show the one that matches the user's system. This includes paths (forward vs backslash), file-opening commands (`open`/`powershell.exe Start-Process`/`xdg-open`), shell syntax, activation scripts, and the Python executable name (`python` vs `python3`).
 - Be encouraging. This is their first time with Claude Code for many users.
-- If they already have a project in mind that doesn't match the 4 listed, that's fine — help them pick the project guide that teaches the CC features most relevant to what they want to build.
+- If they already have a project in mind that doesn't match the 4 tutorial projects, suggest **BYOP** (option 5) — it lets them learn CC features by applying them to their own codebase.
 - **Module completion pattern:** Every module delivery (not just Module 1) must end with a "next module" prompt and a progress update. When delivering Modules 2-10 from `projects/<name>/modules/`, always append after the checkpoint:
   > When you're ready, say **"next module"** or **"let's do Module [N+1]"**. Next up: **[Module N+1 title]** — [one-sentence preview of what they'll learn].
   Then update `Current Module` in CLAUDE.local.md to the completed module number. For Module 10, replace the "next module" prompt with a course completion message.

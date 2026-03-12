@@ -1,0 +1,149 @@
+# Module 5 -- Hooks
+
+**CC features:** SessionStart, PostToolUse, Stop hooks, matchers, hook
+scripting, settings.json
+
+**Persona -- Collaborator:** Ask before telling, give pointers not answers. "What do you think...", "Try this and tell me..."
+
+### 5.1 Hook Lifecycle Overview
+
+**Why this step:** Hooks are Claude Code's automation layer. While skills require you to type a command, hooks fire automatically at specific moments -- when a session starts, after a file is written, when Claude finishes responding. This is how you build guardrails and quality gates that work without you remembering to invoke them.
+
+Hooks fire at specific points during a Claude Code session:
+
+| Hook Event | When It Fires |
+|-----------|--------------|
+| `SessionStart` | Session begins or resumes |
+| `UserPromptSubmit` | User submits a prompt |
+| `PreToolUse` | Before a tool executes |
+| `PermissionRequest` | When a permission dialog appears |
+| `PostToolUse` | After a tool succeeds |
+| `Stop` | Claude finishes responding |
+| `SubagentStop` | When a subagent finishes |
+| `PreCompact` | Before context compaction |
+| `SessionEnd` | Session terminates |
+
+Hooks are configured in settings files:
+- `.claude/settings.json` -- project hooks (shared with team)
+- `.claude/settings.local.json` -- local hooks (personal, not committed)
+- `~/.claude/settings.json` -- user hooks (all projects)
+
+### 5.2 Create a SessionStart Hook
+
+This hook will inject a project status summary into context when Claude starts. Think about what information would help Claude understand your project's current state every session -- file counts by type, git status, recent changes, test summary, dependency health.
+
+Describe what you want the hook to do:
+
+```
+Create a SessionStart hook that runs a script (.claude/hooks/project-status.py) to summarize my project's current state -- count source files by type, show git branch and recent commits, check if tests pass, and note any uncommitted changes. Print a concise summary. Add it to .claude/settings.json as a SessionStart hook.
+```
+
+Claude will create both the script and the settings.json configuration. For SessionStart hooks, stdout is added to Claude's context automatically.
+
+Restart Claude Code (exit and re-launch `claude`) to test it. You should see the project status summary injected on startup.
+
+**STOP -- What you just did:** You created your first hook -- a SessionStart hook that runs a script every time Claude Code launches. The script summarizes your project's state and injects it into Claude's context. This means Claude always knows the current state of your project without you having to explain it. SessionStart hooks are perfect for injecting project status, environment info, or reminders.
+
+**Engineering value:**
+- *Entry-level:* Hooks automate the checks you'd forget to do manually -- like a spell-checker that runs every time you save.
+- *Mid-level:* SessionStart hooks inject environment context so Claude always knows the current state of your project. No more 'Claude, remember we switched to the v2 API' at the start of every session.
+- *Senior+:* Hooks are event-driven middleware for your AI workflow -- the same pattern as git hooks, CI/CD pipelines, and Lambda triggers. You're building an automated quality pipeline that runs on every interaction.
+
+Ready to build a PostToolUse hook for your language's toolchain?
+
+### 5.3 Create a PostToolUse Hook
+
+This hook runs your language's linter or formatter after Claude writes or edits a source file. Pick the tool that fits your stack:
+
+- **Python:** ruff, black, flake8, mypy
+- **JavaScript/TypeScript:** eslint, prettier, tsc
+- **Go:** go fmt, go vet, golangci-lint
+- **Rust:** cargo fmt, cargo clippy
+- **Ruby:** rubocop
+- **Java/Kotlin:** ktlint, checkstyle
+
+Tell Claude what you want:
+
+```
+Create a PostToolUse hook that runs [your linter/formatter] on source files after they are written or edited. The script (.claude/hooks/lint-on-write.py) should only check files with [your extensions -- e.g., .py, .js, .ts]. Use a matcher of 'Write|Edit' so it only fires on those tools. Remember, PostToolUse hooks are feedback only -- they cannot block.
+```
+
+Claude will ask about the specifics or handle them based on the description. Review the script to make sure it targets the right file types and runs the right tool.
+
+**STOP -- What you just did:** You created a PostToolUse hook with a matcher. The matcher `"Write|Edit"` ensures this hook only fires when Claude writes or edits a file -- not on every tool call. PostToolUse hooks cannot block actions (the file is already written), but they give Claude immediate feedback. If the linter finds issues, Claude sees them in its next response and can fix them automatically.
+
+**Quick check before continuing:**
+- [ ] `.claude/settings.json` has both SessionStart and PostToolUse hooks configured
+- [ ] `.claude/hooks/` contains your project status script and your linter script
+- [ ] You restarted Claude Code and saw the project status summary on startup
+
+### 5.4 Create a Stop Hook
+
+This hook runs a validation check relevant to your project before Claude finishes. Think about what should always be true after Claude makes changes:
+
+- **Tests pass** -- run your test suite
+- **Lint is clean** -- no new lint errors introduced
+- **No TODO markers left** -- Claude should resolve all TODOs it creates
+- **Type checking passes** -- no new type errors
+- **Build succeeds** -- the project still compiles/bundles
+
+Describe the behavior you want:
+
+```
+Create a Stop hook that runs [your validation -- e.g., test suite, lint check, type check] after Claude finishes responding. If the check fails, it should block (exit 2) and report what failed. Add it to .claude/settings.json.
+```
+
+The key difference from PostToolUse: a Stop hook with exit code 2 is *blocking* -- it forces Claude to address the issue before moving on.
+
+**Why this step:** Stop hooks are different from PostToolUse hooks -- they run once when Claude finishes its entire response, not after each individual tool call. A Stop hook with exit code 2 is *blocking*: it forces Claude to address the issue before moving on. This makes Stop hooks ideal for final validation checks that ensure your project stays healthy.
+
+**Engineering value:**
+- *Entry-level:* A blocking Stop hook means Claude can't finish until the check passes -- like a teacher who won't let you submit until you've spell-checked.
+- *Mid-level:* In team repos, Stop hooks enforce quality gates that individual developers can't skip. Failing tests, lint errors, type errors -- they get caught before the code leaves Claude's hands.
+- *Senior+:* This is shift-left testing in its most extreme form. Instead of catching issues in CI (minutes later) or code review (hours later), hooks catch them in the same second the code is written.
+
+Want to learn about matchers and hook scripting?
+
+### 5.4b What the Stop Hook Receives
+
+The Stop hook input includes a `last_assistant_message` field -- this is the last message Claude sent before the hook fired. What could you do with that? You could inspect it to check whether Claude mentioned creating a file it did not actually create, or whether the response included a TODO it forgot to address. The same field is available in SubagentStop hooks.
+
+Also worth knowing: hooks are not limited to running local scripts. You can use `"type": "http"` with a `"url"` field to POST hook events to a remote URL instead. This is useful if you want an external service to process hook events -- a CI server, a logging endpoint, or a webhook receiver. Check `context/hooks.txt` for the full format.
+
+### 5.5 Matchers, Timeouts, and Scripting
+
+Matchers filter which tools trigger a hook. Key patterns:
+
+| Pattern | Matches |
+|---------|---------|
+| `"Write"` | Exactly the Write tool |
+| `"Write\|Edit"` | Write or Edit tools |
+| `"Bash(npm test*)"` | Bash commands starting with `npm test` |
+| `"*"` | All tools |
+| `"mcp__.*"` | All MCP tools |
+
+Add `"timeout": 30` to any hook command to override the default 60-second
+timeout. Every hook script receives JSON on stdin, uses exit codes to
+communicate (0 = success, 2 = blocking error), and can access
+`$CLAUDE_PROJECT_DIR` for the project root.
+
+### 5.7 Exercise: Trigger Each Hook
+
+1. **SessionStart:** Exit and restart `claude`. Check that the project status summary appears.
+2. **PostToolUse:** Ask Claude to create or edit a source file in your project. Verify the linter ran.
+3. **Stop:** Ask Claude a question and let it finish. Verify the validation check ran.
+
+Use `Ctrl+O` (verbose mode) to see hook execution details.
+
+**STOP -- What you just did:** You built a three-layer hook system: SessionStart injects project context at launch, PostToolUse lints individual file writes, and Stop performs a final quality check when Claude finishes. These layers work together without you doing anything -- they are the automated quality gates that catch mistakes before they accumulate. This is how professional teams use Claude Code: automate the boring checks so you can focus on the creative work.
+
+### Checkpoint
+
+Your project now has automated quality gates. Hooks catch mistakes the moment they happen -- you will never go back to checking manually.
+
+- [ ] `.claude/settings.json` exists with hook configuration
+- [ ] SessionStart hook injects project status summary on session start
+- [ ] PostToolUse hook runs your linter/formatter after writes/edits
+- [ ] Stop hook runs your validation check before Claude stops
+- [ ] Matchers filter correctly (Write|Edit, not all tools)
+- [ ] You verified each hook fires by triggering it and checking output
