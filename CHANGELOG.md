@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.12.1 (2026-03-12)
+
+- Fix hardcoded `workspace/<project>` paths in SKILL.md Steps 6.5 and 6.7 — BYOP users whose project is at an external path would get incorrect `cd` instructions
+- Add `"byop"` to test suite PROJECTS list so all parametrized tests cover BYOP modules
+- Rename `test_four_projects_listed` → `test_five_options_listed` with BYOP assertion
+- Update test docstrings from "4 projects" to "5 projects/options"
+
 ## v2.12.0 (2026-03-12)
 
 - Add BYOP (Bring Your Own Project) as 5th option — users learn CC features by applying them to their existing codebase instead of building a tutorial project
