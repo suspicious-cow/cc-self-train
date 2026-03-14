@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.14.0 (2026-03-14)
+
+- Add adaptive teaching persona table — persona boundaries now vary by experience level (beginner/intermediate/advanced) instead of being fixed for all students
+- Table is the single source of truth; module file persona tags kept as intermediate baseline for testing
+- Add `TestAdaptivePersonaTable` with 7 structural invariant tests (coverage, ordering, cross-level comparisons)
+
 ## v2.13.2 (2026-03-13)
 
 - Fix stale test assertion — `test_tests_gitignored` was checking that `tests/` was in `.gitignore`, but the test suite became public in v2.13.0; flipped to assert `tests/` is NOT gitignored
