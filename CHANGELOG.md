@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.15.1 (2026-03-20)
+## v2.16.0 (2026-03-20)
 
 - Add two-layer freshness system to `/start` onboarding — Step 0 now checks repo freshness (git fetch + pull if behind) before CC version check
 - Update embedded sync engine with 17-row mapping table, expanded SKIP/KEEP/GRAY AREA triage criteria, second-pass verification, and completeness checklist
