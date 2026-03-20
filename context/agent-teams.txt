@@ -365,6 +365,8 @@ tmux kill-session -t <session-name>
 * **Provider support**: Agent Teams now works on Bedrock, Vertex, and Foundry API providers — not just direct Anthropic API. Available since v2.1.45.
 * **Auto-memory in teams**: Auto-memory improvements benefit multi-agent sessions — context saved by one session is available to future sessions. Available since v2.1.59.
 * **Memory leak fixes**: Memory leak fixes for long-running teammates improve stability of extended team sessions.
+* **Hook stop behavior (v2.1.69)**: `TeammateIdle` and `TaskCompleted` hooks now support `{continue: false, stopReason: '...'}` to stop the teammate, matching `Stop` hook behavior.
+* **Model inheritance (v2.1.72)**: Team agents inherit the leader's model.
 
 ## Limitations
 

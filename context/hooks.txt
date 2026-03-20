@@ -22,9 +22,28 @@ Stop	Claude finishes responding
 PreCompact	Before context compaction
 SessionEnd	Session terminates
 Notification	Claude Code sends notifications
-WorktreeCreate	When a worktree is created (use for VCS setup, installing deps, copying configs). Available since v2.1.50.
-WorktreeRemove	When a worktree is removed (use for cleanup). Available since v2.1.50.
+WorktreeCreate	When a worktree is created (use for VCS setup, installing deps, copying configs). Available since v2.1.50. Plugin hooks for WorktreeCreate now fire correctly (fixed in v2.1.69).
+WorktreeRemove	When a worktree is removed (use for cleanup). Available since v2.1.50. Plugin hooks for WorktreeRemove now fire correctly (fixed in v2.1.69).
+TeammateIdle	When a teammate is about to go idle. Supports {continue: false, stopReason: "..."} to stop the teammate (v2.1.69).
+TaskCompleted	When a task is marked complete. Supports {continue: false, stopReason: "..."} to stop the teammate (v2.1.69).
 ConfigChange	When configuration files change (use for validation/sync). Available since v2.1.49.
+StopFailure	Turn ends due to API error (rate limit, auth failure, etc.). Output/exit code ignored. Available since v2.1.78.
+PostCompact	After compaction completes. Matcher: manual or auto. Available since v2.1.76.
+Elicitation	When MCP server requests user input mid-task. Can intercept and respond programmatically. Available since v2.1.76.
+ElicitationResult	After user responds to MCP elicitation, before response sent to server. Can validate/modify. Available since v2.1.76.
+InstructionsLoaded	When CLAUDE.md or .claude/rules/*.md loaded into context. Matcher: session_start, nested_traversal, path_glob_match, include, compact. Available since v2.1.69.
+​
+Hook event fields (new in v2.1.69+)
+
+agent_id — Unique identifier for a subagent. Present only when the hook fires inside a subagent call. Use to distinguish subagent vs main-thread hooks.
+
+agent_type — Agent name (e.g., "Explore", "Bash", "Plan", or custom agent names). Present when using --agent or inside a subagent.
+
+worktree — Object with name, path, branch, and original repo directory. Present when running in a --worktree session. Available in status line hook commands. Added in v2.1.69.
+
+hook source display — Permission prompts now show whether a hook comes from settings, a plugin, or a skill. Added in v2.1.75.
+
+CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS — Environment variable to configure SessionEnd hook timeout (was fixed at 1.5s). Added in v2.1.74.
 ​
 Configuration
 Claude Code hooks are configured in your settings files:
@@ -295,6 +314,7 @@ Edit - File editing
 Write - File writing
 WebFetch, WebSearch - Web operations
 Use PreToolUse decision control to allow, deny, or ask for permission to use the tool.
+Note: As of v2.1.77, PreToolUse hooks returning "allow" no longer bypass deny rules (including enterprise managed settings). Previously, an "allow" decision could override deny rules — this is now fixed.
 ​
 PermissionRequest
 Runs when the user is shown a permission dialog. Use PermissionRequest decision control to allow or deny on behalf of the user.
@@ -403,6 +423,7 @@ CLAUDE_ENV_FILE is only available for SessionStart hooks. Other hook types do no
 ​
 SessionEnd
 Runs when a Claude Code session ends. Useful for cleanup tasks, logging session statistics, or saving session state.
+Note: SessionEnd hooks now also fire when using /resume to switch sessions (fixed in v2.1.79).
 The reason field in the hook input will be one of:
 clear - Session cleared with /clear command
 logout - User logged out

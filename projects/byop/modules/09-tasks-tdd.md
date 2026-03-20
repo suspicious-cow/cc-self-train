@@ -91,6 +91,21 @@ This ensures subagents finish their work properly before returning results.
 
 **STOP -- What you just did:** You added a SubagentStop hook that acts as a quality gate for subagent output. This is a prompt-based hook (using an LLM to evaluate) rather than a script-based hook -- because determining whether a subagent "completed its task" requires judgment, not just string matching. This closes the loop on subagent reliability: you delegate work to a subagent, and the hook verifies the work was actually done.
 
+### 9.6 Recurring Tasks with /loop & Cron
+
+Two new tools for recurring automation within a session:
+
+**`/loop`** (v2.1.71) — run a prompt or slash command on a recurring interval. Examples:
+- `/loop 5m check the deploy` — runs every 5 minutes
+- `/loop 10m /doctor` — runs `/doctor` every 10 minutes
+- Default interval is 10 minutes if omitted
+
+**Cron scheduling** (v2.1.71) — create recurring prompts using cron-style scheduling within a session. More flexible than `/loop` for complex schedules.
+
+**`CLAUDE_CODE_DISABLE_CRON`** (v2.1.72) — set this env var to immediately stop all scheduled cron jobs mid-session.
+
+Try `/loop` with a monitoring task that makes sense for your project.
+
 ### Checkpoint
 
 Task pipelines, TDD, and quality gates on subagent output. You are managing complex work the way professional teams do.
@@ -102,3 +117,4 @@ Task pipelines, TDD, and quality gates on subagent output. You are managing comp
 - [ ] All tests pass using your project's test framework
 - [ ] You understand cross-session persistence with `CLAUDE_CODE_TASK_LIST_ID`
 - [ ] SubagentStop hook verifies subagent completion
+- [ ] Tried `/loop` for a recurring task

@@ -123,7 +123,21 @@ Test it: `/issue-template "Search returns wrong results"`
 
 **STOP -- What you just did:** You now have a library of custom slash commands tailored to your forge toolkit. Skills are one of the most practical Claude Code features -- they turn multi-step workflows into one-line commands. The combination of argument substitution (`$0`, `$ARGUMENTS`), tool restrictions (`allowed-tools`), and invocation control (`disable-model-invocation`) gives you fine-grained control over what each skill does and when it runs.
 
-## Checkpoint
+### 4.9 Skill Frontmatter & Built-in Skills
+
+A few skill authoring features have landed recently. What do you think each one is useful for?
+
+**`effort` frontmatter.** Add `effort: low` (or `medium`/`high`) to a skill's frontmatter to override the model effort level when that skill is invoked. Try adding it to one of your skills -- when would you want a skill to force low effort? (v2.1.80)
+
+**`${CLAUDE_SKILL_DIR}`.** This variable resolves to the skill's own directory. Use it in SKILL.md to reference sibling files -- for example, `Read ${CLAUDE_SKILL_DIR}/template.txt`. Check the skills docs if you want the full variable reference (v2.1.69).
+
+**`/claude-api` bundled skill.** Claude Code ships with a built-in skill for building apps with the Claude API. It triggers automatically when your code imports `anthropic` or `@anthropic-ai/sdk`. Try typing `/claude-api` to see what it offers (v2.1.69).
+
+Try adding `effort: low` to one of your existing skills and invoking it -- does the response feel different?
+
+> **STOP** -- Experiment with `effort` frontmatter and `${CLAUDE_SKILL_DIR}` in one of your skills.
+
+### Checkpoint
 
 You just built your own commands. These skills encode your workflow -- use them every time you add or search items.
 
@@ -134,3 +148,4 @@ You just built your own commands. These skills encode your workflow -- use them 
 - [ ] Argument substitution works (`$0`, `$ARGUMENTS`)
 - [ ] Hot-reload works: edit SKILL.md while Claude runs, changes take effect
 - [ ] Issue template skill outputs raw text without Claude processing
+- [ ] Tested `effort` frontmatter and `${CLAUDE_SKILL_DIR}` in a skill

@@ -156,6 +156,24 @@ Type in Claude Code:
 
 This shows all registered hooks and lets you review or approve changes.
 
+### 5.7 New Hook Events
+
+Five new hook events have been added. Which ones would be most useful for your project?
+
+**`StopFailure`** (v2.1.78) -- fires when a turn ends due to an API error (rate limit, auth failure, etc.). Use for alerting or recovery. The input includes `error` type and `error_details`.
+
+**`PostCompact`** (v2.1.76) -- fires after compaction completes. Matcher values: `manual` (from `/compact`) or `auto` (context window full). Input includes `compact_summary`.
+
+**`InstructionsLoaded`** (v2.1.69) -- fires when CLAUDE.md or `.claude/rules/*.md` files are loaded. Matcher values: `session_start`, `nested_traversal`, `path_glob_match`, `include`, `compact`. Great for audit logging.
+
+**`Elicitation` / `ElicitationResult`** (v2.1.76) -- intercept MCP server input requests. `Elicitation` fires when a server asks for input; `ElicitationResult` fires before the response is sent back. Use to auto-respond or validate.
+
+Hook events now also include `agent_id` and `agent_type` fields when firing inside subagents (v2.1.69).
+
+Try wiring up a `PostCompact` hook that logs when auto-compaction happens -- what would you put in the command?
+
+> **STOP** -- Add a hook for one of the new events and test it.
+
 ### Checkpoint
 
 Your analyzer now watches itself. Hooks validate rules on write, run tests on stop, and inject context on start -- all automatically.
@@ -166,3 +184,4 @@ Your analyzer now watches itself. Hooks validate rules on write, run tests on st
 - [ ] Stop hook verifies tests are updated when code changes
 - [ ] You restarted Claude Code and saw hooks in action
 - [ ] You ran `/hooks` to inspect the registered hooks
+- [ ] Wired up a hook using one of the new hook events

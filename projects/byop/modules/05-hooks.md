@@ -110,7 +110,7 @@ The Stop hook input includes a `last_assistant_message` field -- this is the las
 
 Also worth knowing: hooks are not limited to running local scripts. You can use `"type": "http"` with a `"url"` field to POST hook events to a remote URL instead. This is useful if you want an external service to process hook events -- a CI server, a logging endpoint, or a webhook receiver. Check `context/hooks.txt` for the full format.
 
-### 5.5 Matchers, Timeouts, and Scripting
+### 5.5 Matchers & Timeouts
 
 Matchers filter which tools trigger a hook. Key patterns:
 
@@ -123,9 +123,18 @@ Matchers filter which tools trigger a hook. Key patterns:
 | `"mcp__.*"` | All MCP tools |
 
 Add `"timeout": 30` to any hook command to override the default 60-second
-timeout. Every hook script receives JSON on stdin, uses exit codes to
-communicate (0 = success, 2 = blocking error), and can access
-`$CLAUDE_PROJECT_DIR` for the project root.
+timeout. Matchers prevent hooks from firing on every tool call (which would slow everything down). Timeouts prevent runaway scripts from freezing your session.
+
+### 5.6 Shell Scripting with Hook Input
+
+Hooks receive JSON via stdin with fields like `session_id`, `hook_event_name`, `tool_name`, `tool_input`, and `tool_response`. Every hook script uses exit codes to communicate (0 = success, 2 = blocking error) and can access `$CLAUDE_PROJECT_DIR` for the project root. Extract values with jq:
+
+```
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path')
+```
+
+Ask Claude to show you the full input schema for each hook type you configured.
 
 ### 5.7 Exercise: Trigger Each Hook
 
@@ -137,6 +146,24 @@ Use `Ctrl+O` (verbose mode) to see hook execution details.
 
 **STOP -- What you just did:** You built a three-layer hook system: SessionStart injects project context at launch, PostToolUse lints individual file writes, and Stop performs a final quality check when Claude finishes. These layers work together without you doing anything -- they are the automated quality gates that catch mistakes before they accumulate. This is how professional teams use Claude Code: automate the boring checks so you can focus on the creative work.
 
+### 5.8 New Hook Events
+
+Five new hook events have been added. Which ones would be most useful for your project?
+
+**`StopFailure`** (v2.1.78) -- fires when a turn ends due to an API error (rate limit, auth failure, etc.). Use for alerting or recovery. The input includes `error` type and `error_details`.
+
+**`PostCompact`** (v2.1.76) -- fires after compaction completes. Matcher values: `manual` (from `/compact`) or `auto` (context window full). Input includes `compact_summary`.
+
+**`InstructionsLoaded`** (v2.1.69) -- fires when CLAUDE.md or `.claude/rules/*.md` files are loaded. Matcher values: `session_start`, `nested_traversal`, `path_glob_match`, `include`, `compact`. Great for audit logging.
+
+**`Elicitation` / `ElicitationResult`** (v2.1.76) -- intercept MCP server input requests. `Elicitation` fires when a server asks for input; `ElicitationResult` fires before the response is sent back. Use to auto-respond or validate.
+
+Hook events now also include `agent_id` and `agent_type` fields when firing inside subagents (v2.1.69).
+
+Try wiring up a `PostCompact` hook that logs when auto-compaction happens -- what would you put in the command?
+
+> **STOP** -- Add a hook for one of the new events and test it.
+
 ### Checkpoint
 
 Your project now has automated quality gates. Hooks catch mistakes the moment they happen -- you will never go back to checking manually.
@@ -147,3 +174,4 @@ Your project now has automated quality gates. Hooks catch mistakes the moment th
 - [ ] Stop hook runs your validation check before Claude stops
 - [ ] Matchers filter correctly (Write|Edit, not all tools)
 - [ ] You verified each hook fires by triggering it and checking output
+- [ ] Wired up a hook using one of the new hook events

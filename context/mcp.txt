@@ -494,6 +494,14 @@ Automatic lifecycle: Servers start when plugin enables, but you must restart Cla
 Environment variables: Use ${CLAUDE_PLUGIN_ROOT} for plugin-relative paths
 User environment access: Access to same environment variables as manually configured servers
 Multiple transport types: Support stdio, SSE, and HTTP transports (transport support may vary by server)
+
+Recent MCP capabilities:
+
+Elicitation support (v2.1.76): MCP servers can now request structured input from users mid-task using elicitation. When a server needs information, Claude Code displays an interactive dialog (form fields or browser URL) and passes the response back. No configuration needed — dialogs appear automatically. Use the `Elicitation` hook to auto-respond programmatically.
+
+Channels (v2.1.80): MCP servers can push messages directly into your session using channels (`--channels` flag, research preview). Servers declare `claude/channel` capability, and you opt in at startup. Use for reacting to Telegram messages, Discord chats, webhook events, or CI results while you're away.
+
+OAuth configuration (v2.1.69): MCP servers can set `oauth.authServerMetadataUrl` to specify a custom OAuth metadata discovery URL when standard discovery fails.
 Viewing plugin MCP servers:
 # Within Claude Code, see all MCP servers including plugin ones
 /mcp

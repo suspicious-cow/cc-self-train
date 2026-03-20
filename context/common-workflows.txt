@@ -948,6 +948,14 @@ Available since v2.1.51.
 
 ***
 
+## Recent workflow updates
+
+- `/fork` has been renamed to `/branch` (v2.1.77). `/fork` still works as an alias.
+- `/plan` now accepts an optional description argument: `/plan fix the auth bug` enters plan mode and starts immediately (v2.1.72).
+- Sessions are auto-named from plan content when you accept a plan (v2.1.77).
+
+***
+
 ## Next steps
 
 <CardGroup cols={2}>

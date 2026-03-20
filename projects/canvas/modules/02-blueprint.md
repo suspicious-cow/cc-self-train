@@ -143,10 +143,25 @@ Test your site by opening each page in the browser. Click through the navigation
 ! git merge feature/core-pages
 ```
 
+### 2.11 Branching & Quick Plans
+
+Two workflow commands have been updated recently:
+
+**`/branch` (was `/fork`).** The command to branch your conversation into a new session has been renamed from `/fork` to `/branch` (v2.1.77). The old name still works as an alias, but `/branch` is now the canonical command.
+
+**`/plan` with a description.** You can now pass a description directly: `/plan fix the auth bug`. This enters plan mode and immediately starts planning -- no extra prompt needed (v2.1.72).
+
+**Session naming from plans.** When you accept a plan, your session is automatically named based on the plan content (v2.1.77). This makes `/resume` more useful since sessions have meaningful names.
+
+**Git instruction control.** The `includeGitInstructions` setting (or `CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS` env var) lets you remove Claude's built-in commit and PR workflow instructions from the system prompt. Useful if your CLAUDE.md already has custom git rules (v2.1.69).
+
+> **STOP** -- Try `/plan add a contact form to the homepage` to test the quick-plan workflow.
+
 ### Checkpoint
 
 You just went from a blank page to a working website. Plan mode helped you think before building, and now you have real pages to show for it.
 
+- [ ] Tried `/branch` and `/plan <description>` quick workflow
 - [ ] You used plan mode to design the architecture before writing code
 - [ ] CSS design system exists with custom properties for colors, fonts, spacing
 - [ ] Home page has a hero section, intro, and navigation

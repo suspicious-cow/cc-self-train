@@ -140,6 +140,20 @@ This skill just executes a shell command. No AI processing needed. Test it:
 
 **STOP -- What you just did:** You built a no-AI skill -- a slash command that runs a shell command directly without invoking the model. This is useful for quick reference commands where you do not need Claude to interpret the output. Between `/analyze`, `/generate-tests`, `/quality-report`, and `/list-rules`, you now have a custom command palette tailored to Sentinel. In real projects, you will accumulate skills like these over time until your most common workflows are all one-command operations.
 
+### 4.7 Skill Frontmatter & Built-in Skills
+
+A few skill authoring features have landed recently. What do you think each one is useful for?
+
+**`effort` frontmatter.** Add `effort: low` (or `medium`/`high`) to a skill's frontmatter to override the model effort level when that skill is invoked. Try adding it to one of your skills -- when would you want a skill to force low effort? (v2.1.80)
+
+**`${CLAUDE_SKILL_DIR}`.** This variable resolves to the skill's own directory. Use it in SKILL.md to reference sibling files -- for example, `Read ${CLAUDE_SKILL_DIR}/template.txt`. Check the skills docs if you want the full variable reference (v2.1.69).
+
+**`/claude-api` bundled skill.** Claude Code ships with a built-in skill for building apps with the Claude API. It triggers automatically when your code imports `anthropic` or `@anthropic-ai/sdk`. Try typing `/claude-api` to see what it offers (v2.1.69).
+
+Try adding `effort: low` to one of your existing skills and invoking it -- does the response feel different?
+
+> **STOP** -- Experiment with `effort` frontmatter and `${CLAUDE_SKILL_DIR}` in one of your skills.
+
 ### Checkpoint
 
 You just built your own commands. Running analysis and generating tests is now one slash command away.
@@ -150,3 +164,4 @@ You just built your own commands. Running analysis and generating tests is now o
 - [ ] You tested argument substitution ($ARGUMENTS) in at least one skill
 - [ ] You edited a skill and saw hot-reload work without restarting
 - [ ] `/list-rules` works as a no-AI skill
+- [ ] Tested `effort` frontmatter and `${CLAUDE_SKILL_DIR}` in a skill

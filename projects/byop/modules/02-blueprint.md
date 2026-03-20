@@ -167,10 +167,25 @@ is [what should happen instead]. Fix it.
 ! git merge feature/your-feature-name
 ```
 
+### 2.11 Branching & Quick Plans
+
+Two workflow commands have been updated recently:
+
+**`/branch` (was `/fork`).** The command to branch your conversation into a new session has been renamed from `/fork` to `/branch` (v2.1.77). The old name still works as an alias, but `/branch` is now the canonical command.
+
+**`/plan` with a description.** You can now pass a description directly: `/plan fix the auth bug`. This enters plan mode and immediately starts planning -- no extra prompt needed (v2.1.72).
+
+**Session naming from plans.** When you accept a plan, your session is automatically named based on the plan content (v2.1.77). This makes `/resume` more useful since sessions have meaningful names.
+
+**Git instruction control.** The `includeGitInstructions` setting (or `CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS` env var) lets you remove Claude's built-in commit and PR workflow instructions from the system prompt. Useful if your CLAUDE.md already has custom git rules (v2.1.69).
+
+> **STOP** -- Try `/plan add a contact form to the homepage` to test the quick-plan workflow.
+
 ### Checkpoint
 
 You just planned and built a real feature for your project. Plan mode helped you think before building, and you shipped something real.
 
+- [ ] Tried `/branch` and `/plan <description>` quick workflow
 - [ ] You used plan mode to design the feature before writing code
 - [ ] You chose an appropriate model for planning (Opus) and building (Sonnet)
 - [ ] The feature was built incrementally -- scoped pieces, not all at once

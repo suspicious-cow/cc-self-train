@@ -82,3 +82,11 @@ With the introduction of Tasks, Anthropic is signaling that the future of coding
 By giving Claude Code a persistent memory, a way to understand dependency, and the stability fixes required for long-running processes, they have moved the tool from a "copilot" that sits next to you to a "subagent" that can be trusted to run in the background — especially when powered by Anthropic's most performant model, Claude Opus 4.5.
 
 It is a technical evolution that acknowledges a simple truth: in the enterprise, the code is cheap; it is the context, the plan, and the reliability that are precious.
+
+Recent task and scheduling additions:
+
+`/loop` command (v2.1.71): Run a prompt or slash command on a recurring interval. Example: `/loop 5m check the deploy` runs every 5 minutes. Defaults to 10 minutes if no interval specified.
+
+Cron scheduling tools (v2.1.71): Create recurring prompts within a session using cron-style scheduling.
+
+`CLAUDE_CODE_DISABLE_CRON` env var (v2.1.72): Set to immediately stop scheduled cron jobs mid-session.

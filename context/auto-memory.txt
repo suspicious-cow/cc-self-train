@@ -35,8 +35,11 @@ Auto-memory complements these other mechanisms — it captures insights that are
 - If Claude keeps remembering something incorrectly, delete the entry and add the correct information to CLAUDE.md instead
 - Auto-memory works best for: coding style preferences, project-specific patterns, debugging insights, and workflow habits
 - For explicit rules and requirements, prefer CLAUDE.md — auto-memory is for organic learning
+- Use the `autoMemoryDirectory` setting to store auto-memory in a custom location (e.g., a shared drive). Available since v2.1.74.
 
 ## Version History
 
 - v2.1.59: Auto-memory system introduced, `/memory` command added
 - v2.1.63: Auto-memory shared across git worktrees of the same repo
+- v2.1.74: `autoMemoryDirectory` setting to configure custom directory for auto-memory storage
+- v2.1.75: Last-modified timestamps added to memory files for freshness reasoning

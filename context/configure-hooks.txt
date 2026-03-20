@@ -375,4 +375,41 @@ For complete reference documentation including all available fields and advanced
 
 Hooks let you shape Claude Code to match your workflow rather than adapting your workflow to the tool. When you invest in configuring hooks, it pays off every session.
 
+New hook events (v2.1.69–v2.1.80)
+
+StopFailure — fires when a turn ends due to an API error. Use for alerting or logging:
+{
+  "hooks": {
+    "StopFailure": [
+      {
+        "hooks": [{ "type": "command", "command": "echo 'API error: $error' >> ~/.claude/error.log" }]
+      }
+    ]
+  }
+}
+
+PostCompact — fires after compaction. Matcher values: manual, auto. Use to log summaries:
+{
+  "hooks": {
+    "PostCompact": [
+      {
+        "matcher": "auto",
+        "hooks": [{ "type": "command", "command": "echo 'Auto-compacted' >> ~/.claude/compact.log" }]
+      }
+    ]
+  }
+}
+
+InstructionsLoaded — fires when CLAUDE.md or rules files load. Matcher values: session_start, nested_traversal, path_glob_match, include, compact. Use for audit logging:
+{
+  "hooks": {
+    "InstructionsLoaded": [
+      {
+        "matcher": "session_start",
+        "hooks": [{ "type": "command", "command": "echo \"Loaded: $file_path\" >> ~/.claude/audit.log" }]
+      }
+    ]
+  }
+}
+
 Start using hooks to customize your Claude Code workflows today.

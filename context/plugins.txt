@@ -255,6 +255,15 @@ Recent improvements
 * **npm registry support**: Custom npm registry support and version pinning for npm plugin sources. Configurable via plugin source configuration. Available since v2.1.51.
 * **Directory-based plugins**: `enabledPlugins` and `extraKnownMarketplaces` can be specified from `--add-dir` directories. Available since v2.1.45.
 * **Marketplace timeout**: `CLAUDE_CODE_PLUGIN_GIT_TIMEOUT_MS` environment variable to configure marketplace git timeout. Useful for slow networks. Available since v2.1.51.
+* **Inline plugin sources (v2.1.80)**: `source: 'settings'` — declare plugin entries inline in settings.json instead of a separate marketplace source.
+* **Plugin persistent state (v2.1.78)**: `${CLAUDE_PLUGIN_DATA}` — variable for plugin persistent state that survives plugin updates. `/plugin uninstall` prompts before deleting it.
+* **Reload plugins (v2.1.69)**: `/reload-plugins` — activate pending plugin changes without restarting the session.
+* **Plugin trust message (v2.1.69)**: `pluginTrustMessage` — managed setting to append organization-specific context to the plugin trust warning shown before installation.
+* **Path pattern matching (v2.1.69)**: `pathPattern` — field for `strictKnownMarketplaces` to regex-match file/directory marketplace sources alongside `hostPattern`.
+* **Git subdirectory source (v2.1.69)**: `git-subdir` — plugin source type to point to a subdirectory within a git repo.
+* **Plugin validation (v2.1.77)**: `claude plugin validate` — now checks skill, agent, and command frontmatter plus `hooks/hooks.json`, catching YAML parse errors and schema violations.
+* **Plugin dir flag changes (v2.1.74-76)**: `--plugin-dir` now accepts one path per flag — use repeated `--plugin-dir` for multiple directories. Local dev copies override installed marketplace plugins with the same name.
+* **Multiple seed directories (v2.1.79)**: `CLAUDE_CODE_PLUGIN_SEED_DIR` now supports multiple seed directories separated by the platform path delimiter (`:` on Unix, `;` on Windows).
 
 ​
 Next steps

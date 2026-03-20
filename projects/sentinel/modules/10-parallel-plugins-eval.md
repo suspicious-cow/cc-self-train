@@ -197,6 +197,34 @@ After finishing parallel work:
 
 Merge the feature branches back to main.
 
+### 10.10 Plugin Ecosystem Updates
+
+The plugin system has expanded significantly. Explore these additions:
+
+- **`source: 'settings'`** (v2.1.80) — declare plugin entries inline in settings.json
+- **`${CLAUDE_PLUGIN_DATA}`** (v2.1.78) — persistent state directory that survives plugin updates
+- **`/reload-plugins`** (v2.1.69) — activate plugin changes without restarting
+- **`claude plugin validate`** (v2.1.77) — validates skill, agent, and command frontmatter plus hooks.json
+- **`git-subdir`** (v2.1.69) — plugin source type pointing to a subdirectory within a git repo
+- **`pluginTrustMessage`** (v2.1.69) — managed setting for org-specific plugin trust context
+- **`CLAUDE_CODE_PLUGIN_SEED_DIR`** (v2.1.79) — now supports multiple directories
+
+You've got this — try `claude plugin validate` on your project's plugin configuration.
+
+### 10.11 Worktrees, IDE & Remote Control
+
+Final batch of updates spanning worktrees and IDE integration:
+
+- **`ExitWorktree`** tool (v2.1.72) — leave an `EnterWorktree` session cleanly
+- **`worktree.sparsePaths`** (v2.1.76) — check out only the directories you need in large monorepos
+- **VS Code `/remote-control`** (v2.1.79) — bridge your session to claude.ai/code for browser/phone access
+- **`vscode://anthropic.claude-code/open`** (v2.1.72) — URI handler to open Claude Code tabs programmatically
+- **Native MCP dialog** (v2.1.70) — manage MCP servers from the VS Code chat panel
+- **Spark icon** (v2.1.70) — activity bar icon listing all sessions
+- **Deprecated `/output-style`** (v2.1.73) — use `/config` instead
+
+No hints needed — explore what's relevant to your workflow. Go build it.
+
 ### Checkpoint
 
 You made it. A working code analyzer with plugins, evaluation, and a continuous learning loop -- built using every major Claude Code feature.
@@ -210,6 +238,8 @@ You made it. A working code analyzer with plugins, evaluation, and a continuous 
 - [ ] Evaluation framework exists with fixtures, expected output, and scoring
 - [ ] PermissionRequest hook auto-approves safe operations
 - [ ] Continuous learning loop logs misclassifications and feeds them back
+- [ ] Explored plugin ecosystem updates (validate, reload, settings source)
+- [ ] Reviewed worktree and IDE/Remote Control additions
 
 ---
 

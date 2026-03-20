@@ -39,8 +39,9 @@ Features range from always-on context that Claude sees every session, to on-dema
 | **Skill**                          | Instructions, knowledge, and workflows Claude can use      | Reusable content, reference docs, repeatable tasks                              | `/review` runs your code review checklist; API docs skill with endpoint patterns |
 | **Subagent**                       | Isolated execution context that returns summarized results | Context isolation, parallel tasks, specialized workers                          | Research task that reads many files but returns only key findings                |
 | **[Agent teams](/en/agent-teams)** | Coordinate multiple independent Claude Code sessions       | Parallel research, new feature development, debugging with competing hypotheses | Spawn reviewers to check security, performance, and tests simultaneously         |
-| **MCP**                            | Connect to external services                               | External data or actions                                                        | Query your database, post to Slack, control a browser                            |
+| **MCP**                            | Connect to external services                               | External data or actions                                                        | Query your database, post to Slack, control a browser. Use channels (`--channels`, v2.1.80) to react to external events like Telegram messages, webhooks, or CI results |
 | **Hook**                           | Deterministic script that runs on events                   | Predictable automation, no LLM involved                                         | Run ESLint after every file edit                                                 |
+| **`/loop`**                        | Run a prompt on a recurring interval                       | Recurring tasks, periodic checks                                                | `/loop 5m check the deploy` runs every 5 minutes (v2.1.71)                      |
 
 **[Plugins](/en/plugins)** are the packaging layer. A plugin bundles skills, hooks, subagents, and MCP servers into a single installable unit. Plugin skills are namespaced (like `/my-plugin:review`) so multiple plugins can coexist. Use plugins when you want to reuse the same setup across multiple repositories or distribute to others via a **[marketplace](/en/plugin-marketplaces)**.
 
@@ -169,7 +170,7 @@ Each feature has a different loading strategy and context cost:
 | **Subagents**   | When spawned              | Fresh context with specified skills           | Isolated from main session                   |
 | **Hooks**       | On trigger                | Nothing (runs externally)                     | Zero, unless hook returns additional context |
 
-\*By default, skill descriptions load at session start so Claude can decide when to use them. Set `disable-model-invocation: true` in a skill's frontmatter to hide it from Claude entirely until you invoke it manually. This reduces context cost to zero for skills you only trigger yourself.
+\*By default, skill descriptions load at session start so Claude can decide when to use them. Set `disable-model-invocation: true` in a skill's frontmatter to hide it from Claude entirely until you invoke it manually. This reduces context cost to zero for skills you only trigger yourself. You can also use the `effort` frontmatter field in skills to control reasoning depth per-skill (e.g., set lower effort for simple lookups, higher effort for complex analysis).
 
 ### Understand how features load
 

@@ -131,6 +131,34 @@ Update CLAUDE.md with architecture decisions, common commands, known issues, cod
 
 The key insight: CLAUDE.md + rules + skills + agents + hooks form a complete "knowledge layer" that makes Claude more effective over time. Claude also saves useful context automatically across sessions via **auto-memory** -- use `/memory` to review what has been captured. Auto-memory complements CLAUDE.md by catching things you might forget to write down.
 
+### 10.8 Plugin Ecosystem Updates
+
+The plugin system has expanded significantly. Explore these additions:
+
+- **`source: 'settings'`** (v2.1.80) — declare plugin entries inline in settings.json
+- **`${CLAUDE_PLUGIN_DATA}`** (v2.1.78) — persistent state directory that survives plugin updates
+- **`/reload-plugins`** (v2.1.69) — activate plugin changes without restarting
+- **`claude plugin validate`** (v2.1.77) — validates skill, agent, and command frontmatter plus hooks.json
+- **`git-subdir`** (v2.1.69) — plugin source type pointing to a subdirectory within a git repo
+- **`pluginTrustMessage`** (v2.1.69) — managed setting for org-specific plugin trust context
+- **`CLAUDE_CODE_PLUGIN_SEED_DIR`** (v2.1.79) — now supports multiple directories
+
+You've got this — try `claude plugin validate` on your project's plugin configuration.
+
+### 10.9 Worktrees, IDE & Remote Control
+
+Final batch of updates spanning worktrees and IDE integration:
+
+- **`ExitWorktree`** tool (v2.1.72) — leave an `EnterWorktree` session cleanly
+- **`worktree.sparsePaths`** (v2.1.76) — check out only the directories you need in large monorepos
+- **VS Code `/remote-control`** (v2.1.79) — bridge your session to claude.ai/code for browser/phone access
+- **`vscode://anthropic.claude-code/open`** (v2.1.72) — URI handler to open Claude Code tabs programmatically
+- **Native MCP dialog** (v2.1.70) — manage MCP servers from the VS Code chat panel
+- **Spark icon** (v2.1.70) — activity bar icon listing all sessions
+- **Deprecated `/output-style`** (v2.1.73) — use `/config` instead
+
+No hints needed — explore what's relevant to your workflow. Go build it.
+
 ### Checkpoint
 
 You made it. A production-style gateway, built from scratch, using every major Claude Code feature.
@@ -146,6 +174,8 @@ You made it. A production-style gateway, built from scratch, using every major C
 - [ ] CLAUDE.md updated with comprehensive project knowledge
 - [ ] All worktree branches merged back to main
 - [ ] Final commit on main with all features integrated
+- [ ] Explored plugin ecosystem updates (validate, reload, settings source)
+- [ ] Reviewed worktree and IDE/Remote Control additions
 
 ---
 

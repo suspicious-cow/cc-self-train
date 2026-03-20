@@ -56,8 +56,10 @@ Effort levels control how deeply Claude thinks before responding. They are avail
 Configure effort level via:
 - `/model` menu — adjust with `←` `→` arrow keys alongside model selection
 - `CLAUDE_CODE_EFFORT_LEVEL` environment variable (set to `low`, `medium`, or `high`)
+- `/effort` command — set effort level directly from any session (v2.1.76). Since v2.1.80, also shows what "auto" currently resolves to
+- `effort` frontmatter in skills — override the model effort level when a skill is invoked. Available since v2.1.80
 
-Opus 4.6 also supports a `max` effort level via the API for absolute maximum reasoning capability.
+The effort levels are low, medium (default), and high. The previous `max` level was removed in v2.1.72. Opus 4.6 still supports extended thinking via the API.
 
 ## Prompting Strategies by Model
 
@@ -95,8 +97,35 @@ Use **Sonnet** as your daily driver for ~90% of coding work. Switch to **Opus** 
 
 The key insight: model selection is a habit, not a one-time choice. Match the model to the task, and switch freely during a session as the nature of your work changes.
 
+## Model Configuration
+
+### modelOverrides setting
+
+Use `modelOverrides` to map model picker entries to custom provider model IDs. This is useful for Bedrock inference profile ARNs, Vertex endpoints, or other custom providers.
+
+Available since v2.1.73.
+
+### ANTHROPIC_CUSTOM_MODEL_OPTION
+
+Set this environment variable to add a custom entry to the `/model` picker. Optional `_NAME` and `_DESCRIPTION` suffixed vars control the display. Available since v2.1.78.
+
+### Output Token Limits
+
+- Opus 4.6: 64k tokens default, 128k upper bound (updated v2.1.77)
+- Sonnet 4.6: 128k upper bound (updated v2.1.77)
+
+### Context Window
+
+Opus 4.6 defaults to 1M context window for Max, Team, and Enterprise plans (v2.1.75).
+
+### Provider Defaults
+
+- Bedrock, Vertex, and Microsoft Foundry default to Opus 4.6 (was Opus 4.1, changed v2.1.73)
+- Sonnet 4.5 users on Pro/Max/Team Premium are auto-migrated to Sonnet 4.6 (v2.1.69)
+
 ## Related Features
 
 - **Extended thinking**: Enabled by default. Toggle with `Alt+T`. See thinking output with `Ctrl+O` (verbose mode).
 - **Subagent models**: When creating agents in `.claude/agents/`, you can specify which model each agent uses in its frontmatter.
 - **Plan mode**: Pairs naturally with Opus — deeper reasoning during planning, then switch to Sonnet for execution.
+- **Effort frontmatter**: Skills can set `effort:` in their SKILL.md frontmatter to override the effort level when invoked (v2.1.80).

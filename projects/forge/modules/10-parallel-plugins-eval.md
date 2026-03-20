@@ -162,7 +162,35 @@ Claude also saves useful context automatically across sessions via **auto-memory
 
 **STOP -- What you just did:** You completed the full learning loop. Over 10 modules, you built a personal dev toolkit while systematically learning every major Claude Code feature. This final step -- reviewing and refining your configuration -- is what separates people who use Claude Code from people who master it. Your CLAUDE.md, rules, skills, agents, and hooks are a living system that gets better with every session. Keep updating them.
 
-## Checkpoint
+### 10.9 Plugin Ecosystem Updates
+
+The plugin system has expanded significantly. Explore these additions:
+
+- **`source: 'settings'`** (v2.1.80) — declare plugin entries inline in settings.json
+- **`${CLAUDE_PLUGIN_DATA}`** (v2.1.78) — persistent state directory that survives plugin updates
+- **`/reload-plugins`** (v2.1.69) — activate plugin changes without restarting
+- **`claude plugin validate`** (v2.1.77) — validates skill, agent, and command frontmatter plus hooks.json
+- **`git-subdir`** (v2.1.69) — plugin source type pointing to a subdirectory within a git repo
+- **`pluginTrustMessage`** (v2.1.69) — managed setting for org-specific plugin trust context
+- **`CLAUDE_CODE_PLUGIN_SEED_DIR`** (v2.1.79) — now supports multiple directories
+
+You've got this — try `claude plugin validate` on your project's plugin configuration.
+
+### 10.10 Worktrees, IDE & Remote Control
+
+Final batch of updates spanning worktrees and IDE integration:
+
+- **`ExitWorktree`** tool (v2.1.72) — leave an `EnterWorktree` session cleanly
+- **`worktree.sparsePaths`** (v2.1.76) — check out only the directories you need in large monorepos
+- **VS Code `/remote-control`** (v2.1.79) — bridge your session to claude.ai/code for browser/phone access
+- **`vscode://anthropic.claude-code/open`** (v2.1.72) — URI handler to open Claude Code tabs programmatically
+- **Native MCP dialog** (v2.1.70) — manage MCP servers from the VS Code chat panel
+- **Spark icon** (v2.1.70) — activity bar icon listing all sessions
+- **Deprecated `/output-style`** (v2.1.73) — use `/config` instead
+
+No hints needed — explore what's relevant to your workflow. Go build it.
+
+### Checkpoint
 
 You made it. A complete toolkit, built from scratch, using every major Claude Code feature.
 
@@ -176,6 +204,8 @@ You made it. A complete toolkit, built from scratch, using every major Claude Co
 - [ ] Evaluation suite exists with test specs for skills and agents
 - [ ] PermissionRequest hook auto-approves safe operations during eval
 - [ ] CLAUDE.md and rules updated with lessons learned from the project
+- [ ] Explored plugin ecosystem updates (validate, reload, settings source)
+- [ ] Reviewed worktree and IDE/Remote Control additions
 
 ---
 

@@ -148,6 +148,20 @@ Claude resumes the previous agent with its full context preserved.
 - *Entry-level:* Running agents in parallel means a full code review (accessibility + design + content) takes the same time as one scan, not three.
 - *Mid-level:* Chaining agents creates automated review pipelines: find issues → suggest fixes → verify fixes. This is the same find-fix-verify pattern used in CI/CD.
 
+### 8.9 SendMessage & Agent Frontmatter
+
+Breaking change and new capabilities for subagents:
+
+**`resume` parameter removed** (v2.1.77) — the Agent tool no longer accepts `resume`. Use `SendMessage({to: agentId})` to continue a previously spawned agent. `SendMessage` auto-resumes stopped agents in the background.
+
+**`model` parameter restored** (v2.1.72) — per-invocation model overrides on the Agent tool work again. Full model IDs (e.g., `claude-opus-4-5`) are now accepted in agent frontmatter `model:` field (v2.1.74).
+
+**New agent frontmatter fields** (v2.1.78) — plugin-shipped agents support `effort`, `maxTurns`, and `disallowedTools` in frontmatter.
+
+**Partial results preserved** (v2.1.76) — killing a background agent now preserves its partial results in the conversation context instead of losing them.
+
+Update any agents that use `resume` to use `SendMessage` instead.
+
 ### Checkpoint
 
 Three specialized agents, all yours. You can chain them, run them in parallel, and resume where they left off.
@@ -158,3 +172,4 @@ Three specialized agents, all yours. You can chain them, run them in parallel, a
 - [ ] You chained two agents (accessibility then design)
 - [ ] You backgrounded an agent with `Ctrl+B` and started another task
 - [ ] You resumed a completed agent to continue its work
+- [ ] Understand SendMessage replaces Agent resume parameter

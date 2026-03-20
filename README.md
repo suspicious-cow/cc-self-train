@@ -131,16 +131,16 @@ Every project follows this same progression:
 
 | # | Module | CC Features Taught |
 |---|--------|--------------------|
-| 1 | **Setup & First Contact** | CLAUDE.md, /init, /memory, interactive mode, keyboard shortcuts |
-| 2 | **Blueprint & Build** | Plan mode, git integration, basic prompting |
-| 3 | **Rules, Memory & Context** | .claude/rules/, CLAUDE.local.md, @imports, /context, /compact, memory hierarchy |
-| 4 | **Skills & Commands** | SKILL.md, frontmatter, custom commands, hot-reload, argument substitution |
-| 5 | **Hooks** | SessionStart, PostToolUse, Stop hooks, matchers, hook scripting |
-| 6 | **MCP Servers** | MCP servers, .mcp.json, scopes, skills+MCP integration |
-| 7 | **Guard Rails** | PreToolUse, hook decision control, prompt-based hooks |
-| 8 | **Subagents** | .claude/agents/, subagent frontmatter, chaining, parallel, background |
-| 9 | **Tasks & TDD** | Tasks system, dependencies, cross-session persistence, TDD loops |
-| 10 | **Parallel Dev, Plugins & Evaluation** | Worktrees, agent teams (experimental), plugins, eval, PermissionRequest hooks, continuous learning |
+| 1 | **Setup & First Contact** | CLAUDE.md, /init, /memory, interactive mode, keyboard shortcuts, /color, /effort, session naming |
+| 2 | **Blueprint & Build** | Plan mode, git integration, basic prompting, /branch, /plan with descriptions, includeGitInstructions |
+| 3 | **Rules, Memory & Context** | .claude/rules/, CLAUDE.local.md, @imports, /context, /compact, memory hierarchy, HTML comment hiding, autoMemoryDirectory |
+| 4 | **Skills & Commands** | SKILL.md, frontmatter, custom commands, hot-reload, argument substitution, effort frontmatter, ${CLAUDE_SKILL_DIR}, /claude-api |
+| 5 | **Hooks** | SessionStart, PostToolUse, Stop hooks, matchers, hook scripting, StopFailure, PostCompact, InstructionsLoaded, Elicitation hooks |
+| 6 | **MCP Servers** | MCP servers, .mcp.json, scopes, skills+MCP integration, elicitation, channels |
+| 7 | **Guard Rails** | PreToolUse, hook decision control, prompt-based hooks, allowRead, sandbox network isolation |
+| 8 | **Subagents** | .claude/agents/, subagent frontmatter, chaining, parallel, background, SendMessage, agent frontmatter fields |
+| 9 | **Tasks & TDD** | Tasks system, dependencies, cross-session persistence, TDD loops, /loop, cron scheduling |
+| 10 | **Parallel Dev, Plugins & Evaluation** | Worktrees, agent teams (experimental), plugins, eval, PermissionRequest hooks, continuous learning, plugin ecosystem, /remote-control, ExitWorktree |
 
 ## Feature Coverage Matrix
 
@@ -150,26 +150,27 @@ Every major CC feature is taught in all 5 options:
 |---------|:------:|:-----:|:-----:|:--------:|:----:|:------:|
 | CLAUDE.md, /init, /memory | x | x | x | x | x | 1 |
 | Interactive mode (shortcuts, @, /, !) | x | x | x | x | x | 1 |
+| /color, /effort, session naming (-n) | x | x | x | x | x | 1 |
 | Plan mode | x | x | x | x | x | 2 |
-| Git integration | x | x | x | x | x | 2 |
+| Git integration, /branch | x | x | x | x | x | 2 |
 | .claude/rules/ (path-scoped) | x | x | x | x | x | 3 |
 | CLAUDE.local.md, memory hierarchy | x | x | x | x | x | 3 |
-| @imports, /context, /compact | x | x | x | x | x | 3 |
+| @imports, /context, /compact, HTML comments | x | x | x | x | x | 3 |
 | Skills (SKILL.md, frontmatter, hot-reload) | x | x | x | x | x | 4 |
-| Custom slash commands ($0, $1) | x | x | x | x | x | 4 |
+| Custom slash commands, effort frontmatter | x | x | x | x | x | 4 |
 | Hooks (SessionStart, PostToolUse, Stop) | x | x | x | x | x | 5 |
-| Hook scripting (matchers, timeouts) | x | x | x | x | x | 5 |
+| Hook scripting, new events (StopFailure, PostCompact, etc.) | x | x | x | x | x | 5 |
 | MCP servers (.mcp.json, scopes) | x | x | x | x | x | 6 |
-| Skills + MCP integration | x | x | x | x | x | 6 |
+| Skills + MCP, elicitation, channels | x | x | x | x | x | 6 |
 | PreToolUse, hook decision control | x | x | x | x | x | 7 |
-| Prompt-based hooks (LLM quality gates) | x | x | x | x | x | 7 |
+| Prompt-based hooks, allowRead, sandbox settings | x | x | x | x | x | 7 |
 | Subagents (.claude/agents/) | x | x | x | x | x | 8 |
-| Subagent chaining, parallel, background | x | x | x | x | x | 8 |
+| Subagent chaining, parallel, SendMessage | x | x | x | x | x | 8 |
 | Tasks system (dependencies, cross-session) | x | x | x | x | x | 9 |
-| TDD & verification loops | x | x | x | x | x | 9 |
-| Git worktrees, parallel dev | x | x | x | x | x | 10 |
+| TDD, /loop, cron scheduling | x | x | x | x | x | 9 |
+| Git worktrees, parallel dev, ExitWorktree | x | x | x | x | x | 10 |
 | Agent teams (experimental) | x | x | x | x | x | 10 |
-| Plugins (bundling everything) | x | x | x | x | x | 10 |
+| Plugins, /remote-control, plugin ecosystem | x | x | x | x | x | 10 |
 | Evaluation framework | x | x | x | x | x | 10 |
 | Continuous learning patterns | x | x | x | x | x | 10 |
 

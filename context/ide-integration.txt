@@ -107,6 +107,18 @@ Run `claude` in each pane for independent CLI sessions. Useful for:
 - **Cursor users.** The same extension works in Cursor. Install it the same
   way — Cursor's extension marketplace is VS Code-compatible.
 
+## Recent IDE Features
+
+- **Remote control (v2.1.79)**: `/remote-control` — bridge your session to claude.ai/code to continue from a browser or phone. Supports optional session name via `/remote-control My Project` or `--name 'My Project'` (v2.1.69).
+- **AI-generated session titles (v2.1.79)**: VS Code session tabs now get AI-generated titles based on your first message.
+- **Spark icon (v2.1.70)**: Activity bar icon lists all Claude Code sessions, with sessions opening as full editors.
+- **Markdown plan view (v2.1.70)**: Full document view for plans with support for adding comments as feedback.
+- **Native MCP dialog (v2.1.70)**: Use `/mcp` in the chat panel to manage MCP servers, reconnect, and handle OAuth.
+- **Compaction card (v2.1.69)**: Compaction displayed as a collapsible "Compacted chat" card with summary inside.
+- **URI handler (v2.1.72)**: `vscode://anthropic.claude-code/open` URI handler — open a new Claude Code tab programmatically with optional `prompt` and `session` query parameters.
+- **Effort indicator (v2.1.72)**: Effort level indicator shown on the input border.
+- **Disable bypass permissions (v2.1.69)**: `permissions.disableBypassPermissionsMode` — when set to `disable` in effective settings (including managed/policy), bypass permissions mode is hidden from the picker.
+
 ## Troubleshooting
 
 - **Extension not connecting:** Check that Node.js 18+ is installed. The

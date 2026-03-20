@@ -146,6 +146,20 @@ Using the Sentry MCP server, what are the most common errors in the last 24 hour
 
 This section is optional -- if you do not use any of these tools, skip ahead to the checkpoint.
 
+### 6.10 MCP Elicitation & Channels
+
+Two major MCP capabilities have landed. How might you use them?
+
+**Elicitation** (v2.1.76) — MCP servers can now request structured input from you mid-task. When a server needs information it can't get on its own, Claude Code displays an interactive dialog (form fields or browser URL). No configuration needed on your side — dialogs appear automatically. Use the `Elicitation` hook to auto-respond programmatically.
+
+**Channels** (v2.1.80, research preview) — MCP servers can push messages directly into your session. A server declares `claude/channel` capability, and you opt in with `--channels` at startup. Use cases: reacting to Telegram messages, Discord chats, CI results, or monitoring alerts while you work.
+
+**OAuth discovery** (v2.1.69) — MCP servers can now set `oauth.authServerMetadataUrl` for custom OAuth metadata discovery when standard discovery fails.
+
+What kind of MCP server would benefit most from elicitation in your workflow? Think about servers that need credentials or configuration mid-task.
+
+> **STOP** — Consider how elicitation and channels could enhance your MCP setup.
+
 ### Checkpoint
 
 Your gateway now has persistent storage and Claude can query it directly. MCP servers bridge the gap between Claude and the external tools your project depends on.
@@ -159,4 +173,5 @@ Your gateway now has persistent storage and Claude can query it directly. MCP se
 - [ ] The `/cache-inspect` skill queries the SQLite MCP server
 - [ ] Claude can directly query cache.db through MCP tools
 - [ ] Changes committed to git
+- [ ] Understand MCP elicitation and channels
 - [ ] (Optional) You connected an MCP server for a tool you actually use

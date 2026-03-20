@@ -165,6 +165,20 @@ Using the GitHub MCP server, look at the open issues in [your repo]. Run Sentine
 
 This section is optional -- if you do not use any of these tools, skip ahead to the checkpoint.
 
+### 6.10 MCP Elicitation & Channels
+
+Two major MCP capabilities have landed. How might you use them?
+
+**Elicitation** (v2.1.76) — MCP servers can now request structured input from you mid-task. When a server needs information it can't get on its own, Claude Code displays an interactive dialog (form fields or browser URL). No configuration needed on your side — dialogs appear automatically. Use the `Elicitation` hook to auto-respond programmatically.
+
+**Channels** (v2.1.80, research preview) — MCP servers can push messages directly into your session. A server declares `claude/channel` capability, and you opt in with `--channels` at startup. Use cases: reacting to Telegram messages, Discord chats, CI results, or monitoring alerts while you work.
+
+**OAuth discovery** (v2.1.69) — MCP servers can now set `oauth.authServerMetadataUrl` for custom OAuth metadata discovery when standard discovery fails.
+
+What kind of MCP server would benefit most from elicitation in your workflow? Think about servers that need credentials or configuration mid-task.
+
+> **STOP** — Consider how elicitation and channels could enhance your MCP setup.
+
 ### Checkpoint
 
 Your analyzer now has a real database backing it. Claude can query scan results, track trends, and connect to external tools -- all through MCP.
@@ -175,4 +189,5 @@ Your analyzer now has a real database backing it. Claude can query scan results,
 - [ ] `.mcp.json` exists in the project root with server configurations
 - [ ] `/coverage-trend` skill works and queries the SQLite database
 - [ ] You understand the three MCP scopes (local, project, user)
+- [ ] Understand MCP elicitation and channels
 - [ ] (Optional) You connected an MCP server for a tool you actually use

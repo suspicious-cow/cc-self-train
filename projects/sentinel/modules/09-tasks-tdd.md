@@ -133,6 +133,21 @@ In the second session, you can see the same tasks and their current statuses. If
 
 **STOP -- What you just did:** You shared a task list between two separate Claude Code sessions using `CLAUDE_CODE_TASK_LIST_ID`. Both sessions see the same tasks and their statuses update in real time. This is how you coordinate parallel work -- one session works on Task A while another works on the independent Task B, and neither duplicates effort. You will use this pattern heavily in Module 10 with git worktrees.
 
+### 9.8 Recurring Tasks with /loop & Cron
+
+Two new tools for recurring automation within a session:
+
+**`/loop`** (v2.1.71) — run a prompt or slash command on a recurring interval. Examples:
+- `/loop 5m check the deploy` — runs every 5 minutes
+- `/loop 10m /doctor` — runs `/doctor` every 10 minutes
+- Default interval is 10 minutes if omitted
+
+**Cron scheduling** (v2.1.71) — create recurring prompts using cron-style scheduling within a session. More flexible than `/loop` for complex schedules.
+
+**`CLAUDE_CODE_DISABLE_CRON`** (v2.1.72) — set this env var to immediately stop all scheduled cron jobs mid-session.
+
+Try `/loop` with a monitoring task that makes sense for your project.
+
 ### Checkpoint
 
 Task graphs, TDD, cross-session persistence, and subagent verification. This is how real multi-session projects get coordinated.
@@ -143,3 +158,4 @@ Task graphs, TDD, cross-session persistence, and subagent verification. This is 
 - [ ] SubagentStop hook verifies subagents run tests
 - [ ] You understand cross-session task sharing via CLAUDE_CODE_TASK_LIST_ID
 - [ ] `Ctrl+T` shows the task list in the terminal
+- [ ] Tried `/loop` for a recurring task

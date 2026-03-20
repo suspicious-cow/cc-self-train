@@ -820,3 +820,19 @@ Now that you understand subagents, explore these related features:
 ### Background agent management
 
 `Ctrl+F` — Kill background agents. Press twice to confirm. Available since v2.1.49.
+
+### Agent tool resume removal (v2.1.77)
+
+The Agent tool's `resume` parameter has been removed. To continue a previously spawned agent, use `SendMessage({to: agentId})`. `SendMessage` now auto-resumes stopped agents in the background instead of returning an error.
+
+### Per-invocation model overrides (v2.1.72+)
+
+The `model` parameter on the Agent tool has been restored for per-invocation model overrides (v2.1.72). Full model IDs (e.g., `claude-opus-4-5`) are now accepted in agent frontmatter `model:` field (v2.1.74).
+
+### Plugin agent frontmatter fields (v2.1.78)
+
+Plugin-shipped agents support additional frontmatter fields: `effort`, `maxTurns`, and `disallowedTools`.
+
+### Background agent partial results (v2.1.76)
+
+Killing a background agent now preserves its partial results in the conversation context.

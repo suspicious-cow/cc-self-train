@@ -102,6 +102,18 @@ This demonstrates stacking multiple Stop hooks -- the Module 5 hook checks that 
 3. Generate a test file -- check that metadata is added
 4. Complete a task involving tests -- the Stop hook should review quality
 
+### 7.7 Sandbox Read Control & Network Settings
+
+New sandbox settings to know:
+
+**`allowRead`** (v2.1.77) — re-allows read access within `denyRead` regions. Useful for blocking reads to a sensitive directory but allowing a specific subdirectory.
+
+**`sandbox.enableWeakerNetworkIsolation`** (v2.1.69, macOS) — allows Go programs like `gh`, `gcloud`, and `terraform` to verify TLS certificates when using a custom MITM proxy with `httpProxyPort`. Without this, Go binaries fail certificate validation inside the sandbox.
+
+**PreToolUse `"allow"` no longer bypasses `deny` rules** (v2.1.77) — if you have both a hook returning `"allow"` and a `deny` permission rule, the `deny` takes precedence. This includes enterprise managed settings.
+
+Check `context/hooks.txt` for the full sandbox settings reference.
+
 ### Checkpoint
 
 Guard rails locked in. Schema validation, context injection, metadata stamps, and AI-reviewed test quality -- all automatic.
@@ -112,3 +124,4 @@ Guard rails locked in. Schema validation, context injection, metadata stamps, an
 - [ ] Prompt-based Stop hook reviews test quality
 - [ ] All hooks are configured in `.claude/settings.json`
 - [ ] You tested each guard rail and saw it work
+- [ ] Reviewed new sandbox settings: `allowRead` and `enableWeakerNetworkIsolation`

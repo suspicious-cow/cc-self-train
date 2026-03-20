@@ -112,6 +112,24 @@ FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path')
 
 Ask Claude to show you the full input schema for each hook type you configured.
 
+### 5.7 New Hook Events
+
+Five new hook events have been added. Which ones would be most useful for your project?
+
+**`StopFailure`** (v2.1.78) -- fires when a turn ends due to an API error (rate limit, auth failure, etc.). Use for alerting or recovery. The input includes `error` type and `error_details`.
+
+**`PostCompact`** (v2.1.76) -- fires after compaction completes. Matcher values: `manual` (from `/compact`) or `auto` (context window full). Input includes `compact_summary`.
+
+**`InstructionsLoaded`** (v2.1.69) -- fires when CLAUDE.md or `.claude/rules/*.md` files are loaded. Matcher values: `session_start`, `nested_traversal`, `path_glob_match`, `include`, `compact`. Great for audit logging.
+
+**`Elicitation` / `ElicitationResult`** (v2.1.76) -- intercept MCP server input requests. `Elicitation` fires when a server asks for input; `ElicitationResult` fires before the response is sent back. Use to auto-respond or validate.
+
+Hook events now also include `agent_id` and `agent_type` fields when firing inside subagents (v2.1.69).
+
+Try wiring up a `PostCompact` hook that logs when auto-compaction happens -- what would you put in the command?
+
+> **STOP** -- Add a hook for one of the new events and test it.
+
 ### Checkpoint
 
 Your gateway now has automated quality gates. Config validation, test runs, and status checks happen without you lifting a finger.
@@ -124,3 +142,4 @@ Your gateway now has automated quality gates. Config validation, test runs, and 
 - [ ] You understand exit code behavior (0, 2, other)
 - [ ] `/hooks` shows your registered hooks
 - [ ] All hook scripts committed to git
+- [ ] Wired up a hook using one of the new hook events

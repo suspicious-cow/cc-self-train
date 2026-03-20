@@ -80,7 +80,7 @@ One thing to notice: the Stop hook input includes a `last_assistant_message` fie
 
 While you are here -- hooks are not limited to local scripts. You can also use `"type": "http"` with a `"url"` field to POST hook events to a remote endpoint instead of running a command. Useful if you want to send hook data to a logging service or a CI system. See `context/hooks.txt` for the format.
 
-### 5.5 Matchers, Timeouts, and Scripting
+### 5.5 Matchers & Timeouts
 
 Matchers filter which tools trigger a hook. Key patterns:
 
@@ -93,11 +93,20 @@ Matchers filter which tools trigger a hook. Key patterns:
 | `"mcp__.*"` | All MCP tools |
 
 Add `"timeout": 30` to any hook command to override the default 60-second
-timeout. Every hook script receives JSON on stdin, uses exit codes to
-communicate (0 = success, 2 = blocking error), and can access
-`$CLAUDE_PROJECT_DIR` for the project root.
+timeout. Matchers prevent hooks from firing on every tool call (which would slow everything down). Timeouts prevent runaway scripts from freezing your session.
 
-**STOP -- What you just did:** You learned about matchers and timeouts -- the configuration layer that controls *when* and *how long* hooks run. Matchers prevent hooks from firing on every tool call (which would slow everything down). Timeouts prevent runaway scripts from freezing your session. These two settings are what make hooks practical for real workflows rather than just demos.
+**STOP -- What you just did:** You learned about matchers and timeouts -- the configuration layer that controls *when* and *how long* hooks run. These two settings are what make hooks practical for real workflows rather than just demos.
+
+### 5.6 Shell Scripting with Hook Input
+
+Hooks receive JSON via stdin with fields like `session_id`, `hook_event_name`, `tool_name`, `tool_input`, and `tool_response`. Every hook script uses exit codes to communicate (0 = success, 2 = blocking error) and can access `$CLAUDE_PROJECT_DIR` for the project root. Extract values with jq:
+
+```
+INPUT=$(cat)
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path')
+```
+
+Ask Claude to show you the full input schema for each hook type you configured.
 
 Want to verify all three hooks are working?
 
@@ -109,7 +118,25 @@ Want to verify all three hooks are working?
 
 Use `Ctrl+O` (verbose mode) to see hook execution details.
 
-## Checkpoint
+### 5.8 New Hook Events
+
+Five new hook events have been added. Which ones would be most useful for your project?
+
+**`StopFailure`** (v2.1.78) -- fires when a turn ends due to an API error (rate limit, auth failure, etc.). Use for alerting or recovery. The input includes `error` type and `error_details`.
+
+**`PostCompact`** (v2.1.76) -- fires after compaction completes. Matcher values: `manual` (from `/compact`) or `auto` (context window full). Input includes `compact_summary`.
+
+**`InstructionsLoaded`** (v2.1.69) -- fires when CLAUDE.md or `.claude/rules/*.md` files are loaded. Matcher values: `session_start`, `nested_traversal`, `path_glob_match`, `include`, `compact`. Great for audit logging.
+
+**`Elicitation` / `ElicitationResult`** (v2.1.76) -- intercept MCP server input requests. `Elicitation` fires when a server asks for input; `ElicitationResult` fires before the response is sent back. Use to auto-respond or validate.
+
+Hook events now also include `agent_id` and `agent_type` fields when firing inside subagents (v2.1.69).
+
+Try wiring up a `PostCompact` hook that logs when auto-compaction happens -- what would you put in the command?
+
+> **STOP** -- Add a hook for one of the new events and test it.
+
+### Checkpoint
 
 Your toolkit now automates its own quality checks. Hooks catch mistakes the moment they happen -- no manual checking required.
 
@@ -119,3 +146,4 @@ Your toolkit now automates its own quality checks. Hooks catch mistakes the mome
 - [ ] Stop hook runs tests before Claude stops
 - [ ] Matchers filter correctly (Write|Edit, not all tools)
 - [ ] You verified each hook fires by triggering it and checking output
+- [ ] Wired up a hook using one of the new hook events

@@ -131,6 +131,20 @@ Ask Claude to explain which of your skills it can invoke automatically and which
 Which of my skills can you invoke on your own, and which ones do I have to trigger manually? What's the difference?
 ```
 
+### 4.7 Skill Frontmatter & Built-in Skills
+
+A few skill authoring features have landed recently. What do you think each one is useful for?
+
+**`effort` frontmatter.** Add `effort: low` (or `medium`/`high`) to a skill's frontmatter to override the model effort level when that skill is invoked. Try adding it to one of your skills -- when would you want a skill to force low effort? (v2.1.80)
+
+**`${CLAUDE_SKILL_DIR}`.** This variable resolves to the skill's own directory. Use it in SKILL.md to reference sibling files -- for example, `Read ${CLAUDE_SKILL_DIR}/template.txt`. Check the skills docs if you want the full variable reference (v2.1.69).
+
+**`/claude-api` bundled skill.** Claude Code ships with a built-in skill for building apps with the Claude API. It triggers automatically when your code imports `anthropic` or `@anthropic-ai/sdk`. Try typing `/claude-api` to see what it offers (v2.1.69).
+
+Try adding `effort: low` to one of your existing skills and invoking it -- does the response feel different?
+
+> **STOP** -- Experiment with `effort` frontmatter and `${CLAUDE_SKILL_DIR}` in one of your skills.
+
 ### Checkpoint
 
 You just built your own commands. Adding routes and testing endpoints is now one slash command away.
@@ -142,3 +156,4 @@ You just built your own commands. Adding routes and testing endpoints is now one
 - [ ] You modified a skill file and saw the change take effect without restart
 - [ ] You understand the difference between `disable-model-invocation: true` and default
 - [ ] All skills committed to git
+- [ ] Tested `effort` frontmatter and `${CLAUDE_SKILL_DIR}` in a skill

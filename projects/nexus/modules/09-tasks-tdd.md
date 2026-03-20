@@ -102,6 +102,21 @@ Add to `.claude/settings.json`:
 
 **STOP -- What you just did:** You added quality gates at two levels: the Stop hook ensures Claude itself does not prematurely finish a task, and the SubagentStop hook ensures subagents produce complete, quality output before returning control. These hooks close the loop on the task system -- tasks define *what* to do, dependencies define *when* to do it, and quality hooks ensure it is *actually done*. This is the complete automated development pipeline: plan, decompose, implement, verify.
 
+### 9.6 Recurring Tasks with /loop & Cron
+
+Two new tools for recurring automation within a session:
+
+**`/loop`** (v2.1.71) — run a prompt or slash command on a recurring interval. Examples:
+- `/loop 5m check the deploy` — runs every 5 minutes
+- `/loop 10m /doctor` — runs `/doctor` every 10 minutes
+- Default interval is 10 minutes if omitted
+
+**Cron scheduling** (v2.1.71) — create recurring prompts using cron-style scheduling within a session. More flexible than `/loop` for complex schedules.
+
+**`CLAUDE_CODE_DISABLE_CRON`** (v2.1.72) — set this env var to immediately stop all scheduled cron jobs mid-session.
+
+Try `/loop` with a monitoring task that makes sense for your project.
+
 ### Checkpoint
 
 Tasks, TDD, and quality hooks -- the full automated development pipeline. Plan, decompose, implement, verify.
@@ -115,3 +130,4 @@ Tasks, TDD, and quality hooks -- the full automated development pipeline. Plan, 
 - [ ] SubagentStop hook validates subagent output
 - [ ] Middleware system works end-to-end with tests passing
 - [ ] Changes committed to git
+- [ ] Tried `/loop` for a recurring task

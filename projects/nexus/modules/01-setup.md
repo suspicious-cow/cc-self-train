@@ -134,6 +134,20 @@ Your CLAUDE.md, rules, and project files persist between sessions. Conversation 
 - *Entry-level:* Session persistence means you can work on a problem across days without losing context -- like saving your game.
 - *Mid-level:* Named sessions (`/rename`) let you maintain separate contexts for different workstreams -- bug investigation in one, feature work in another.
 
+### 1.8 Session Personalization & Effort
+
+Claude Code has added several ways to customize your session experience since the initial release.
+
+**Color your prompt bar.** Type `/color` and pick a color — this sets your prompt bar's accent color for the session. Try `/color blue` or just `/color` to see options. Use `/color default` to reset.
+
+**Name your sessions.** Start Claude Code with `-n` to name it: `claude -n "API Gateway"`. You can also rename mid-session with `/rename`. Named sessions are easier to find in `/resume`.
+
+**Set effort level.** Type `/effort` to see the current reasoning depth (low, medium, or high). Try `/effort low` for quick lookups or `/effort high` for deeper reasoning. The effort level shows on the logo spinner.
+
+**Model updates.** Opus 4.6 now defaults to 1M context window (Max/Team/Enterprise) and 64k output tokens. Use `modelOverrides` in settings to map model picker entries to custom provider model IDs.
+
+> **STOP** — Try `/color` and `/effort` before continuing. Notice how the prompt bar and spinner change.
+
 ### Checkpoint
 
 You just set up a gateway project, configured Claude Code's memory, learned the keyboard shortcuts, and explored the memory hierarchy. That's a real foundation -- everything from here builds on it.
@@ -146,3 +160,4 @@ You just set up a gateway project, configured Claude Code's memory, learned the 
 - [ ] You opened `/memory` and edited CLAUDE.md
 - [ ] You know how to exit (`Ctrl+D`) and resume (`claude -c`) a session
 - [ ] You can explain the memory hierarchy
+- [ ] Tried `/color` and `/effort` to customize your session

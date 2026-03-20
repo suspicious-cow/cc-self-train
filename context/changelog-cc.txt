@@ -1,4 +1,121 @@
 Changelog
+2.1.80
+rate_limits field in statusline scripts — displays Claude.ai rate limit usage (5-hour and 7-day windows with used_percentage and resets_at)
+source: 'settings' plugin marketplace source — declare plugin entries inline in settings.json
+effort frontmatter support for skills and slash commands — override model effort level when invoked
+--channels (research preview) — allow MCP servers to push messages into your session
+/effort now shows what auto currently resolves to, matching the status bar indicator
+Fixed managed settings not being applied at startup when remote-settings.json was cached
+2.1.79
+--console flag for claude auth login — Anthropic Console (API billing) authentication
+"Show turn duration" toggle in /config menu
+CLAUDE_CODE_PLUGIN_SEED_DIR now supports multiple seed directories (: on Unix, ; on Windows)
+[VSCode] /remote-control — bridge your session to claude.ai/code to continue from a browser or phone
+[VSCode] Session tabs now get AI-generated titles based on your first message
+SessionEnd hooks now fire when using interactive /resume to switch sessions
+2.1.78
+StopFailure hook event — fires when turn ends due to API error (rate_limit, authentication_failed, etc.)
+${CLAUDE_PLUGIN_DATA} variable for plugin persistent state that survives plugin updates
+effort, maxTurns, and disallowedTools frontmatter support for plugin-shipped agents
+ANTHROPIC_CUSTOM_MODEL_OPTION env var — add custom entry to /model picker (with optional _NAME and _DESCRIPTION vars)
+CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS and includeGitInstructions setting now correctly suppresses git status in system prompt
+Fixed voice mode push-to-talk keybindings requiring hold instead of activating immediately
+Fixed voice mode on WSL2 with WSLg (Windows 11)
+Fixed --worktree flag not loading skills and hooks from worktree directory
+Security: Fixed silent sandbox disable when sandbox.enabled: true but dependencies missing — now shows startup warning
+2.1.77
+Increased default max output tokens for Opus 4.6 to 64k, upper bound for Opus 4.6 and Sonnet 4.6 to 128k
+allowRead sandbox filesystem setting — re-allow read access within denyRead regions
+/copy now accepts optional index: /copy N copies Nth-latest assistant response
+Agent tool no longer accepts resume parameter — use SendMessage({to: agentId}) to continue agents
+SendMessage now auto-resumes stopped agents in background
+Renamed /fork to /branch (/fork still works as alias)
+Sessions auto-named from plan content when you accept a plan
+Fixed PreToolUse hooks returning "allow" bypassing deny rules (including enterprise managed settings)
+Improved claude plugin validate — checks skill, agent, and command frontmatter plus hooks.json
+2.1.76
+MCP elicitation support — MCP servers can request structured input mid-task via interactive dialog (form or browser URL)
+Elicitation and ElicitationResult hooks to intercept and override MCP elicitation responses
+-n / --name <name> CLI flag — set display name for session at startup
+worktree.sparsePaths setting for --worktree in large monorepos (git sparse-checkout)
+PostCompact hook — fires after compaction completes (matcher: manual or auto)
+/effort slash command to set model effort level
+feedbackSurveyRate setting for enterprise session quality surveys
+Improved /voice to show dictation language on enable and warn for unsupported languages
+Updated --plugin-dir to accept one path — use repeated --plugin-dir for multiple directories
+Improved background agent behavior — killing preserves partial results in conversation context
+Improved model fallback notifications — always visible with human-friendly names
+2.1.75
+1M context window for Opus 4.6 by default for Max, Team, and Enterprise plans
+/color command — set prompt-bar color for your session
+Session name display on prompt bar when using /rename
+Last-modified timestamps on memory files for freshness reasoning
+Hook source display (settings/plugin/skill) in permission prompts
+Breaking: Removed deprecated Windows managed settings fallback at C:\ProgramData\ClaudeCode\managed-settings.json — use C:\Program Files\ClaudeCode\managed-settings.json
+2.1.74
+Actionable suggestions in /context command — identifies context-heavy tools, memory bloat, capacity warnings
+autoMemoryDirectory setting to configure custom directory for auto-memory storage
+CLAUDE_CODE_SESSIONEND_HOOKS_TIMEOUT_MS env var — configurable SessionEnd hook timeout (was fixed 1.5s)
+--plugin-dir local dev copies now override installed marketplace plugins with same name
+Full model IDs (e.g. claude-opus-4-5) now accepted in agent frontmatter model: field
+2.1.73
+modelOverrides setting — map model picker entries to custom provider model IDs (e.g. Bedrock inference profile ARNs)
+Changed default Opus on Bedrock, Vertex, and Microsoft Foundry to Opus 4.6 (was Opus 4.1)
+Deprecated /output-style command — use /config instead (output style fixed at session start for prompt caching)
+/effort now works while Claude is responding, matching /model behavior
+Improved voice mode auto-retry for transient connection failures during push-to-talk
+2.1.72
+/copy w key — write focused selection directly to a file (useful over SSH)
+/plan <description> — optional description argument enters plan mode and starts immediately
+ExitWorktree tool to leave an EnterWorktree session
+CLAUDE_CODE_DISABLE_CRON env var to stop scheduled cron jobs mid-session
+Auto-approval allowlist expanded: lsof, pgrep, tput, ss, fd, fdfind
+Restored model parameter on Agent tool for per-invocation model overrides
+Simplified effort levels to low/medium/high (removed max) with new symbols (○ ◐ ●)
+CLAUDE.md HTML comments (<!-- ... -->) now hidden from Claude when auto-injected (visible via Read tool)
+[VSCode] Effort level indicator on input border
+[VSCode] vscode://anthropic.claude-code/open URI handler with optional prompt and session params
+2.1.71
+/loop command — run a prompt or slash command on a recurring interval (e.g. /loop 5m check the deploy)
+Cron scheduling tools for recurring prompts within a session
+voice:pushToTalk keybinding in keybindings.json (default: space) — modifier+letter combos have zero typing interference
+Auto-approval allowlist expanded: fmt, comm, cmp, numfmt, expr, test, printf, getconf, seq, tsort, pr
+/debug now toggles debug logging on mid-session (no longer written by default)
+Improved /plugin uninstall — uses settings.local.json instead of .claude/settings.json
+2.1.70
+[VSCode] Spark icon in activity bar lists all Claude Code sessions, sessions open as full editors
+[VSCode] Full markdown plan view with support for adding comments as feedback
+[VSCode] Native MCP server management dialog via /mcp in chat panel
+Fixed /color reset — /color default, /color gray, /color reset, /color none restore default
+Improved /rename to work while Claude is processing
+2.1.69
+/claude-api bundled skill for building apps with the Claude API and Anthropic SDK
+Ctrl+U on empty bash prompt (!) exits bash mode (matches Escape and Backspace)
+Numeric keypad support for selecting options in Claude's interview questions
+Optional name argument to /remote-control (/remote-control My Project or --name "My Project")
+Voice STT support for 10 new languages (20 total) — Russian, Polish, Turkish, Dutch, Ukrainian, Greek, Czech, Danish, Swedish, Norwegian
+Effort level display (e.g. "with low effort") on logo and spinner
+Agent name display in terminal title when using claude --agent
+sandbox.enableWeakerNetworkIsolation setting (macOS) — allow Go programs (gh, gcloud, terraform) TLS cert verification with MITM proxy
+includeGitInstructions setting and CLAUDE_CODE_DISABLE_GIT_INSTRUCTIONS env var — remove built-in commit/PR workflow instructions from system prompt
+/reload-plugins command to activate pending plugin changes without restarting
+${CLAUDE_SKILL_DIR} variable for skills to reference their own directory in SKILL.md
+InstructionsLoaded hook event — fires when CLAUDE.md or .claude/rules/*.md files are loaded
+agent_id and agent_type fields added to hook events for subagent identification
+worktree field added to status line hook commands (name, path, branch, original repo directory)
+pluginTrustMessage managed setting to append org context to plugin trust warning
+pathPattern for strictKnownMarketplaces — regex-matching file/directory marketplace sources
+git-subdir plugin source type — point to a subdirectory within a git repo
+oauth.authServerMetadataUrl for MCP servers — custom OAuth metadata discovery URL
+Skill descriptions with colons now parse correctly from SKILL.md frontmatter
+Skills without description: frontmatter now appear in Claude's available skills list
+Changed Sonnet 4.5 users on Pro/Max/Team Premium auto-migrated to Sonnet 4.6
+Changed /resume picker shows most recent prompt instead of first one
+TeammateIdle and TaskCompleted hooks now support {continue: false, stopReason: "..."} to stop teammate
+WorktreeCreate and WorktreeRemove plugin hooks now fire correctly
+[VSCode] Compaction display as collapsible "Compacted chat" card with summary inside
+[VSCode] permissions.disableBypassPermissionsMode respected from effective settings (including managed/policy)
+--append-system-prompt-file and --system-prompt-file confirmed to work in interactive mode (not print-only)
 2.1.68
 Opus 4.6 now defaults to medium effort on Max and Team plans
 "ultrathink" keyword re-introduced for extended thinking

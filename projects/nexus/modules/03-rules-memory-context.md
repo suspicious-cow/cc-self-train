@@ -181,10 +181,25 @@ I want to add rate limiting to the gateway. Each route should have a configurabl
 
 Claude will implement the rate limiter and may ask about edge cases like what happens on server restart (state resets). After building, ask Claude to write tests, run them, and commit. Then run `/compact` to free context.
 
+### 3.7 HTML Comments & Memory Directory
+
+Two useful updates for managing Claude's context:
+
+**HTML comments are now hidden.** If you add `<!-- internal notes -->` to your CLAUDE.md, Claude won't see them when the file is auto-loaded. They're only visible when Claude explicitly reads the file with the Read tool. Use this for maintainer notes, TODOs, or internal documentation that shouldn't influence Claude's behavior (v2.1.72).
+
+**Custom memory directory.** The `autoMemoryDirectory` setting lets you store auto-memory in a custom location instead of `~/.claude/`. Useful for shared drives or custom project structures (v2.1.74).
+
+**Smarter `/context`.** The `/context` command now gives actionable suggestions -- it identifies context-heavy tools, memory bloat, and capacity warnings with specific optimization tips (v2.1.74).
+
+Try adding an HTML comment to your CLAUDE.md now -- something like `<!-- TODO: add testing conventions after Module 9 -->` -- and verify Claude doesn't reference it unless you ask it to read the file directly.
+
+> **STOP** -- Add an HTML comment to your project's CLAUDE.md and verify it's hidden from Claude.
+
 ### Checkpoint
 
 You just taught Claude how your gateway works. Rules, memory, and context management mean Claude understands your conventions and enforces them automatically.
 
+- [ ] Added an HTML comment to CLAUDE.md and verified it's hidden
 - [ ] `.claude/rules/` has at least 3 rule files with path-scoped frontmatter
 - [ ] CLAUDE.local.md exists and is in .gitignore
 - [ ] CLAUDE.md uses `@imports` to reference docs/routing.md and docs/config-format.md

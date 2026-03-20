@@ -78,7 +78,19 @@ structured decision. They are powerful for nuanced, context-aware checks that wo
 4. **Quality gate:** Ask Claude to write code with a `console.log` and commit.
    Verify the stop hook catches it.
 
-## Checkpoint
+### 7.7 Sandbox Read Control & Network Settings
+
+New sandbox settings to know:
+
+**`allowRead`** (v2.1.77) — re-allows read access within `denyRead` regions. Useful for blocking reads to a sensitive directory but allowing a specific subdirectory.
+
+**`sandbox.enableWeakerNetworkIsolation`** (v2.1.69, macOS) — allows Go programs like `gh`, `gcloud`, and `terraform` to verify TLS certificates when using a custom MITM proxy with `httpProxyPort`. Without this, Go binaries fail certificate validation inside the sandbox.
+
+**PreToolUse `"allow"` no longer bypasses `deny` rules** (v2.1.77) — if you have both a hook returning `"allow"` and a `deny` permission rule, the `deny` takes precedence. This includes enterprise managed settings.
+
+Check `context/hooks.txt` for the full sandbox settings reference.
+
+### Checkpoint
 
 Four guard patterns, all wired up. Your toolkit now prevents bad data, enforces conventions, and reviews quality -- without you asking.
 
@@ -88,5 +100,6 @@ Four guard patterns, all wired up. Your toolkit now prevents bad data, enforces 
 - [ ] Prompt-based Stop hook reviews code quality before commit
 - [ ] Each guard was tested and verified working
 - [ ] You understand the difference between `permissionDecision`, `additionalContext`, and `updatedInput`
+- [ ] Reviewed new sandbox settings: `allowRead` and `enableWeakerNetworkIsolation`
 
 **STOP -- What you just did in this module:** You built a complete guard rail system with four distinct mechanisms: `deny` blocks bad actions, `additionalContext` injects reminders, `updatedInput` silently modifies tool inputs, and prompt-based hooks use AI judgment for nuanced checks. Together, these form a safety layer that runs automatically on every tool call. In real projects, guard rails like these prevent data corruption, enforce conventions, and catch quality issues -- all without you having to remember to check.

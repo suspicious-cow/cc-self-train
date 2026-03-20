@@ -130,6 +130,20 @@ Continue the analyzer-agent from the previous analysis and now also check for se
 
 Claude resumes the agent with its full conversation history intact.
 
+### 8.9 SendMessage & Agent Frontmatter
+
+Breaking change and new capabilities for subagents:
+
+**`resume` parameter removed** (v2.1.77) — the Agent tool no longer accepts `resume`. Use `SendMessage({to: agentId})` to continue a previously spawned agent. `SendMessage` auto-resumes stopped agents in the background.
+
+**`model` parameter restored** (v2.1.72) — per-invocation model overrides on the Agent tool work again. Full model IDs (e.g., `claude-opus-4-5`) are now accepted in agent frontmatter `model:` field (v2.1.74).
+
+**New agent frontmatter fields** (v2.1.78) — plugin-shipped agents support `effort`, `maxTurns`, and `disallowedTools` in frontmatter.
+
+**Partial results preserved** (v2.1.76) — killing a background agent now preserves its partial results in the conversation context instead of losing them.
+
+Update any agents that use `resume` to use `SendMessage` instead.
+
 ### Checkpoint
 
 Three agents that decompose your analyzer's workflow. Chain them for pipelines, parallel them for speed.
@@ -140,3 +154,4 @@ Three agents that decompose your analyzer's workflow. Chain them for pipelines, 
 - [ ] You ran agents in parallel or background
 - [ ] You resumed a completed agent to continue its work
 - [ ] You understand when to use subagents vs the main conversation
+- [ ] Understand SendMessage replaces Agent resume parameter

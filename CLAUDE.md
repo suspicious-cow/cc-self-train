@@ -112,13 +112,13 @@ If CLAUDE.local.md does not specify an experience level, default to **beginner**
 
 Every project follows these same 10 modules:
 
-1. **Setup & First Contact** — CLAUDE.md, /init, /memory, interactive mode, keyboard shortcuts
-2. **Blueprint & Build** — Plan mode, git integration, basic prompting
-3. **Rules, Memory & Context** — .claude/rules/, CLAUDE.local.md, @imports, /context, /compact, memory hierarchy
-4. **Skills & Commands** — SKILL.md, frontmatter, custom commands, hot-reload, argument substitution
-5. **Hooks** — SessionStart, PostToolUse, Stop hooks, matchers, hook scripting
-6. **MCP Servers** — MCP servers, .mcp.json, scopes, skills+MCP integration
-7. **Guard Rails** — PreToolUse, hook decision control, prompt-based hooks
-8. **Subagents** — .claude/agents/, subagent frontmatter, chaining, parallel, background
-9. **Tasks & TDD** — Tasks system, dependencies, cross-session persistence, TDD loops
-10. **Parallel Dev, Plugins & Evaluation** — Worktrees, plugins, eval, PermissionRequest hooks, continuous learning
+1. **Setup & First Contact** — CLAUDE.md, /init, /memory, interactive mode, keyboard shortcuts, /color, /effort, session naming
+2. **Blueprint & Build** — Plan mode, git integration, basic prompting, /branch, /plan with descriptions, includeGitInstructions
+3. **Rules, Memory & Context** — .claude/rules/, CLAUDE.local.md, @imports, /context, /compact, memory hierarchy, HTML comment hiding, autoMemoryDirectory
+4. **Skills & Commands** — SKILL.md, frontmatter, custom commands, hot-reload, argument substitution, effort frontmatter, ${CLAUDE_SKILL_DIR}, /claude-api
+5. **Hooks** — SessionStart, PostToolUse, Stop hooks, matchers, hook scripting, StopFailure, PostCompact, InstructionsLoaded, Elicitation hooks
+6. **MCP Servers** — MCP servers, .mcp.json, scopes, skills+MCP integration, elicitation, channels
+7. **Guard Rails** — PreToolUse, hook decision control, prompt-based hooks, allowRead, sandbox network isolation
+8. **Subagents** — .claude/agents/, subagent frontmatter, chaining, parallel, background, SendMessage, agent frontmatter fields
+9. **Tasks & TDD** — Tasks system, dependencies, cross-session persistence, TDD loops, /loop, cron scheduling
+10. **Parallel Dev, Plugins & Evaluation** — Worktrees, plugins, eval, PermissionRequest hooks, continuous learning, plugin ecosystem, /remote-control, ExitWorktree
