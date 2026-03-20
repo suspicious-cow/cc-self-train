@@ -37,7 +37,33 @@ Phase 1 researches changes and presents a structured update plan. It **stops for
 
 2. Extract all entries between v{latest} and v{local}.
 
-3. Triage each entry. **Skip**: bug fixes, IDE-specific changes, platform-specific tweaks, performance improvements, cosmetic changes. **Keep** and classify:
+3. Triage each entry. Classify into **skip** or **keep** using these criteria:
+
+   **SKIP (do not include in plan):**
+   - Pure bug fixes that don't change documented behavior (e.g., "Fixed crash when...")
+   - Performance improvements with no user-visible behavior change (e.g., "Reduced memory by...")
+   - Cosmetic/UI polish (e.g., "Improved color rendering in tmux")
+   - Security patches that don't introduce new settings or features
+
+   **KEEP (always include):**
+   - New slash commands, CLI flags, or settings — even small ones like `/color` or `-n`
+   - New or renamed frontmatter fields for skills, agents, or hooks
+   - New hook events, hook fields, or hook behavior changes
+   - New environment variables that users would set
+   - Voice mode feature additions (language support, keybindings)
+   - Remote Control / IDE integration features that affect workflows
+   - Model changes (new defaults, effort level changes, output token limits)
+   - Renamed or deprecated commands (e.g., `/fork` → `/branch`, `/output-style` deprecated)
+   - New bundled skills that ship with CC
+   - Sandbox/permission setting additions
+   - Breaking changes (even if they seem minor)
+   - Status line / statusline script changes
+
+   **GRAY AREA — keep if it changes documented behavior:**
+   - VS Code-specific features: SKIP pure VS Code UI fixes, KEEP features that also work in CLI or represent major workflow additions (e.g., Remote Control bridge)
+   - Platform-specific: SKIP platform build fixes, KEEP feature additions available to that platform's users (e.g., voice mode on WSL)
+
+   For items you keep, classify as:
    - **Added** — new features, new tools, new commands, new hook events, new APIs
    - **Changed** — renamed commands, changed defaults, altered behavior, updated syntax
    - **Removed** — deprecated features, removed commands, deleted options
@@ -46,18 +72,33 @@ Phase 1 researches changes and presents a structured update plan. It **stops for
 
    | Feature Category | Module | Context File(s) |
    |---|---|---|
-   | CLAUDE.md, /init, memory, keyboard shortcuts | 01 | `claudemd.txt`, `interactive-mode.txt` |
-   | Plan mode, git integration | 02 | `common-workflows.txt` |
+   | CLAUDE.md, /init, /memory, memory timestamps | 01 | `claudemd.txt`, `auto-memory.txt` |
+   | Keyboard shortcuts, input modes, /color, session naming | 01 | `interactive-mode.txt` |
+   | Plan mode, git integration, /branch (was /fork) | 02 | `common-workflows.txt` |
    | Rules, CLAUDE.local.md, @imports, /compact | 03 | `claudemd.txt` |
-   | Skills, SKILL.md, frontmatter, commands | 04 | `skillsmd.txt` |
-   | Hooks (PostToolUse, Stop, SessionStart) | 05 | `hooks.txt`, `configure-hooks.txt` |
-   | MCP servers, .mcp.json | 06 | `mcp.txt`, `skills-plus-mcp.txt` |
-   | Guard rails, PreToolUse, hook decisions | 07 | `hooks.txt` |
-   | Subagents, .claude/agents/, agent teams | 08 | `subagents.txt`, `agent-teams.txt` |
-   | Tasks, TDD, dependencies | 09 | `tasks.txt` |
+   | Skills, SKILL.md, frontmatter fields, bundled skills | 04 | `skillsmd.txt` |
+   | Hooks: PostToolUse, Stop, SessionStart, new events | 05 | `hooks.txt`, `configure-hooks.txt` |
+   | MCP servers, .mcp.json, elicitation, channels | 06 | `mcp.txt`, `skills-plus-mcp.txt` |
+   | Guard rails, PreToolUse, sandbox settings, permissions | 07 | `hooks.txt` |
+   | Subagents, .claude/agents/, agent teams, SendMessage | 08 | `subagents.txt`, `agent-teams.txt` |
+   | Tasks, TDD, /loop, cron scheduling | 09 | `tasks.txt` |
    | Worktrees, plugins, eval, parallel dev | 10 | `plugins.txt` |
+   | IDE integration, Remote Control, VS Code features | 10 | `ide-integration.txt` |
+   | Models, effort levels, /effort, modelOverrides | 01 | `models.txt` |
+   | Voice mode, push-to-talk, language support | 01 | `interactive-mode.txt` |
+   | Status line, statusline scripts, rate_limits field | 01 | `sl-guide.txt` |
+   | System prompt, includeGitInstructions | 02/03 | `prompt.txt` |
+   | Feature selection guidance | (all) | `when-to-use-features.txt` |
 
 5. If zero entries are curriculum-relevant → report "No curriculum-relevant changes found between v{local} and v{latest}." and stop.
+
+### Step 2.5: Second-Pass Verification
+
+Re-read the full changelog one more time. For each entry you marked as "skip", ask: "Would a CC learner benefit from knowing this changed?" If yes, move it to "keep". Common second-pass catches:
+- Items with "Added" that look minor but introduce new user-facing commands
+- Items with "Changed" that rename or deprecate something already in the curriculum
+- IDE features that represent genuinely new capabilities (not just fixes)
+- Entries that mention new env vars, settings, or frontmatter fields
 
 ### Step 3: Research & Present Plan
 
@@ -69,6 +110,7 @@ For each significant change (not just minor tweaks):
 - If WebFetch fails or the URL is unknown, use WebSearch for official docs or usage guides.
 - If both fail, rely on the CHANGELOG entry text alone — note in the plan that research was limited for that item.
 - Read the affected context files (`context/*.txt`) to understand current coverage depth and format.
+- **Cross-reference all context files**: Run `ls context/` and read the first 5-10 lines of every context file. For each changelog entry, check if ANY context file (not just the ones in the mapping table) already documents related functionality. If so, that context file needs updating too. This catches features that span multiple areas.
 - Read the affected module files to understand existing step structure and numbering.
 
 #### 3b. Build the update plan
@@ -93,6 +135,20 @@ Compile a structured plan with these sections:
 | File | Purpose |
 |------|---------|
 | `context/{name}.txt` | {what it covers} |
+
+**Completeness check before presenting plan:**
+- [ ] Every `context/*.txt` file was considered — not just the ones in the mapping table
+- [ ] All new slash commands are accounted for
+- [ ] All new CLI flags are accounted for
+- [ ] All new/changed frontmatter fields are accounted for
+- [ ] All new hook events are accounted for
+- [ ] All new environment variables are accounted for
+- [ ] All renamed/deprecated features are accounted for
+- [ ] All new settings (user, project, managed) are accounted for
+- [ ] Voice mode changes are accounted for
+- [ ] Remote Control / IDE changes are accounted for
+- [ ] Model/effort changes are accounted for
+- [ ] Bundled skill additions are accounted for
 
 #### 3c. Present plan and STOP
 
