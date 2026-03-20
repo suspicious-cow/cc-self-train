@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.17.0 (2026-03-20)
+
+- Address 5 user-reported friction points from beta testing (Bill + others)
+- Teach `claude -c`, `--resume`, `/resume`, `/rename` in new SKILL.md Step 6.6 (renumber 6.6-6.8 → 6.7-6.9)
+- Add skills scoping note to Module 4 Step 4.1 (all 5 variants) — clarifies `.claude/skills/` must be at project root
+- Add Stop hook feedback loop warning to Module 5 Step 5.4 (all 5 variants) — stdout on exit 0 causes infinite loops
+- Add "No restart needed" note to Module 8 after first agent STOP block (all 5 variants)
+- Add IDE callout to SKILL.md Step 6.2 for VS Code/Cursor users
+
 ## v2.16.0 (2026-03-20)
 
 - Add two-layer freshness system to `/start` onboarding — Step 0 now checks repo freshness (git fetch + pull if behind) before CC version check
