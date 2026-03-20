@@ -23,22 +23,53 @@ Tell the user:
 
 Keep it to one short message (4-6 sentences). Write it as natural, conversational prose — no bulleted list. End with something inviting like "Ready to get started?" — then wait for their response.
 
-## Step 0: Curriculum Sync
+## Step 0: Freshness Check
+
+This step has three parts: a teaching moment about permissions, a repo freshness check (git pull), and a CC version check.
 
 ### 0.1 — First Permission Prompt (teaching moment)
 
 **This is the user's first hands-on lesson.** Before running the command, explain what they're about to experience. Tell them (in natural prose, not a bulleted list):
 
 - They're about to see their **first permission prompt** — a dialog box where Claude Code asks for approval before running a command. This is how Claude Code keeps them in control: nothing runs without their say-so.
-- Walk them through what they'll see in the prompt: the **command** being requested (in this case, a `curl` to check for curriculum updates), a **description** of what it does, and **three options**:
+- Walk them through what they'll see in the prompt: the **command** being requested (in this case, `git fetch` to check for course updates), a **description** of what it does, and **three options**:
   1. **Yes** — approve this one time. Use for commands you want to review each time (e.g., git commits, file deletions, anything that changes your code).
-  2. **Yes, and don't ask again** — auto-approve similar commands in the future. Use for low-risk, read-only commands you'll see often (e.g., `curl` fetches, `git status`, listing files). Saves you from clicking approve on harmless commands over and over.
+  2. **Yes, and don't ask again** — auto-approve similar commands in the future. Use for low-risk, read-only commands you'll see often (e.g., `git fetch`, `git status`, listing files). Saves you from clicking approve on harmless commands over and over.
   3. **No** — block the command. Use if something looks suspicious or you don't want it to run.
-- For this `curl` command, suggest they pick **"Yes, and don't ask again"** (option 2) — it's a safe, read-only fetch and they'll see similar commands throughout the course. Frame it as: "This is a good example of a low-risk command — it's just reading data, not changing anything. Approving it permanently saves you a click every time."
+- For this `git fetch` command, suggest they pick **"Yes, and don't ask again"** (option 2) — it's a safe, read-only fetch and they'll see similar git commands throughout the course. Frame it as: "This is a good example of a low-risk command — it's just checking for updates, not changing anything on your machine. Approving it permanently saves you a click every time."
 - Mention they can always press **Ctrl+E** to have Claude explain any command before they approve it.
 - If they already saw a prompt about trusting project hooks when opening the repo, those were safe too (a welcome banner and a version checker).
 
-Then say something like: "Ready? Here comes your first prompt —" and run the command. **Wait for the user to approve it before continuing.**
+Then say something like: "Ready? Here comes your first prompt —" and run the command:
+
+```bash
+git fetch origin --quiet
+```
+
+**Wait for the user to approve it before continuing.**
+
+### 0.2 — Pull if Repo is Behind
+
+After the fetch completes, check if the local repo is behind origin:
+
+```bash
+git rev-list HEAD..origin/master --count 2>/dev/null
+```
+
+**If the command fails** (no remote, not a git repo, detached HEAD detected via `git symbolic-ref HEAD 2>/dev/null`): skip silently and continue to Step 0.3.
+
+**If the count is 0** (up to date): skip silently and continue to Step 0.3.
+
+**If the count is > 0** (behind):
+- Explain to the user: "Your copy of this course is **N commits behind**. Let me grab the latest — takes a second."
+- Give the user the option to continue without pulling if they prefer (briefly mention: "If you'd rather skip, just say so — the current materials work fine.")
+- If the user agrees (or doesn't object), run: `git pull origin master --ff-only`
+  - **If succeeds:** "Updated! You've got the latest modules and docs."
+  - **If fails** (merge conflict, detached HEAD, fork): "Looks like you've got local changes that conflict. No worries — the current materials work fine. You can resolve this later with `git pull`."
+
+Continue to Step 0.3.
+
+### 0.3 — CC Version Check
 
 1. Read the first version number from `context/changelog-cc.txt` (the first line that is just a version number, e.g., `2.1.68`). This is the **local version**.
 2. Fetch the latest Claude Code version from the GitHub API using Bash:
@@ -68,7 +99,33 @@ Follow these instructions to sync the curriculum. Work through each step sequent
 2. Extract all entries between v{latest} and v{local}.
 3. **Fetch the Anthropic blog index** using WebFetch on `https://claude.com/blog`. Identify any posts published since the repo was last updated (use the release date of v{local} as the cutoff — look it up from the GitHub releases API if needed, or estimate from the CHANGELOG dates). Focus on posts in the **Claude Code** and **Agents** categories.
 4. **For each relevant blog post**, fetch the full article with WebFetch. Extract any Claude Code features, behavioral changes, or new capabilities mentioned. Cross-reference with the CHANGELOG entries — the blog may provide richer context for changelog items, or surface features not prominently listed in the changelog. Add any net-new findings to the triage list from item 5.
-5. Triage each entry. **Skip**: bug fixes, IDE-specific changes, platform-specific tweaks, performance improvements, cosmetic changes. **Keep** and classify into one of three change types:
+5. Triage each entry. Classify into one of three change types (**Added**, **Changed**, **Removed**), or skip it:
+
+   **SKIP (do not include):**
+   - Pure bug fixes that don't change documented behavior (e.g., "Fixed crash when...")
+   - Performance improvements with no user-visible behavior change (e.g., "Reduced memory by...")
+   - Cosmetic/UI polish (e.g., "Improved color rendering in tmux")
+   - Security patches that don't introduce new settings or features
+
+   **KEEP (always include):**
+   - New slash commands, CLI flags, or settings — even small ones like `/color` or `-n`
+   - New or renamed frontmatter fields for skills, agents, or hooks
+   - New hook events, hook fields, or hook behavior changes
+   - New environment variables that users would set
+   - Voice mode feature additions (language support, keybindings)
+   - Remote Control / IDE integration features that affect workflows
+   - Model changes (new defaults, effort level changes, output token limits)
+   - Renamed or deprecated commands (e.g., `/fork` → `/branch`, `/output-style` deprecated)
+   - New bundled skills that ship with CC
+   - Sandbox/permission setting additions
+   - Breaking changes (even if they seem minor)
+   - Status line / statusline script changes
+
+   **GRAY AREA — keep if it changes documented behavior:**
+   - VS Code-specific features: SKIP pure VS Code UI fixes, KEEP features that also work in CLI or represent major workflow additions (e.g., Remote Control bridge)
+   - Platform-specific: SKIP platform build fixes, KEEP feature additions available to that platform's users (e.g., voice mode on WSL)
+
+   Classify kept entries into:
    - **Added** — new features, new tools, new commands, new hook events, new APIs
    - **Changed** — renamed commands, changed defaults, altered behavior, updated syntax
    - **Removed** — deprecated features, removed commands, deleted options
@@ -76,18 +133,45 @@ Follow these instructions to sync the curriculum. Work through each step sequent
 
    | Feature Category | Module | Context File(s) |
    |---|---|---|
-   | CLAUDE.md, /init, memory, keyboard shortcuts | 01 | `claudemd.txt`, `interactive-mode.txt` |
-   | Plan mode, git integration | 02 | `common-workflows.txt` |
+   | CLAUDE.md, /init, /memory, memory timestamps | 01 | `claudemd.txt`, `auto-memory.txt` |
+   | Keyboard shortcuts, input modes, /color, session naming | 01 | `interactive-mode.txt` |
+   | Plan mode, git integration, /branch (was /fork) | 02 | `common-workflows.txt` |
    | Rules, CLAUDE.local.md, @imports, /compact | 03 | `claudemd.txt` |
-   | Skills, SKILL.md, frontmatter, commands | 04 | `skillsmd.txt` |
-   | Hooks (PostToolUse, Stop, SessionStart) | 05 | `hooks.txt`, `configure-hooks.txt` |
-   | MCP servers, .mcp.json | 06 | `mcp.txt`, `skills-plus-mcp.txt` |
-   | Guard rails, PreToolUse, hook decisions | 07 | `hooks.txt` |
-   | Subagents, .claude/agents/, agent teams | 08 | `subagents.txt`, `agent-teams.txt` |
-   | Tasks, TDD, dependencies | 09 | `tasks.txt` |
+   | Skills, SKILL.md, frontmatter fields, bundled skills | 04 | `skillsmd.txt` |
+   | Hooks: PostToolUse, Stop, SessionStart, new events | 05 | `hooks.txt`, `configure-hooks.txt` |
+   | MCP servers, .mcp.json, elicitation, channels | 06 | `mcp.txt`, `skills-plus-mcp.txt` |
+   | Guard rails, PreToolUse, sandbox settings, permissions | 07 | `hooks.txt` |
+   | Subagents, .claude/agents/, agent teams, SendMessage | 08 | `subagents.txt`, `agent-teams.txt` |
+   | Tasks, TDD, /loop, cron scheduling | 09 | `tasks.txt` |
    | Worktrees, plugins, eval, parallel dev | 10 | `plugins.txt` |
+   | IDE integration, Remote Control, VS Code features | 10 | `ide-integration.txt` |
+   | Models, effort levels, /effort, modelOverrides | 01 | `models.txt` |
+   | Voice mode, push-to-talk, language support | 01 | `interactive-mode.txt` |
+   | Status line, statusline scripts, rate_limits field | 01 | `sl-guide.txt` |
+   | System prompt, includeGitInstructions | 02/03 | `prompt.txt` |
+   | Feature selection guidance | (all) | `when-to-use-features.txt` |
 
-7. If zero entries are curriculum-relevant → stop here and tell the user "No curriculum-relevant changes found."
+7. **Second-pass verification:** Re-read the full changelog one more time. For each entry you marked as "skip", ask: "Would a CC learner benefit from knowing this changed?" If yes, move it to "keep". Common second-pass catches:
+   - Items with "Added" that look minor but introduce new user-facing commands
+   - Items with "Changed" that rename or deprecate something already in the curriculum
+   - IDE features that represent genuinely new capabilities (not just fixes)
+   - Entries that mention new env vars, settings, or frontmatter fields
+
+8. **Completeness checklist** before proceeding:
+   - [ ] Every `context/*.txt` file was considered — not just the ones in the mapping table
+   - [ ] All new slash commands are accounted for
+   - [ ] All new CLI flags are accounted for
+   - [ ] All new/changed frontmatter fields are accounted for
+   - [ ] All new hook events are accounted for
+   - [ ] All new environment variables are accounted for
+   - [ ] All renamed/deprecated features are accounted for
+   - [ ] All new settings (user, project, managed) are accounted for
+   - [ ] Voice mode changes are accounted for
+   - [ ] Remote Control / IDE changes are accounted for
+   - [ ] Model/effort changes are accounted for
+   - [ ] Bundled skill additions are accounted for
+
+9. If zero entries are curriculum-relevant → stop here and tell the user "No curriculum-relevant changes found."
 
 **Step 2 — Research & update files:**
 
@@ -111,9 +195,9 @@ For each significant change (not just minor tweaks):
       | Project | Checkpoint Heading | Step Heading Style |
       |---------|-------------------|--------------------|
       | Canvas | `### Checkpoint` | `### X.N Title` (e.g., `### 5.8 Explore Hook Variables`) |
-      | Forge | `## Checkpoint` | `## X.N Title` (e.g., `## 5.8 Explore Hook Variables`) |
-      | Nexus | `### Checkpoint` | `### Step N: Title` or `### Step Nb: Title` |
-      | Sentinel | `### Checkpoint` | `### Step N: Title` or `### Step Nb: Title` |
+      | Forge | `### Checkpoint` | `### X.N Title` (e.g., `### 5.8 Explore Hook Variables`) |
+      | Nexus | `### Checkpoint` | `### X.N Title` (e.g., `### 5.8 Explore Hook Variables`) |
+      | Sentinel | `### Checkpoint` | `### X.N Title` (e.g., `### 5.8 Explore Hook Variables`) |
       | BYOP | `### Checkpoint` | `### X.N Title` (e.g., `### 5.8 Explore Hook Variables`) |
 
    c. Determine the next sequential step number by reading the last step before Checkpoint.

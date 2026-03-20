@@ -196,7 +196,7 @@ The `context/` folder contains detailed reference documentation for every CC fea
 | `context/boris-workflow.txt` | Real-world patterns, parallel Claude workflows |
 | `context/anthropic-basics.txt` | How Claude Code works (agentic loop, models, tools) |
 | `context/sl-guide.txt` | Real-world CC patterns from daily use and hackathon experience |
-| `context/changelog-cc.txt` | Claude Code changelog (v2.0.0 — v2.1.68) |
+| `context/changelog-cc.txt` | Claude Code changelog (v2.0.0 — v2.1.80) |
 | `context/auto-memory.txt` | Auto-memory system reference |
 | `context/models.txt` | Model tiers (Haiku/Sonnet/Opus), selection guidance, effort levels |
 | `context/ide-integration.txt` | VS Code/Cursor extension, IDE setup, CLI vs extension features |
@@ -209,11 +209,14 @@ The `context/` folder contains detailed reference documentation for every CC fea
 - **Same curriculum, different domains.** All 5 options teach the same features in the same order. Pick based on interest.
 - **Real tools, not toys.** Every project produces something genuinely useful that you can keep using after you finish.
 
-## Staying Current
+## Always Current
 
-This curriculum is actively maintained. As Claude Code adds new features, we update existing modules and add coverage so the course stays current. If you've already finished, `git pull` and check the [changelog](CHANGELOG.md) — you may find new content in modules you've completed.
+You don't need to worry about the curriculum going stale. When you run `/start`, two things happen automatically:
 
-Star or watch this repo to get notified when updates land.
+1. **Repo freshness check** — If the maintainers have pushed updates since you last pulled, Claude offers to `git pull` so you get the latest modules and docs.
+2. **CC version sync** — If your installed Claude Code is newer than what the curriculum covers, Claude fetches the changelog and updates the relevant lesson files and reference docs on the spot.
+
+Returning users get a banner reminder at session start if updates are available. Everything works offline too — if either check fails, onboarding continues with the current materials.
 
 ## Companion Resources
 

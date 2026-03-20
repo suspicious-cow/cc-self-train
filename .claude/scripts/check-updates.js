@@ -82,26 +82,63 @@ function isNewer(a, b) {
 }
 
 // ---------------------------------------------------------------------------
-// Main — check for newer CC releases
+// Check if the repo is behind origin/master
+// ---------------------------------------------------------------------------
+function checkRepoFreshness() {
+  try {
+    execSync("git fetch origin --quiet", { encoding: "utf-8", timeout: 8000 });
+    const behindCount = execSync("git rev-list HEAD..origin/master --count 2>/dev/null", {
+      encoding: "utf-8",
+      timeout: 5000,
+    }).trim();
+    const n = parseInt(behindCount, 10);
+    if (n > 0) {
+      return `  Curriculum updates available (${n} commit${n === 1 ? "" : "s"} behind)\n  Run: git pull  or  /start\n`;
+    }
+  } catch {
+    // No remote, not a git repo, no network — skip silently
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Main — check for newer CC releases + repo freshness
 // ---------------------------------------------------------------------------
 async function main() {
-  const releases = await ghApi(
-    "/repos/anthropics/claude-code/releases?per_page=1"
-  );
+  const bannerParts = [];
 
-  if (!Array.isArray(releases) || releases.length === 0) process.exit(0);
+  // Check 1: CC version (independent — one failing doesn't block the other)
+  try {
+    const releases = await ghApi(
+      "/repos/anthropics/claude-code/releases?per_page=1"
+    );
 
-  const latestTag = (releases[0].tag_name || "").replace(/^v/, "");
-  if (!latestTag || !isNewer(latestTag, installedVersion)) process.exit(0);
+    if (Array.isArray(releases) && releases.length > 0) {
+      const latestTag = (releases[0].tag_name || "").replace(/^v/, "");
+      if (latestTag && isNewer(latestTag, installedVersion)) {
+        bannerParts.push(
+          `  Claude Code v${latestTag} is out\n` +
+          `  (you have v${installedVersion}).\n\n` +
+          `  Run: claude update`
+        );
+      }
+    }
+  } catch {
+    // Network error — skip CC version check
+  }
+
+  // Check 2: Repo freshness (independent)
+  const repoMsg = checkRepoFreshness();
+  if (repoMsg) bannerParts.push(repoMsg);
+
+  if (bannerParts.length === 0) process.exit(0);
 
   const message =
     `\n========================================\n` +
     `  Update Available\n` +
     `========================================\n\n` +
-    `  Claude Code v${latestTag} is out\n` +
-    `  (you have v${installedVersion}).\n\n` +
-    `  Run: claude update\n\n` +
-    `========================================`;
+    bannerParts.join(`\n`) +
+    `\n\n========================================`;
 
   process.stdout.write(JSON.stringify({ systemMessage: message }));
 }

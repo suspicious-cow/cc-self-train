@@ -44,7 +44,7 @@ cc-self-train/
 When a user runs `claude` in this repo:
 1. Claude Code detects two project hooks in `.claude/settings.json` and prompts the user to trust them. They should approve both — they are read-only and safe. Users can review them with `/hooks` if they want to.
 2. **Hook 1 — welcome.sh**: Prints a welcome banner telling them to type `/start` and explains the hooks.
-3. **Hook 2 — check-updates.js**: Pings GitHub to check if a newer version of Claude Code is available. If so, it tells the user to run `claude update`. Fails silently if offline.
+3. **Hook 2 — check-updates.js**: Pings GitHub to check if a newer version of Claude Code is available and checks if the repo is behind origin. Shows a banner with update instructions if either is true. Fails silently if offline.
 4. The `/start` skill walks them through: pick a project (Canvas, Forge, Nexus, Sentinel, or Bring Your Own Project), pick a language (skipped for Canvas and BYOP), optionally choose an environment (skipped for Canvas and BYOP; venv/conda/Docker for others), verify environment, scaffold project in `workspace/<name>/` (or reference an external path for BYOP), then deliver Module 1 inline.
 5. From there, users say "next module" to continue through Modules 2-10. Claude reads the current module file from `projects/<name>/modules/` and walks them through it — all within the same cc-self-train session. No terminal switching needed.
 
@@ -60,7 +60,7 @@ When a user runs `claude` in this repo:
 
 When a user starts a session in this repo, ALWAYS greet them warmly and direct them to get started.
 
-**If `CLAUDE.local.md` exists with an active project**, greet the user and offer to continue (e.g., "Welcome back! You're on Module 3 of Forge. Say 'next module' when you're ready to continue."). Read `CLAUDE.local.md` for the project name, language, directory, and current module.
+**If `CLAUDE.local.md` exists with an active project**, greet the user and offer to continue (e.g., "Welcome back! You're on Module 3 of Forge. Say 'next module' when you're ready to continue."). Read `CLAUDE.local.md` for the project name, language, directory, and current module. Then silently run `git fetch origin --quiet` and `git rev-list HEAD..origin/master --count 2>/dev/null`. If the repo is behind, mention: "I noticed there are curriculum updates available (N commits behind). Want me to pull them before we continue?" If the fetch fails or the repo is up to date, say nothing.
 
 **If `CLAUDE.local.md` does not exist** (new user), and they send a vague first message (like "hi", "hello", "help", "what is this", or anything that suggests they're new), respond with:
 
