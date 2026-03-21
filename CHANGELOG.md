@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.18.0 (2026-03-21)
+
+- Integrate `claude-code-guide` agent into `/sync` skill as primary feature research method (replaces raw WebFetch/WebSearch)
+- Add `claude-code-guide` agent to `/start` Step 1a curriculum sync with user permission ask (framed as Module 8 preview)
+- Both skills fall back to WebSearch if agent returns insufficient detail or user declines
+
 ## v2.17.2 (2026-03-21)
 
 - Remove PII (proper names) from changelog
