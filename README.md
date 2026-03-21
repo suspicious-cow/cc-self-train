@@ -1,4 +1,19 @@
-# Learn Claude Code by Doing &nbsp; [![v2.17.0](https://img.shields.io/badge/version-2.16.0-blue)](CHANGELOG.md)
+<div align="center">
+
+# Agentic Education:<br>*Using Claude Code to Teach Claude Code*
+
+**[Zain Naboulsi](https://github.com/suspicious-cow)**<br>
+Principal AI Engineer, Sparq
+
+[![Paper](https://img.shields.io/badge/Paper-PDF-red)](Agentic%20Education%20-%20Using%20Claude%20Code%20to%20Teach%20Claude%20Code.pdf) [![v2.17.0](https://img.shields.io/badge/version-2.17.0-blue)](CHANGELOG.md)
+
+</div>
+
+## TL;DR
+
+Developers face a widening gap between the availability of powerful AI coding agents and the learning pathways needed to use them effectively. **cc-self-train** is a modular interactive curriculum for learning Claude Code through hands-on project construction. The system introduces four contributions: (1) a **persona progression model** that adapts the AI instructor's tone across four stages (Guide → Collaborator → Peer → Launcher); (2) a **cross-domain unified curriculum** in which five distinct project domains share identical feature sequencing; (3) a **step-pacing mechanism** with explicit pause primitives to manage information overload; and (4) an **auto-updating curriculum design** in which the onboarding agent detects upstream tool changes and updates teaching materials before instruction begins. A pilot evaluation with 27 participants shows statistically significant self-efficacy gains across all 10 assessed skill areas (*p* < 0.001), with the largest effects on advanced features such as hooks and custom skills.
+
+---
 
 The best way to learn Claude Code is to build something real with it. Pick a project, pick your language, and work through 10 hands-on modules that teach you every major [Claude Code](https://docs.anthropic.com/en/docs/claude-code) feature — not by reading about them, but by using them to ship actual code.
 
