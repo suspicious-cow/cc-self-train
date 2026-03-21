@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.17.1 (2026-03-21)
+
+- Add research paper PDF: "Agentic Education: Using Claude Code to Teach Claude Code"
+- Redesign README with paper title as heading, Paper/version badges, and TL;DR section
+
 ## v2.17.0 (2026-03-20)
 
 - Address 5 user-reported friction points from beta testing (Bill + others)
