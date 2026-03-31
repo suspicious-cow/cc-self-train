@@ -145,3 +145,5 @@ Every project follows these same 10 modules:
 8. **Subagents** — .claude/agents/, subagent frontmatter, chaining, parallel, background, SendMessage, agent frontmatter fields
 9. **Tasks & TDD** — Tasks system, dependencies, cross-session persistence, TDD loops, /loop, cron scheduling
 10. **Parallel Dev, Plugins & Evaluation** — Worktrees, plugins, eval, PermissionRequest hooks, continuous learning, plugin ecosystem, /remote-control, ExitWorktree
+
+**Why 10 modules?** The modules follow a deliberate dependency chain: foundation (1-2) → configuration (3-4) → automation (5-7) → scaling (8-10). Module 7 explicitly requires Module 5; Module 10 builds on Module 9's tasks. New CC features are appended to the closest existing module via `/sync`. If a module grows disproportionately large (2x+ the steps of the smallest module) or a genuinely new foundational feature arrives, the maintainer can split modules or promote features — see the sync skill's health check and escalation policies.

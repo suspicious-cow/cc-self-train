@@ -100,6 +100,23 @@ Re-read the full changelog one more time. For each entry you marked as "skip", a
 - IDE features that represent genuinely new capabilities (not just fixes)
 - Entries that mention new env vars, settings, or frontmatter fields
 
+### Step 2.6: Module Health Check
+
+Before presenting the plan, assess curriculum balance:
+
+1. Count the number of steps in each module (across any one project variant, e.g., Canvas) by counting `### X.N` headings before the Checkpoint.
+2. Flag any module where:
+   - **Bloat risk**: The module has 2x+ the steps of the smallest module (e.g., Module 5 has 14 steps but Module 3 has 6)
+   - **This sync would add 3+ steps to a single module** — consider whether the feature could reasonably split across two modules instead
+3. If flagged, include a **Health Warning** in the Phase 1 plan output:
+   ```
+   ⚠️ Module Health Warning:
+   - Module 5 (Hooks) has 14 steps — 2.3x the size of Module 3 (6 steps)
+   - This sync would add 2 more steps to Module 5
+   - Consider: Could any of these features live in Module 7 (Guard Rails) instead?
+   ```
+4. The maintainer decides — the sync skill flags but does not auto-rebalance.
+
 ### Step 3: Research & Present Plan
 
 For each significant change (not just minor tweaks):
@@ -213,6 +230,24 @@ For each new feature that maps to a module, update all 5 project variants (`proj
 8. For **Changed** features: do NOT modify existing steps. Append a brief note step before Checkpoint mentioning the updated behavior.
 
 9. For **Removed** features: append a note step before Checkpoint explaining the removal and the recommended alternative. Do NOT delete existing steps.
+
+### Handling Foundational Features
+
+Most new CC features fit cleanly into the existing 10-module structure. Occasionally, a feature is so foundational that appending it to an existing module would be misleading — it deserves more prominence than "Step 5.14" buried at the bottom of a module.
+
+**Signs a feature might be foundational:**
+- It changes how ALL modules work (e.g., a new permission model, a new project config format)
+- It's a prerequisite for understanding features in later modules
+- Students who skip it would be confused by content in 3+ other modules
+- It's comparable in scope to an existing module topic (e.g., hooks, skills, MCP)
+
+**When this happens, do NOT force it into an existing module.** Instead:
+1. Flag it in the Phase 1 plan as a **"Foundational Feature Alert"**
+2. Recommend one of these options to the maintainer:
+   - **Option A: Promote to early module.** Add a substantial new section (not just a step) to Module 1, 2, or 3 where foundational concepts are taught. This is appropriate when the feature is simple but universal.
+   - **Option B: Split an existing module.** If a module has grown to 12+ steps, propose splitting it into two modules (e.g., Module 5a and 5b). This requires renumbering all subsequent modules across all 5 projects — flag the scope clearly.
+   - **Option C: Create Module 11.** As a last resort for a wholly new feature area that doesn't overlap with any existing module. Requires updating CLAUDE.md, README.md, the feature matrix, all 5 project READMEs, and tests.
+3. The maintainer decides. The sync skill does NOT auto-create new modules.
 
 ### Step 6: Self-Verification
 
