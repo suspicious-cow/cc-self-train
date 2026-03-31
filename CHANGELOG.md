@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.19.1 (2026-03-31)
+
+- Add Step 2.6 Module Health Check to `/sync` skill — flags modules that are 2x+ the size of the smallest or receiving 3+ steps in a single sync
+- Add "Handling Foundational Features" escalation policy to `/sync` skill — Options A (promote to early module), B (split module), C (create Module 11)
+- Add curriculum architecture rationale note to CLAUDE.md explaining the 10-module dependency chain
+
 ## v2.19.0 (2026-03-31)
 
 - Add adaptive learning system inspired by Chung et al. (2025) — engagement quality drives learning outcomes
