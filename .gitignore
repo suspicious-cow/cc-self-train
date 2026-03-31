@@ -5,3 +5,5 @@ nul
 __pycache__/
 workspace/
 CLAUDE.local.md
+learner-profile.json
+.observe-lock

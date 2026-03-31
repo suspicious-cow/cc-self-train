@@ -32,8 +32,8 @@ class TestSettingsJson:
         path = REPO_ROOT / ".claude" / "settings.json"
         data = json.loads(path.read_text(encoding="utf-8"))
         hooks = data["hooks"]["SessionStart"]
-        assert len(hooks) == 2, \
-            f"Expected 2 SessionStart hooks, got {len(hooks)}"
+        assert len(hooks) == 3, \
+            f"Expected 3 SessionStart hooks, got {len(hooks)}"
 
     def test_hook_scripts_referenced_exist(self):
         """Every script referenced in settings.json must exist."""

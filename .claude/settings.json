@@ -19,6 +19,27 @@
             "timeout": 15
           }
         ]
+      },
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/scripts/learner-context.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/scripts/observe-interaction.js",
+            "timeout": 10
+          }
+        ]
       }
     ]
   }

@@ -710,6 +710,8 @@ Create `CLAUDE.local.md` in the **cc-self-train root directory** (NOT inside wor
 # Active Project
 Project: BYOP | Language: <language> | OS: <detected-os> | Directory: <absolute-project-path> | Current Module: 1 | Current Step: 6.4
 Experience Level: <beginner/intermediate/advanced>
+Effective Level: <beginner/intermediate/advanced>
+Engagement Trend: not yet measured
 
 When the user starts a session, greet them and offer to continue where they left off.
 When the user says "next module" or asks for the next module, read the current module file from projects/byop/modules/ (e.g., projects/byop/modules/02-blueprint.md) and walk them through it.
@@ -729,6 +731,8 @@ For advanced CC users: skip fundamentals, focus on advanced patterns and best pr
 # Active Project
 Project: <project> | Language: <language> | OS: <detected-os> | Directory: workspace/<project-dir> | Current Module: 1 | Current Step: 6.4
 Experience Level: <beginner/intermediate/advanced>
+Effective Level: <beginner/intermediate/advanced>
+Engagement Trend: not yet measured
 
 When the user starts a session, greet them and offer to continue where they left off.
 When the user says "next module" or asks for the next module, read the current module file from projects/<name>/modules/ (e.g., projects/<name>/modules/02-blueprint.md) and walk them through it.
