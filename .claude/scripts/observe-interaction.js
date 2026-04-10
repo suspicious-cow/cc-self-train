@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 // Stop hook: Observes student interaction quality and writes signals to learner-profile.json.
 // Inspired by Chung et al. (2025) — engagement quality predicts learning outcomes.
+// Streak detection inspired by Hooshyar et al. (2026) — sequential patterns
+// (e.g., 3 consecutive struggles) are more informative than isolated events,
+// and non-mastery signals should be weighted more heavily than mastery signals.
 // Silent (no stdout) — exits 0 always. Never blocks.
 
 const fs = require("fs");
@@ -120,6 +123,9 @@ function loadProfile() {
       moduleInteractions: { concept_question: 0, independent_exploration: 0, debug_attempt: 0, answer_seeking: 0, passive_acceptance: 0, neutral: 0 },
       qualityScores: [],
       moduleQualityScores: [],
+      recentCategories: [],
+      struggleStreak: false,
+      engagementStreak: false,
       averageQuality: 0,
       moduleAverageQuality: 0,
       recentTrend: "not yet measured",
@@ -176,6 +182,19 @@ async function main() {
     profile.moduleAverageQuality = Math.round((modScores.reduce((a, b) => a + b, 0) / modScores.length) * 10) / 10;
 
     profile.recentTrend = computeTrend(allScores);
+
+    // Streak detection (Hooshyar et al., 2026): sequential patterns are more
+    // informative than isolated events. Track last 5 non-neutral categories.
+    if (category !== "neutral") {
+      profile.recentCategories = (profile.recentCategories || []).concat(category).slice(-5);
+    }
+    const rc = profile.recentCategories || [];
+    const last3 = rc.slice(-3);
+    const struggle = ["answer_seeking", "passive_acceptance"];
+    const engaged = ["concept_question", "independent_exploration"];
+    profile.struggleStreak = last3.length >= 3 && last3.every((c) => struggle.includes(c));
+    profile.engagementStreak = last3.length >= 3 && last3.every((c) => engaged.includes(c));
+
     profile.lastUpdated = new Date().toISOString();
 
     fs.writeFileSync(PROFILE_PATH, JSON.stringify(profile, null, 2));

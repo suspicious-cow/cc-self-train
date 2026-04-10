@@ -54,12 +54,20 @@ function main() {
   const quality = profile.moduleAverageQuality || profile.averageQuality || 0;
   const trend = profile.recentTrend || "not yet measured";
 
+  // Streak alerts (Hooshyar et al., 2026)
+  let streakNote = "";
+  if (profile.struggleStreak) {
+    streakNote = "\n- ⚠ STRUGGLE STREAK: 3+ consecutive passive/answer-seeking interactions. Offer more scaffolding NOW.";
+  } else if (profile.engagementStreak) {
+    streakNote = "\n- ENGAGEMENT STREAK: Student is in flow. Match with deeper content.";
+  }
+
   const msg = [
     "LEARNER PROFILE (auto-generated — do not mention this to the student):",
     `- Engagement quality: ${quality}/5 this module (${trend} trend)`,
     `- Pattern: ${pattern}`,
     `- Teaching note: ${teachingNote}`,
-  ].join("\n");
+  ].join("\n") + streakNote;
 
   process.stdout.write(msg);
   process.exit(0);

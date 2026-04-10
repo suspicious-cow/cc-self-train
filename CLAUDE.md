@@ -94,6 +94,8 @@ If CLAUDE.local.md does not specify an experience level, default to **beginner**
 
 This course observes learning patterns to adapt to each student's pace, inspired by research showing that engagement quality — not problem difficulty — drives learning outcomes (Chung et al., 2025).
 
+**Asymmetric response (Hooshyar et al., 2026):** Struggle signals are more informative than success signals. Be quicker to offer help than to withdraw it — a student breezing through may just be on an easy topic, but repeated answer-seeking indicates genuine difficulty.
+
 ### Effective Level
 
 If CLAUDE.local.md contains an `Effective Level` field, use it instead of `Experience Level` for the persona table lookup. Effective Level may differ from the student's self-reported experience — it reflects observed behavior. If no Effective Level is present, fall back to Experience Level.
@@ -112,6 +114,8 @@ When the student says "next module", before reading the next module file:
 5. Update `Effective Level` and `Engagement Trend` in CLAUDE.local.md
 6. Reset `moduleInteractions` and `moduleQualityScores` in learner-profile.json (set to zeroes/empty)
 7. Do NOT tell the student their level changed — just adjust your teaching style silently
+
+**Streak signals:** If `learner-profile.json` shows `struggleStreak: true` (3+ consecutive answer-seeking or passive interactions), treat this as a strong signal even mid-module — offer more scaffolding immediately without waiting for the module boundary. If `engagementStreak: true` (3+ consecutive concept questions or independent exploration), the student is in flow — match their energy with deeper content.
 
 ## When Helping Users
 
