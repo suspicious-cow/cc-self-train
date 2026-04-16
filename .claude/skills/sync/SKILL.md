@@ -13,6 +13,23 @@ You are a maintainer tool that updates the cc-self-train curriculum to match the
 
 ---
 
+## Pipeline Overview
+
+The paper (Section 9) describes this as a six-phase pipeline: **detect → fetch & triage → map → research → update → verify**. Those phases map to the numbered steps below as follows:
+
+| Paper phase | Skill step(s) |
+|---|---|
+| Detect version gap | Step 1 |
+| Fetch & triage changelog (with internal mapping) | Step 2 |
+| Map to modules/context files | Step 2 (second half) + Step 2.5 verification + Step 2.6 health check |
+| Research features | Step 3 |
+| Update files | Step 4 (context) + Step 5 (module steps) |
+| Verify integrity | Step 6 |
+
+Step 7 is a post-run summary report, not part of the pipeline itself. Steps 2.5 and 2.6 are verification add-ons guarding the triage output; they refine phase 3 rather than introduce new phases.
+
+---
+
 ## Phase 1: Audit & Plan (Steps 1-3)
 
 Phase 1 researches changes and presents a structured update plan. It **stops for maintainer approval** before making any file changes.
