@@ -1,5 +1,11 @@
 # Module 5 -- Hooks
 
+<!-- progress:start -->
+**Progress:** Module 5 of 10 `[█████░░░░░]` 50%
+
+**Estimated time:** ~60-75 min
+<!-- progress:end -->
+
 **CC features:** SessionStart, PostToolUse, Stop hooks, matchers, hook
 scripting, settings.json
 

@@ -1,5 +1,11 @@
 # Module 1 -- Setup and First Contact
 
+<!-- progress:start -->
+**Progress:** Module 1 of 10 `[█░░░░░░░░░]` 10%
+
+**Estimated time:** ~30-45 min
+<!-- progress:end -->
+
 **CC features:** CLAUDE.md, `/init`, `/memory`, interactive mode, keyboard
 shortcuts
 

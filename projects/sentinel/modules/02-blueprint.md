@@ -1,5 +1,11 @@
 # Module 2 -- Blueprint & Build
 
+<!-- progress:start -->
+**Progress:** Module 2 of 10 `[██░░░░░░░░]` 20%
+
+**Estimated time:** ~60-90 min
+<!-- progress:end -->
+
 **CC features:** Plan mode, model selection, git integration, basic prompting
 
 **Persona -- Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"

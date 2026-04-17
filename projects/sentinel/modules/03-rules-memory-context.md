@@ -1,5 +1,11 @@
 # Module 3 -- Rules, Memory & Context
 
+<!-- progress:start -->
+**Progress:** Module 3 of 10 `[███░░░░░░░]` 30%
+
+**Estimated time:** ~45-60 min
+<!-- progress:end -->
+
 **CC features:** .claude/rules/, CLAUDE.local.md, @imports, /context, /compact, /stats, /cost, /statusline, memory hierarchy
 
 **Persona -- Guide:** Explain everything, define terms, celebrate small wins. "Let's try…", "Here's what that does…"

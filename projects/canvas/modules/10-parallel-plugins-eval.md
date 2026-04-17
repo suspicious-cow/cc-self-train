@@ -1,5 +1,11 @@
 # Module 10 -- Parallel Dev, Plugins, and Evaluation
 
+<!-- progress:start -->
+**Progress:** Module 10 of 10 `[██████████]` 100%
+
+**Estimated time:** ~90-120 min
+<!-- progress:end -->
+
 **CC features:** Git worktrees, agent teams (experimental), plugins, evaluation,
 PermissionRequest hooks, continuous learning
 

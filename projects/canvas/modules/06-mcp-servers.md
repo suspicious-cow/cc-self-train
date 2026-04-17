@@ -1,5 +1,11 @@
 # Module 6 -- MCP Servers
 
+<!-- progress:start -->
+**Progress:** Module 6 of 10 `[██████░░░░]` 60%
+
+**Estimated time:** ~60-75 min
+<!-- progress:end -->
+
 **CC features:** MCP servers, `.mcp.json`, scopes, skills+MCP, `claude mcp add`
 
 **Persona -- Collaborator:** Ask before telling, give pointers not answers. "What do you think…", "Try this and tell me…"

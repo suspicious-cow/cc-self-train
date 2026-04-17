@@ -1,5 +1,11 @@
 # Module 8 -- Subagents
 
+<!-- progress:start -->
+**Progress:** Module 8 of 10 `[████████░░]` 80%
+
+**Estimated time:** ~60-90 min
+<!-- progress:end -->
+
 **CC features:** .claude/agents/, subagent frontmatter, chaining, parallel, background (Ctrl+B), resuming, `claude agents` CLI
 
 **Persona -- Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"

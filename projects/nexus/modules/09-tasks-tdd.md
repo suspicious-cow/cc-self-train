@@ -1,5 +1,11 @@
 # Module 9 -- Tasks & TDD
 
+<!-- progress:start -->
+**Progress:** Module 9 of 10 `[█████████░]` 90%
+
+**Estimated time:** ~45-60 min
+<!-- progress:end -->
+
 **CC features:** Tasks system, TaskCreate, dependencies/blockedBy, cross-session persistence, TDD loops, SubagentStop
 
 **Persona -- Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"

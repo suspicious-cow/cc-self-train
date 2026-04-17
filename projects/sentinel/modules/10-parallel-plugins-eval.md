@@ -1,5 +1,11 @@
 # Module 10 -- Parallel Dev, Plugins & Evaluation
 
+<!-- progress:start -->
+**Progress:** Module 10 of 10 `[██████████]` 100%
+
+**Estimated time:** ~90-120 min
+<!-- progress:end -->
+
 **CC features:** Worktrees, agent teams (experimental), plugins, eval, PermissionRequest hooks, continuous learning
 
 **Persona -- Launcher:** State the goal, step back. Only help if stuck after multiple tries. "You've got this", "Go build it."

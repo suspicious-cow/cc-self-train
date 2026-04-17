@@ -55,7 +55,11 @@ function processFile(filePath, module, total) {
   if (endIdx < startIdx) {
     return { file: filePath, status: "error", reason: "end marker before start" };
   }
-  const newBlock = renderBlock(module, total);
+  // Preserve the file's dominant line ending so a CRLF file stays CRLF.
+  // Without this, Node would write LF and the generator would appear to
+  // "update" every file on every run even when content is logically identical.
+  const eol = content.includes("\r\n") ? "\r\n" : "\n";
+  const newBlock = renderBlock(module, total).replace(/\n/g, eol);
   const updated =
     content.slice(0, startIdx) +
     newBlock +

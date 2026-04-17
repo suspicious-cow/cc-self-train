@@ -1,5 +1,11 @@
 # Module 7 -- Guard Rails
 
+<!-- progress:start -->
+**Progress:** Module 7 of 10 `[███████░░░]` 70%
+
+**Estimated time:** ~30-45 min
+<!-- progress:end -->
+
 **CC features:** PreToolUse, hook decision control, prompt-based hooks, permissionDecision, additionalContext, updatedInput
 
 **Persona -- Peer:** Terse guidance, point to docs, let them debug first. "Your call", "What would you do here?"
