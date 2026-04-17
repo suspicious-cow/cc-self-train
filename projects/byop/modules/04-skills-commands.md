@@ -12,6 +12,12 @@ argument substitution, `disable-model-invocation`
 >
 > See the [glossary](../../../GLOSSARY.md) for related terms.
 
+**What's the difference between a skill and a command?**
+
+- A **command** is anything you invoke by typing `/name` in Claude Code. Built-ins like `/init`, `/memory`, `/compact` are commands.
+- A **skill** is a *user-defined command* -- a Markdown file you put in `.claude/skills/` that becomes a new `/command`. Skills let you package your own prompts, rules, and tool allowlists as first-class commands.
+- **All skills are commands; not all commands are skills.** The module title "Skills and Commands" means "the skill system, which is how you add new commands."
+
 ### 4.1 Create a Workflow Skill
 
 **Where do skills go?** Create skills in your external project's `.claude/skills/` directory — that's where Claude looks when running from your project root. If you're running Claude from the cc-self-train directory instead, use cc-self-train's `.claude/skills/` directory.
@@ -181,6 +187,14 @@ Two new skill features have landed that give you more control over when and how 
 Try both: add `paths:` to an existing skill, then toggle `disableSkillShellExecution` and invoke a skill that uses Bash to see what happens.
 
 > **STOP** -- Test `paths:` scoping on a skill and observe what `disableSkillShellExecution` does.
+
+### Choose Your Battles
+
+You've just learned how to build skills. Resist the urge to make one for every workflow you have. A new skill has a maintenance cost -- you will forget what arguments it takes, how it fails, and what state it assumes.
+
+**Rule of thumb:** Start with **2-3 skills** for workflows you do at least weekly. Add more only when a real, repeated friction appears. Delete skills you haven't invoked in a month.
+
+Look at your own project: what workflows do you repeat at least weekly? Pick two or three of those. Examples from real projects: component scaffolding, test stub generation, deployment previews, dependency audits. Your list will be different. Everything else can wait.
 
 ### Checkpoint
 

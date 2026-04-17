@@ -12,6 +12,12 @@ argument substitution, `disable-model-invocation`
 >
 > See the [glossary](../../../GLOSSARY.md) for related terms.
 
+**What's the difference between a skill and a command?**
+
+- A **command** is anything you invoke by typing `/name` in Claude Code. Built-ins like `/init`, `/memory`, `/compact` are commands.
+- A **skill** is a *user-defined command* -- a Markdown file you put in `.claude/skills/` that becomes a new `/command`. Skills let you package your own prompts, rules, and tool allowlists as first-class commands.
+- **All skills are commands; not all commands are skills.** The module title "Skills and Commands" means "the skill system, which is how you add new commands."
+
 ### 4.1 Create the "add-item" Skill
 
 **Where do skills go?** Create all skills in the cc-self-train root `.claude/skills/` directory — NOT inside `workspace/forge-toolkit/.claude/skills/`. Since Claude runs from the cc-self-train root, it only sees skills at that level.
@@ -160,6 +166,20 @@ Two new skill features have landed that give you more control over when and how 
 Try both: add `paths:` to an existing skill, then toggle `disableSkillShellExecution` and invoke a skill that uses Bash to see what happens.
 
 > **STOP** -- Test `paths:` scoping on a skill and observe what `disableSkillShellExecution` does.
+
+### Choose Your Battles
+
+You've just learned how to build skills. Resist the urge to make one for every workflow you have. A new skill has a maintenance cost -- you will forget what arguments it takes, how it fails, and what state it assumes.
+
+**Rule of thumb:** Start with **2-3 skills** for workflows you do at least weekly. Add more only when a real, repeated friction appears. Delete skills you haven't invoked in a month.
+
+For Forge, plausible candidates include:
+
+- `/add-item` -- capture a new note, snippet, or bookmark with validation
+- `/search` -- query your toolkit with tag and type prefixes
+- `/backup` -- snapshot the local store to a portable archive
+
+Pick two or three (or substitute your own). Everything else can wait.
 
 ### Checkpoint
 
