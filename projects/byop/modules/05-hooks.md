@@ -142,7 +142,7 @@ timeout. Matchers prevent hooks from firing on every tool call (which would slow
 
 ### 5.6 Shell Scripting with Hook Input
 
-Hooks receive JSON via stdin with fields like `session_id`, `hook_event_name`, `tool_name`, `tool_input`, and `tool_response`. Every hook script uses exit codes to communicate (0 = success, 2 = blocking error) and can access `$CLAUDE_PROJECT_DIR` for the project root. Extract values with jq:
+Hooks receive JSON via stdin with fields like `session_id`, `hook_event_name`, `tool_name`, `tool_input`, and `tool_response`. Every hook script uses exit codes to communicate (0 = success, 2 = blocking error) and can access `$CLAUDE_PROJECT_DIR` for the project root. Extract values with `jq` (installed in Module 1 — `jq --version` should work; if not, circle back and install before continuing):
 
 ```
 INPUT=$(cat)

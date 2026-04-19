@@ -118,7 +118,7 @@ Verify your hooks are registered:
 
 ### 5.6 Shell Scripting with Hook Input
 
-Hooks receive JSON via stdin with fields like `session_id`, `hook_event_name`, `tool_name`, `tool_input`, and `tool_response`. Extract values with jq:
+Hooks receive JSON via stdin with fields like `session_id`, `hook_event_name`, `tool_name`, `tool_input`, and `tool_response`. Extract values with `jq` (installed in Module 1 — `jq --version` should work; if not, circle back and install before continuing):
 
 ```
 INPUT=$(cat)
