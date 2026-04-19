@@ -1085,3 +1085,13 @@ Settings resilience (v2.1.101): unrecognized hook event names in settings.json n
 PreToolUse `additionalContext` fix (v2.1.110): `additionalContext` is no longer dropped when the tool call fails. Previously, additional context provided by a PreToolUse hook was discarded if the tool execution failed.
 
 PermissionRequest `updatedInput` re-check (v2.1.110): `PermissionRequest` hooks returning `updatedInput` are now re-checked against `permissions.deny` rules. This prevents hooks from inadvertently bypassing deny rules by modifying tool input.
+
+Read-only bash pass-through (v2.1.111): Read-only bash commands with glob patterns, and any command starting with `cd <project-dir> &&` where the cd is a no-op (v2.1.113), no longer trigger a permission prompt. Reduces prompt fatigue on commands that can't modify state.
+
+`sandbox.network.deniedDomains` setting (v2.1.113): blocks specific domains even when a broader `allowedDomains` wildcard would otherwise permit them. Example — `"allowedDomains": ["*"]` combined with `"deniedDomains": ["internal.corp"]` grants general network access but still blocks the named host. Precedence: deny wins.
+
+Security-posture refinements (v2.1.113):
+- Bash deny rules now match commands wrapped in exec wrappers (e.g., `env VAR=x <blocked-command>` is denied when `<blocked-command>` is denied).
+- `Bash(find:*)` allow rules no longer auto-approve `find -exec` or `find -delete` — those require a separate explicit allow. Find's `-exec` is a remote-code-execution primitive and should never be blanket-approved.
+- On macOS, `/private/{etc,var,tmp,home}` paths are now treated as dangerous removal targets under `Bash(rm:*)` — previously only the canonical `/etc`, `/var`, `/tmp`, `/home` were protected. macOS routes the canonical paths through `/private`, so both sets need protection.
+- Fix: `Bash dangerouslyDisableSandbox` now correctly requires a permission prompt when running commands outside sandbox (previously ran without prompting).

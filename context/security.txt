@@ -71,6 +71,15 @@ prompts that look routine)
 Permission over-approval ("Yes, and don't ask again" overgeneralization
 from safe commands to dangerous ones)
     docs/SAFETY-AND-TRUST.md §4 (graduated approve-policy)
+    `/less-permission-prompts` built-in skill (CC v2.1.111) — scans transcripts
+    for common read-only Bash calls and suggests permanent-approval additions
+    to reduce prompt fatigue without over-approving.
+
+Sandbox domain allow/deny precedence (deny wins over allow wildcards)
+    context/hooks.txt — `sandbox.network.deniedDomains` (CC v2.1.113)
+
+Bash security-rule refinements (find -exec, /private on macOS, exec wrappers)
+    context/hooks.txt — security-posture refinements (CC v2.1.113)
 
 
 Verification and audit surfaces

@@ -981,3 +981,27 @@ Available since v2.1.51.
     Clone our development container reference implementation
   </Card>
 </CardGroup>
+
+---
+
+## Recent workflow additions
+
+### /ultrareview — cloud multi-agent code review (v2.1.111)
+
+`/ultrareview` runs a comprehensive code review in the cloud using parallel multi-agent analysis — multiple review perspectives run simultaneously and their findings are aggregated into a single report. Use when:
+
+- You want a broader-than-local review (multiple agents catching different things)
+- You're about to open a high-stakes PR and want extra eyes before humans see it
+- You have a large diff and want parallelism that a single local Opus session can't match
+
+v2.1.113 added launch improvements: parallelized checks, a diffstat header, and an animated launching state so you know the cloud job is live. Complements local `/review` — doesn't replace it.
+
+### Auto mode eligibility expansion (v2.1.111)
+
+Auto mode (Claude Code picks the effort level per response automatically) previously required explicit opt-in via the `--enable-auto-mode` flag. As of v2.1.111:
+
+- The `--enable-auto-mode` flag is no longer required.
+- Auto mode is now available for Max subscribers using Opus 4.7.
+- Invoke with `/effort auto` or `CLAUDE_CODE_EFFORT_LEVEL=auto`.
+
+See also: `context/models.txt` for effort-level details including the new `xhigh` tier.

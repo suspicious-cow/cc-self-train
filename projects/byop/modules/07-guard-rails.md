@@ -127,6 +127,19 @@ PreToolUse hooks can now satisfy `AskUserQuestion` by returning `updatedInput` a
 
 Think about when this is useful: CI/CD pipelines, automated testing, or any scenario where Claude needs to ask a question but you want a predetermined answer. Wire up a PreToolUse hook for `AskUserQuestion` that auto-responds to a specific question type.
 
+### 7.10 Permission-model refinements (v2.1.111 / v2.1.113)
+
+Four changes to the permission and sandbox model worth knowing:
+
+- **`sandbox.network.deniedDomains`** (v2.1.113) — settings.json now supports an explicit deny list that wins over allow patterns. Use this to block egress to credential brokers or metadata endpoints (`169.254.169.254`) even when a broader allow rule would otherwise permit them.
+- **Read-only bash pass-through** (v2.1.111) — a curated list of read-only commands (`ls`, `pwd`, `git status`, `cat`, etc.) skips permission prompts entirely. Reduces fatigue without weakening protection. See `/less-permission-prompts` — a bundled skill that scans recent transcripts and suggests safe additions to your `permissions.allow` list.
+- **Bash security-rule tightening** (v2.1.113) — `find:*` with `-exec` is now denied by default (it was an arbitrary-command vector), macOS `/private/*` paths are treated as dangerous `rm` targets, and exec-wrapper deny-matching (`env`, `xargs`, `bash -c …`) closed a bypass where a dangerous command could sail through via a shell wrapper.
+- **`dangerouslyDisableSandbox`** (v2.1.113) — if your permissions actively disable sandbox mode, plan mode no longer silently re-enables it. The setting now means what it says.
+
+Cross-reference: `context/security.txt` for the threat → section lookup table.
+
+> **STOP** — If you set `sandbox.network.deniedDomains` alongside an allow rule, write a one-line test that confirms the deny wins. Same pattern as the guard-denies-and-allows check below — precedence bugs hide in the "looks right in the happy case" gap.
+
 ### Verify your guard denies as well as allows
 
 **Security footgun:** a PreToolUse guard that accidentally always returns `{"permissionDecision": "allow"}` looks identical to a working guard at the exit-code level. If you only test the allow case, a silently-broken guard reads as green. Module 7's guards must be tested on **both** paths before you trust them.

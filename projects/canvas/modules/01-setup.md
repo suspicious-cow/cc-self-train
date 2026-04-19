@@ -278,6 +278,21 @@ Two small personalizations to try now:
 
 > **STOP** — Try `/color` and name your session with `-n` on your next launch. These small touches make sessions easier to find and more personal.
 
+### 1.11 Recent UX refinements
+
+Claude Code evolves between releases. Here's what's changed recently that's worth knowing — none of it is required to finish Module 1, but you'll see these in later modules:
+
+- **Effort levels (v2.1.111):** Opus 4.7 gained an `xhigh` level for the hardest reasoning; `max` is still there too. You'll see the slider when you try `/effort` in Module 4.
+- **Auto mode (v2.1.111):** Claude now picks an effort level automatically based on the task. No config needed — you'll just see a banner noting the choice.
+- **Keyboard polish (v2.1.111, v2.1.113):** `Ctrl+U` clears the current input line (`Ctrl+Y` restores it). `Ctrl+A` / `Ctrl+E` jump to start/end of the line. On **Windows**, `Ctrl+Backspace` now deletes the previous word.
+- **Theme auto-match (v2.1.111):** `/theme` has a new "Auto (match terminal)" option that follows your terminal's light/dark setting.
+- **PowerShell tool (v2.1.111, Windows):** Set `CLAUDE_CODE_USE_POWERSHELL_TOOL=1` to route Claude's Bash tool through PowerShell. Experimental — Git Bash is still the default and what this curriculum assumes.
+- **`/ultrareview` (v2.1.111):** A cloud-based multi-agent code review command. Module 10 walks through it.
+
+If something in a later module doesn't match what you see, check `/help` — the curriculum is synced to CC v2.1.114, but releases keep coming.
+
+> **STOP** — Try `Ctrl+A` then `Ctrl+E` in your session. Small thing, but muscle memory here saves keystrokes in every future module.
+
 ### Shell tools you'll need later
 
 Module 5 (Hooks) uses **`jq`** to parse JSON from hook stdin. If you don't already have it, install now so you're not blocked later:
@@ -341,3 +356,4 @@ You just set up a project, configured Claude Code's memory, learned the keyboard
 - [ ] You know how to exit (`Ctrl+D`) and resume (`claude -c`) a session
 - [ ] You made your first commit
 - [ ] Tried `/color` and `/effort` to customize your session
+- [ ] Tried one of the new readline shortcuts (`Ctrl+A`, `Ctrl+E`, or `Ctrl+U`)

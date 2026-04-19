@@ -190,6 +190,12 @@ Try adding `initialPrompt` to one of your existing agents. For example, add `ini
 
 When would you want this? Think about agents that always do the same thing -- linters, scanners, formatters. They do not need a prompt; they need a trigger.
 
+### 8.11 Subagent stall timeout (v2.1.113)
+
+Subagents that hang mid-stream now surface a clear error after 10 minutes instead of stalling silently. If you orchestrate long-running agents, you'll see the timeout message in the session log rather than having to guess whether the agent is making progress or dead.
+
+No action required — this is a behavioral change you inherit automatically. Worth knowing when you're debugging a "why is my agent still running?" case: check the session log first, then re-invoke with fresh input if the prior run timed out.
+
 ### Checkpoint
 
 Three specialized agents, all yours. You can chain them, run them in parallel, and resume where they left off.

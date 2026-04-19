@@ -98,3 +98,5 @@ Monitor tool (v2.1.99): Streams events from background scripts. Each stdout line
 `/proactive` alias (v2.1.105): `/proactive` is now an alias for `/loop`.
 
 `--resume`/`--continue` scheduled tasks (v2.1.105): `--resume` and `--continue` now resurrect unexpired scheduled tasks, so recurring prompts survive session restarts.
+
+`/loop` Esc cancellation (v2.1.113): pressing Esc now cancels pending `/loop` wakeups mid-session. Wakeups display as "Claude resuming /loop wakeup" so you can tell when the schedule is firing rather than fresh input. Makes it safe to interrupt a long-running `/loop` without having to hunt for the right signal.
