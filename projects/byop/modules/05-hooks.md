@@ -121,6 +121,8 @@ Claude will ask about the specifics or handle them based on the description. Rev
 - [ ] `.claude/hooks/` contains your project status script and your linter script
 - [ ] You restarted Claude Code and saw the project status summary on startup
 
+**Stuck?** Hook returning 200 but not blocking? Exit codes confusing? `/stuck` walks you through isolating what your hook actually returns vs. what Claude Code expects. Common Stop-hook bug: stdout on exit 0 gets fed back to Claude, triggering the hook again — infinite loop. `/stuck` has the full failure-mode checklist.
+
 ### 5.4 Create a Stop Hook
 
 This hook runs a validation check relevant to your project before Claude finishes. Think about what should always be true after Claude makes changes:

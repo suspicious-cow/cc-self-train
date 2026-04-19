@@ -111,6 +111,8 @@ Claude will ask you about the specifics of the validation or handle them based o
 - [ ] `.claude/hooks/` contains `site-summary.py` and `validate-html.py`
 - [ ] You restarted Claude Code and saw the site summary on startup
 
+**Stuck?** Hook returning 200 but not blocking? Exit codes confusing? `/stuck` walks you through isolating what your hook actually returns vs. what Claude Code expects. Common Stop-hook bug: stdout on exit 0 gets fed back to Claude, triggering the hook again — infinite loop. `/stuck` has the full failure-mode checklist.
+
 ### 5.4 Create a Stop Hook
 
 This hook checks all internal links before Claude stops to catch broken links. Describe the behavior you want:

@@ -103,6 +103,8 @@ This hook auto-formats files after Claude writes or edits them. Tell Claude whic
 - [ ] `.claude/settings.json` has a PostToolUse hook entry with a `Write|Edit` matcher
 - [ ] The SessionStart hook prints stats when you restart Claude
 
+**Stuck?** Hook returning 200 but not blocking? Exit codes confusing? `/stuck` walks you through isolating what your hook actually returns vs. what Claude Code expects. Common Stop-hook bug: stdout on exit 0 gets fed back to Claude, triggering the hook again — infinite loop. `/stuck` has the full failure-mode checklist.
+
 ### 5.4 Create a Stop Hook
 
 **Why this step:** A Stop hook runs after Claude finishes responding but before it hands control back to you. By running the test suite at this point, you catch breakage *immediately* -- Claude broke something and you know before you even type your next prompt. If the tests fail, the hook can block and feed the failures back to Claude for automatic fixing.

@@ -101,6 +101,8 @@ Claude will create the validation script and add a PostToolUse entry to `.claude
 - [ ] Both hooks are registered in `.claude/settings.json`
 - [ ] You understand that matchers (`"Write|Edit"`) control which tool calls trigger the hook
 
+**Stuck?** Hook returning 200 but not blocking? Exit codes confusing? `/stuck` walks you through isolating what your hook actually returns vs. what Claude Code expects. Common Stop-hook bug: stdout on exit 0 gets fed back to Claude, triggering the hook again — infinite loop. `/stuck` has the full failure-mode checklist.
+
 ### 5.4 Stop Hook -- Run Tests Before Stopping
 
 **Why this step:** A Stop hook acts as a quality gate -- it runs when Claude finishes a response and can *block* Claude from stopping if something is wrong (exit code 2). This prevents Claude from declaring "done" while tests are failing.
