@@ -251,6 +251,16 @@ Plugins can now define user-facing configuration schemas in their manifest using
 
 If you created a plugin earlier in this module, try adding a `userConfig` section to its manifest with at least one sensitive field (like an API key or token). Enable the plugin and observe how it prompts for configuration. Check that the sensitive value is not visible in the manifest file itself.
 
+### 10.14 /ultrareview cloud multi-agent review (v2.1.111)
+
+New: `/ultrareview` runs a comprehensive multi-agent code review in the cloud. It invokes multiple specialized reviewers in parallel (security, types, tests, architecture, etc.), aggregates their findings, and returns a structured report.
+
+**When to reach for it:** before shipping a major PR or touching a sensitive area (auth, payments, webhooks). Slower and costlier than a local review — reserve for high-stakes changes.
+
+**When to skip:** routine work, or anywhere your `code-reviewer` / `security-reviewer` subagents already do the job locally.
+
+Try it on one of your worktree branches. Compare the findings to what your local review flow caught.
+
 ### Checkpoint
 
 You made it. Every major Claude Code feature, applied to your own project.

@@ -194,6 +194,15 @@ Try `/loop` with a monitoring task that makes sense for your project.
 - `/proactive` is now an alias for `/loop` (v2.1.105) -- use whichever name feels more natural.
 - `--resume`/`--continue` now resurrects unexpired scheduled tasks (v2.1.110) -- scheduled work survives session restarts.
 
+### 9.9 /loop cancellation and wakeup banner (v2.1.113)
+
+Two small `/loop` refinements worth noting:
+
+- **Esc cancels pending wakeups.** Press Esc mid-session to cancel any pending `/loop` wakeup. Before this, you had to wait for the wakeup to fire before you could stop the loop.
+- **Wakeup banner.** When a scheduled `/loop` fires, Claude displays "Claude resuming /loop wakeup" so you can tell the current turn is from the schedule rather than fresh input.
+
+If you wire a long-running `/loop` for TDD verification or deployment polling, these make the loop safe to interrupt without hunting for the right signal.
+
 ### Checkpoint
 
 Task graphs, TDD, cross-session persistence, and subagent verification. This is how real multi-session projects get coordinated.
