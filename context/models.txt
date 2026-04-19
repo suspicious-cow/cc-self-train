@@ -47,21 +47,28 @@ Type `/fast` to toggle fast mode. This uses the same model but optimizes for fas
 
 Effort levels control how deeply Claude thinks before responding. They are available for Opus and Sonnet in the `/model` picker — use `←` `→` arrow keys to adjust. Not available for Haiku.
 
-| Level | Behavior | Best For |
-|-------|----------|----------|
-| **Low** | Minimal reasoning, quick responses | Simple lookups, straightforward edits |
-| **Medium** | Moderate reasoning | Standard coding tasks |
-| **High** | Deep reasoning, explores alternatives | Architecture, debugging, complex logic |
+| Level | Behavior | Best For | Availability |
+|-------|----------|----------|--------------|
+| **Low** | Minimal reasoning, quick responses | Simple lookups, straightforward edits | All models |
+| **Medium** | Moderate reasoning | Standard coding tasks | All models |
+| **High** | Deep reasoning, explores alternatives | Architecture, debugging, complex logic | All models |
+| **xhigh** | Deeper than high, lighter than max | Opus 4.7 sweet spot for complex-but-bounded reasoning | Opus 4.7 only (v2.1.111) |
+| **max** | Extended thinking, longest reasoning | When xhigh runs out of room on genuinely hard problems | Opus only |
 
 Configure effort level via:
 - `/model` menu — adjust with `←` `→` arrow keys alongside model selection
-- `CLAUDE_CODE_EFFORT_LEVEL` environment variable (set to `low`, `medium`, or `high`)
-- `/effort` command — set effort level directly from any session (v2.1.76). Since v2.1.80, also shows what "auto" currently resolves to
+- `CLAUDE_CODE_EFFORT_LEVEL` environment variable (set to `low`, `medium`, `high`, `xhigh`, or `max`)
+- `/effort` command — set effort level directly from any session (v2.1.76). Since v2.1.80, also shows what "auto" currently resolves to. Since **v2.1.111**, running `/effort` **without arguments** opens an interactive slider for quick adjustment
 - `effort` frontmatter in skills — override the model effort level when a skill is invoked. Available since v2.1.80
 
-The effort levels are low, medium, and high. The previous `max` level was removed in v2.1.72. Opus 4.6 still supports extended thinking via the API.
-
 Default effort level changed from medium to high for API-key, Bedrock/Vertex/Foundry, Team, and Enterprise users (v2.1.94). Pro/Max users were already on high.
+
+### Auto mode (automatic effort selection)
+
+Auto mode lets Claude Code pick the effort level per response based on the question. **As of v2.1.111:**
+- Auto mode is available for **Max subscribers when using Opus 4.7** (previously required explicit opt-in).
+- Auto mode **no longer requires the `--enable-auto-mode` flag** — it's just on for eligible subscribers.
+- Invoke with `/effort auto` or set `CLAUDE_CODE_EFFORT_LEVEL=auto`.
 
 ## Prompting Strategies by Model
 

@@ -37,8 +37,11 @@ Ctrl+U	Exit bash mode	On empty ! bash prompt, exits bash mode (matches Escape an
 Text editing
 Shortcut	Description	Context
 Ctrl+K	Delete to end of line	Stores deleted text for pasting
-Ctrl+U	Delete entire line	Stores deleted text for pasting
-Ctrl+Y	Paste deleted text	Paste text deleted with Ctrl+K or Ctrl+U
+Ctrl+U	Clear entire input buffer	v2.1.111: now clears the whole buffer (was: current line). Press Ctrl+Y to restore.
+Ctrl+Y	Restore cleared input / paste deleted text	Restores text cleared by Ctrl+U or deleted by Ctrl+K
+Ctrl+A	Move to start of current logical line	v2.1.113: readline behavior in multiline input (previously moved to start of full buffer)
+Ctrl+E	Move to end of current logical line	v2.1.113: readline behavior in multiline input
+Ctrl+Backspace (Windows)	Delete previous word	v2.1.113: now works on Windows (previously Linux/macOS only)
 Alt+Y (after Ctrl+Y)	Cycle paste history	After pasting, cycle through previously deleted text. Requires Option as Meta on macOS
 Alt+B	Move cursor back one word	Word navigation. Requires Option as Meta on macOS
 Alt+F	Move cursor forward one word	Word navigation. Requires Option as Meta on macOS
@@ -103,7 +106,7 @@ Command	Purpose
 /statusline	Set up Claude Code’s status line UI
 /tasks	List and manage background tasks
 /teleport	Resume a remote session from claude.ai (subscribers only)
-/theme	Change the color theme
+/theme	Change the color theme. v2.1.111 adds "Auto (match terminal)" option that follows your terminal's dark/light mode.
 /release-notes	View release notes for any version (interactive version picker). Available since v2.1.92
 /team-onboarding	Generates a teammate ramp-up guide from your local CC usage
 /todos	List current TODO items
@@ -257,6 +260,7 @@ PR status requires the gh CLI to be installed and authenticated (gh auth login).
 ​
 PowerShell tool (Windows)
 Opt-in preview for Windows users: a native PowerShell tool with hardened security and dangerous command detection. Enable via settings. Available since v2.1.84.
+v2.1.111: rolling out progressively to Windows users via the `CLAUDE_CODE_USE_POWERSHELL_TOOL` environment variable. Set `CLAUDE_CODE_USE_POWERSHELL_TOOL=1` to opt into the rollout ahead of the default.
 ​
 Idle-return prompt
 When returning after 75+ minutes of inactivity, Claude nudges you to /clear to reduce unnecessary token re-caching. Available since v2.1.84.

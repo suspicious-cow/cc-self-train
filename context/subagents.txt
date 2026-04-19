@@ -841,3 +841,7 @@ Killing a background agent now preserves its partial results in the conversation
 ### /agents tabbed layout (v2.1.99)
 
 The `/agents` command now has a tabbed layout: the **Running** tab shows live subagent instances currently executing, and the **Library** tab lists all available agents with **Run** and **View** actions for quick access.
+
+### Subagent stall timeout (v2.1.113)
+
+Subagents that stall mid-stream now fail with a clear error after **10 minutes** instead of hanging silently. Previously, a subagent that stopped producing output could sit indefinitely without surfacing the failure. The 10-minute threshold is a safety net, not a normal failure mode — if you see it, the subagent got stuck on something (network, model unavailable, input deadlock) and the parent conversation can now recover and retry instead of waiting forever.

@@ -494,6 +494,8 @@ To increase the limit, set the SLASH_COMMAND_TOOL_CHAR_BUDGET environment variab
 ​
 Bundled skills
 Claude Code ships with `/claude-api`, a bundled skill for building apps with the Claude API and Anthropic SDK. It triggers when code imports `anthropic` or `@anthropic-ai/sdk`. Available since v2.1.69.
+
+`/less-permission-prompts` bundled skill — scans transcripts for common read-only Bash calls and suggests a prioritized allowlist to add to project settings, reducing permission prompts without over-approving. Available since v2.1.111. Pairs with the permission-model content in Module 7.
 ​
 Recent fixes
 Skill descriptions containing colons now parse correctly from SKILL.md frontmatter (fixed v2.1.69). Skills without a `description:` field now appear in Claude's available skills list (fixed v2.1.69).

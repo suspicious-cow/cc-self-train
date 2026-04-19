@@ -1,4 +1,49 @@
 Changelog
+2.1.114
+Fixed crash in permission dialog when an agent teams teammate requested tool permission
+
+2.1.113
+Changed CLI to spawn a native Claude Code binary (per-platform optional dependency) instead of bundled JavaScript
+sandbox.network.deniedDomains setting — block specific domains even when a broader allowedDomains wildcard would otherwise permit them
+Fullscreen mode: Shift+↑/↓ now scrolls the viewport when extending a selection past the visible edge
+Ctrl+A and Ctrl+E now move to start/end of current logical line in multiline input (readline behavior)
+Windows: Ctrl+Backspace deletes the previous word
+Long URLs in responses and bash output stay clickable when they wrap across lines (OSC 8 hyperlinks)
+/loop improvements — Esc cancels pending wakeups; wakeups display as "Claude resuming /loop wakeup"
+Remote Control clients can query @-file autocomplete suggestions
+/extra-usage works from Remote Control (mobile/web) clients
+/ultrareview launch improvements — parallelized checks, diffstat, animated launching state
+Subagents that stall mid-stream now fail with clear error after 10 minutes instead of hanging silently
+Bash tool: multi-line commands whose first line is a comment show the full command in the transcript
+Running `cd <current-directory> && git …` no longer triggers a permission prompt when the cd is a no-op
+Security: on macOS, /private/{etc,var,tmp,home} paths now treated as dangerous removal targets under Bash(rm:*)
+Security: Bash deny rules now match commands wrapped in exec wrappers
+Security: Bash(find:*) allow rules no longer auto-approve `find -exec`/`-delete`
+Fixed MCP concurrent-call timeout handling where a message for one tool call could silently disarm another
+Various TUI / rendering fixes
+
+2.1.112
+Fixed "claude-opus-4-7 is temporarily unavailable" for auto mode
+
+2.1.111
+Claude Opus 4.7 xhigh effort level — sits between `high` and `max` for Opus 4.7 (use /effort to tune speed vs. intelligence)
+Auto mode now available for Max subscribers when using Opus 4.7
+Auto mode no longer requires --enable-auto-mode flag
+/effort interactive slider when called without arguments
+"Auto (match terminal)" theme option — matches terminal's dark/light mode
+/less-permission-prompts skill — scans transcripts for common read-only Bash calls and suggests permanent-approval additions
+/ultrareview — comprehensive code review in the cloud using parallel multi-agent analysis
+Windows: PowerShell tool rolling out progressively via CLAUDE_CODE_USE_POWERSHELL_TOOL env var
+Read-only bash commands with glob patterns and commands starting with `cd <project-dir> &&` no longer trigger permission prompt
+Typo suggestion: `claude <word>` with typo suggests closest matching subcommand
+Plan files now named after your prompt instead of purely random words
+Ctrl+U clears entire input buffer; Ctrl+Y restores it
+Ctrl+L forces full screen redraw in addition to clearing prompt input
+Improved plugin error handling: dependency errors distinguish conflicting / invalid / overly complex requirements
+Headless --output-format stream-json includes plugin_errors on init event
+OTEL_LOG_RAW_API_BODIES env var — emit full API request/response bodies for telemetry debugging
+Reverted v2.1.110 cap on non-streaming fallback retries
+
 2.1.110
 /tui command and tui setting — /tui fullscreen switches to flicker-free alternate-screen rendering mid-conversation
 Push notification tool — Claude can send mobile push notifications when Remote Control and "Push when Claude decides" are enabled
