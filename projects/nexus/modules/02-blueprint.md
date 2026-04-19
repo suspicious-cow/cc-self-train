@@ -125,6 +125,8 @@ Then ask for request forwarding -- taking the matched upstream target, forwardin
 Next, the request forwarding module. It takes the matched upstream target, forwards the original request with its method, headers, and body, and returns the upstream response. If the upstream is unreachable, return 502 Bad Gateway.
 ```
 
+**What production gateways also handle** (out of scope for this module, but worth knowing you're leaving them on the table): strip or rewrite the `Host` header so upstream services see their expected hostname rather than the gateway's, and set an upstream request timeout (5-30s) so a slow backend can't hang the gateway indefinitely. Nexus is a learning project, not a production gateway — don't ship this to the internet without adding both.
+
 Notice the pattern: each prompt focuses on one component. Claude will ask you clarifying questions along the way -- answer them based on your design from Step 2.
 
 ### 2.7 Write and Run Tests
