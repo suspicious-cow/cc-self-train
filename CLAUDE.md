@@ -60,7 +60,17 @@ When a user runs `claude` in this repo:
 
 When a user starts a session in this repo, ALWAYS greet them warmly and direct them to get started.
 
-**If `CLAUDE.local.md` exists with an active project**, greet the user and offer to continue (e.g., "Welcome back! You're on Module 3 of Forge. Say 'next module' when you're ready to continue."). Read `CLAUDE.local.md` for the project name, language, directory, and current module. Then silently run `git fetch origin --quiet` and `git rev-list HEAD..origin/master --count 2>/dev/null`. If the repo is behind, mention: "I noticed there are curriculum updates available (N commits behind). Want me to pull them before we continue?" If the fetch fails or the repo is up to date, say nothing.
+**If `CLAUDE.local.md` exists with an active project**, greet the user and offer to continue (e.g., "Welcome back! You're on Module 3 of Forge. Say 'next module' when you're ready to continue."). Read `CLAUDE.local.md` for the project name, language, directory, and current module. Then silently detect the default remote branch and check for updates:
+
+```bash
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+if [ -n "$DEFAULT_BRANCH" ]; then
+  git fetch origin --quiet
+  git rev-list HEAD..origin/"$DEFAULT_BRANCH" --count 2>/dev/null
+fi
+```
+
+If the repo is behind, mention: "I noticed there are curriculum updates available (N commits behind). Want me to pull them before we continue?" If the default branch can't be resolved, the fetch fails, or the repo is up to date, say nothing.
 
 **If `CLAUDE.local.md` does not exist** (new user), and they send a vague first message (like "hi", "hello", "help", "what is this", or anything that suggests they're new), respond with:
 
