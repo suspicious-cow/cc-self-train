@@ -1,5 +1,45 @@
 # Changelog
 
+## v2.27.0 (2026-04-19)
+
+**PR-PERSONA: level-gated module content.** Shipped across two PRs — infrastructure (#12) and content (#13). Advanced learners now see a tighter, action-focused version of every module; beginner and intermediate learners see the same full scaffolding they saw before. 633 tests pass.
+
+### Phase 1 — Infrastructure (PR #12)
+
+- New `.claude/scripts/render-module.js` preprocessor. Reads Effective Level from `CLAUDE.local.md` (falls back to Experience Level, then intermediate). Strips `<!-- guide-only -->` blocks for advanced learners; strips `<!-- advanced-only -->` blocks for everyone else. Normalizes triple blank lines (CRLF + LF aware). Exits 2 on unbalanced markers — maintainer bug, never ships bad content to a learner.
+- `CLAUDE.md`: "next module" instruction now routes through the preprocessor instead of `Read`-ing raw module files. New "Level markers in module files" section documents the marker syntax and rules.
+- `tests/test_module_renderer.py`: 12 subprocess integration tests covering all three levels × marker combinations, missing `CLAUDE.local.md`, fallback to Experience Level, unknown level values, unbalanced markers, missing file, multi-block stripping, pass-through, blank-line normalization, marker-leak prevention.
+
+### Phase 2 — Content (PR #13)
+
+- Wrapped 130 `**Why this step:**` paragraphs in `<!-- guide-only -->` markers across 45 module files (all 5 projects, Modules 2-10). Module 1 files untouched (no "Why this step" blocks — already concise).
+- Baseline content untouched; markers only *added*, never wrapping over existing prose.
+- Renderer fix: original tag-strip regex greedily consumed the blank line after a marker, gluing wrapped paragraphs to the next one. Now consumes only horizontal whitespace and at most one newline, preserving paragraph separation.
+- Renderer fix: marker tag text now stripped from output at every level (previously leaked literal `<!-- guide-only -->` in beginner/intermediate renders).
+
+### Design decision
+
+Three options considered for how the "collapse" happens:
+
+1. Plain `<details>` tags — doesn't work in the terminal where most learners read
+2. **HTML-comment markers + preprocessor script** ← chosen
+3. Two copies per file — 2× maintenance surface, high conflict risk
+
+Option 2 chosen because it works in the terminal, reuses existing Effective Level infrastructure, and keeps one source file per module.
+
+### Verification
+
+- `pytest tests/` → 633 passed (up from 621 at v2.26.0)
+- `node .claude/scripts/render-module-headers.js` → `{"unchanged": 50}`
+- Canvas Module 5 §5.1 spot-checked at beginner and advanced levels
+- All 130 marker pairs balanced (renderer would exit 2 otherwise)
+
+### Intentional out-of-scope (deferred)
+
+- `**Engineering value:**` tiered bullet blocks (also beginner/intermediate scaffolding but need more careful wrap logic)
+- Module 5 "First, a plain-English definition:" blockquote (different format; also needs blockquote-formatting fix)
+- Module 1 scaffolding (no "Why this step" blocks exist there today)
+
 ## v2.26.0 (2026-04-19)
 
 **Curriculum sync to Claude Code v2.1.114.** Phase 1/2 `/sync` skill run across the four-patch delta. Nine context files refreshed; five new module steps added across all five projects (25 module-file edits). No existing steps renumbered or modified. 621 tests pass.
