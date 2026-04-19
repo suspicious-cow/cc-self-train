@@ -93,16 +93,25 @@ def _run_module_boundary(cwd: pathlib.Path) -> subprocess.CompletedProcess:
     )
 
 
-def _seed_claude_local(cwd: pathlib.Path, experience: str = "beginner", effective: str = None) -> None:
+def _seed_claude_local(
+    cwd: pathlib.Path,
+    experience: str = "beginner",
+    effective: str | None = None,
+    omit_effective: bool = False,
+) -> None:
+    """Seed CLAUDE.local.md. Pass `omit_effective=True` to scaffold a file
+    with Experience Level but NO Effective Level line — used to test
+    module-boundary.js's self-healing initialization."""
     effective = effective if effective is not None else experience
-    content = (
-        "# Active Project\n"
-        "Project: Canvas | Language: HTML/CSS/JS | OS: Windows | Directory: workspace/x | Current Module: 2\n"
-        f"Experience Level: {experience}\n"
-        f"Effective Level: {effective}\n"
-        "Engagement Trend: not yet measured\n"
-    )
-    (cwd / "CLAUDE.local.md").write_text(content, encoding="utf-8")
+    lines = [
+        "# Active Project",
+        "Project: Canvas | Language: HTML/CSS/JS | OS: Windows | Directory: workspace/x | Current Module: 2",
+        f"Experience Level: {experience}",
+    ]
+    if not omit_effective:
+        lines.append(f"Effective Level: {effective}")
+    lines.append("Engagement Trend: not yet measured")
+    (cwd / "CLAUDE.local.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _profile(cwd: pathlib.Path) -> dict:
@@ -122,6 +131,108 @@ def test_observe_classifies_concept_question(tmp_path):
     profile = _profile(tmp_path)
     assert profile["interactions"]["concept_question"] == 1
     assert profile["qualityScores"] == [5]
+
+
+# --- classifier honesty improvements (consolidated-signals T3.2) ----------
+
+
+def _write_transcript_with_long_assistant(path: pathlib.Path, user_msg: str) -> None:
+    """Variant that puts a long assistant message first so the 'short reply
+    to long assistant' heuristic (passive_acceptance) is live. Used to prove
+    the ack allowlist bypasses passive_acceptance for real acks."""
+    long_assistant = "Here's the plan. " * 60  # ~1000 chars, well over the 500 threshold
+    lines = [
+        json.dumps({"type": "assistant", "message": long_assistant}),
+        json.dumps({"type": "human", "message": user_msg}),
+    ]
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def test_observe_ack_allowlist_bypasses_passive_acceptance(tmp_path):
+    """Short ack ('ship it') after a long assistant message should classify
+    as neutral, not passive_acceptance. Reeves v2 quantified this as a
+    major misclassification source for senior engineers."""
+    transcript = tmp_path / "transcript.jsonl"
+    _write_transcript_with_long_assistant(transcript, "ship it")
+
+    result = _run_observe(tmp_path, transcript)
+
+    assert result.returncode == 0, result.stderr
+    profile = _profile(tmp_path)
+    assert profile["interactions"]["neutral"] == 1
+    assert profile["interactions"]["passive_acceptance"] == 0
+
+
+def test_observe_ack_allowlist_handles_common_variants(tmp_path):
+    """Multiple common ack forms all route to neutral."""
+    transcript = tmp_path / "transcript.jsonl"
+    for ack in ["lgtm", "ok", "next", "thanks.", "sgtm", "sounds good"]:
+        _write_transcript_with_long_assistant(transcript, ack)
+        assert _run_observe(tmp_path, transcript).returncode == 0
+
+    profile = _profile(tmp_path)
+    assert profile["interactions"]["neutral"] == 6
+    assert profile["interactions"]["passive_acceptance"] == 0
+
+
+def test_observe_long_conceptual_question_without_keywords(tmp_path):
+    """A long well-phrased conceptual question that doesn't hit any of
+    the short keyword patterns should still classify as concept_question,
+    not fall through to neutral. Must avoid debugPatterns words like 'bug'
+    and 'issue' which would short-circuit to debug_attempt."""
+    transcript = tmp_path / "transcript.jsonl"
+    long_msg = (
+        "Walk me through the failure mode when a PreToolUse hook returns "
+        "a permissionDecision of 'allow' but the underlying script had a "
+        "subtle implementation flaw that prevented its deny branch from "
+        "ever being reachable. I want to understand what Claude Code sees "
+        "and why this looks identical to a correctly-written allow path "
+        "from the outside."
+    )
+    _write_transcript(transcript, long_msg)
+
+    result = _run_observe(tmp_path, transcript)
+
+    assert result.returncode == 0
+    profile = _profile(tmp_path)
+    assert profile["interactions"]["concept_question"] == 1
+
+
+def test_observe_long_first_person_exploration_without_keywords(tmp_path):
+    """A long first-person exploration message that doesn't hit the short
+    'i tried' / 'i noticed' patterns should still classify as exploration.
+    Must avoid longConceptMarkers (why/how/what/walk me) which would
+    match first."""
+    transcript = tmp_path / "transcript.jsonl"
+    long_msg = (
+        "I'm thinking about the data flow between the stop hook and the "
+        "streak-check hook. My hypothesis is that the race is prevented "
+        "by the lock file but only if both hooks agree on its location. "
+        "I'm wondering whether the lock path should be per-project or "
+        "global, and whether the lastAnnouncedStreak field interacts with "
+        "the first run after the file is created."
+    )
+    _write_transcript(transcript, long_msg)
+
+    result = _run_observe(tmp_path, transcript)
+
+    assert result.returncode == 0
+    profile = _profile(tmp_path)
+    assert profile["interactions"]["independent_exploration"] == 1
+
+
+def test_observe_short_non_ack_still_passive_acceptance(tmp_path):
+    """Regression guard: the ack allowlist must not over-match. A short
+    reply that isn't in the allowlist after a long assistant message
+    should still classify as passive_acceptance."""
+    transcript = tmp_path / "transcript.jsonl"
+    _write_transcript_with_long_assistant(transcript, "hmm")
+
+    result = _run_observe(tmp_path, transcript)
+
+    assert result.returncode == 0
+    profile = _profile(tmp_path)
+    assert profile["interactions"]["passive_acceptance"] == 1
 
 
 def test_observe_classifies_answer_seeking(tmp_path):
@@ -585,6 +696,54 @@ def test_module_boundary_queues_banner_on_level_change(tmp_path):
     assert b["acknowledged"] is False
 
 
+def test_module_boundary_initializes_effective_level_from_experience(tmp_path):
+    """Consolidated-signals T4.2. If CLAUDE.local.md has Experience Level
+    but no Effective Level (e.g., the learner edited the file and removed
+    the field), the script should initialize Effective Level from
+    Experience Level on first run so subsequent adaptive tuning has a
+    field to update."""
+    _seed_claude_local(tmp_path, experience="intermediate", omit_effective=True)
+    _seed_profile(
+        tmp_path,
+        currentModule=2,
+        moduleAverageQuality=3.0,
+        moduleInteractions={
+            "concept_question": 1,
+            "independent_exploration": 0,
+            "debug_attempt": 0,
+            "answer_seeking": 0,
+            "passive_acceptance": 0,
+            "neutral": 0,
+        },
+    )
+
+    result = _run_module_boundary(tmp_path)
+
+    assert result.returncode == 0, result.stderr
+    summary = json.loads(result.stdout)
+    assert summary["status"] == "ok"
+    assert summary["effectiveLevelInitialized"] is True
+    claude_local = (tmp_path / "CLAUDE.local.md").read_text(encoding="utf-8")
+    assert "Effective Level: intermediate" in claude_local
+    # Experience Level line should still be present and unchanged.
+    assert "Experience Level: intermediate" in claude_local
+
+
+def test_module_boundary_does_not_reinitialize_when_effective_already_present(tmp_path):
+    """Regression guard: if Effective Level is already set, the
+    initialization path must not fire (effectiveLevelInitialized is false)."""
+    _seed_claude_local(tmp_path, experience="beginner", effective="intermediate")
+    _seed_profile(tmp_path, currentModule=2, moduleAverageQuality=3.0)
+
+    result = _run_module_boundary(tmp_path)
+
+    summary = json.loads(result.stdout)
+    assert summary["effectiveLevelInitialized"] is False
+    # Effective Level should NOT have been forced back to Experience Level.
+    claude_local = (tmp_path / "CLAUDE.local.md").read_text(encoding="utf-8")
+    assert "Effective Level: intermediate" in claude_local
+
+
 def test_module_boundary_skips_when_no_profile(tmp_path):
     _seed_claude_local(tmp_path)
 
@@ -592,6 +751,57 @@ def test_module_boundary_skips_when_no_profile(tmp_path):
 
     summary = json.loads(result.stdout)
     assert summary["status"] == "skipped"
+
+
+def test_context_dedups_contradictory_struggle_and_engagement_banners(tmp_path):
+    """Reeves v2 finding (consolidated-signals T3.3). If both struggle and
+    engagement banners are pending in the same session, emitting both would
+    produce contradictory lines. Dedup rule: keep the later-created one,
+    silently acknowledge the other."""
+    import datetime
+    now = datetime.datetime.now(datetime.timezone.utc)
+    older_struggle_iso = (now - datetime.timedelta(minutes=30)).isoformat()
+    newer_engagement_iso = now.isoformat()
+    _seed_profile(
+        tmp_path,
+        pendingBanners=[
+            {"type": "struggle", "created": older_struggle_iso, "acknowledged": False},
+            {"type": "engagement", "created": newer_engagement_iso, "acknowledged": False},
+        ],
+    )
+
+    result = _run_context(tmp_path)
+
+    assert result.returncode == 0
+    # Newer engagement wins; older struggle is silently acknowledged.
+    assert "engagement" in result.stdout.lower()
+    assert "struggle" not in result.stdout.lower()
+    profile = _profile(tmp_path)
+    # Both end up acknowledged — engagement because it emitted, struggle
+    # because the dedup pass silenced it.
+    assert all(b["acknowledged"] for b in profile["pendingBanners"])
+
+
+def test_context_dedup_prefers_struggle_when_newer(tmp_path):
+    """Symmetric case: if struggle is the later-created banner, it wins."""
+    import datetime
+    now = datetime.datetime.now(datetime.timezone.utc)
+    older_engagement_iso = (now - datetime.timedelta(minutes=30)).isoformat()
+    newer_struggle_iso = now.isoformat()
+    _seed_profile(
+        tmp_path,
+        pendingBanners=[
+            {"type": "engagement", "created": older_engagement_iso, "acknowledged": False},
+            {"type": "struggle", "created": newer_struggle_iso, "acknowledged": False},
+        ],
+    )
+
+    result = _run_context(tmp_path)
+
+    assert result.returncode == 0
+    assert "struggle" in result.stdout.lower()
+    # Older engagement should not surface even as text fragment.
+    assert "matching your energy" not in result.stdout.lower()
 
 
 def test_context_emits_module_boundary_banner(tmp_path):
