@@ -73,6 +73,20 @@ function updateEffectiveLevel(claudeLocal, newLevel) {
   return claudeLocal;
 }
 
+// Inserts an `Effective Level:` line right after `Experience Level:` if
+// the former is absent. Used on first invocation when the student's
+// CLAUDE.local.md was scaffolded without the Effective Level field (or
+// where the student removed it by hand). A silent no-op if Effective
+// Level is already present.
+function ensureEffectiveLevel(claudeLocal, level) {
+  if (/^Effective Level:/m.test(claudeLocal)) return claudeLocal;
+  if (!/^Experience Level:/m.test(claudeLocal)) return claudeLocal;
+  return claudeLocal.replace(
+    /^(Experience Level:[^\n]*)$/m,
+    `$1\nEffective Level: ${level}`,
+  );
+}
+
 function main() {
   if (!fs.existsSync(PROFILE_PATH) || !fs.existsSync(CLAUDE_LOCAL_PATH)) {
     console.log(
@@ -103,6 +117,18 @@ function main() {
       }),
     );
     process.exit(0);
+  }
+
+  // If CLAUDE.local.md has Experience Level but no Effective Level,
+  // initialize Effective Level to match Experience Level so the
+  // adaptive boundary has a field to update going forward. Silent
+  // self-healing -- without this, a learner who removes Effective
+  // Level by hand breaks adaptive tuning until the next `/experience`.
+  let effectiveLevelInitialized = false;
+  if (!levelInfo.hasEffective) {
+    claudeLocal = ensureEffectiveLevel(claudeLocal, levelInfo.level);
+    effectiveLevelInitialized = true;
+    levelInfo.hasEffective = true; // subsequent writes can now update the field
   }
 
   const oldLevel = levelInfo.level;
@@ -143,8 +169,14 @@ function main() {
   }
 
   fs.writeFileSync(PROFILE_PATH, JSON.stringify(profile, null, 2));
-  if (levelChanged && levelInfo.hasEffective) {
-    fs.writeFileSync(CLAUDE_LOCAL_PATH, updateEffectiveLevel(claudeLocal, newLevel));
+  // Persist CLAUDE.local.md updates if either:
+  //   (a) we initialized the Effective Level field this run, or
+  //   (b) the level changed and we need to rewrite Effective Level.
+  if (effectiveLevelInitialized || levelChanged) {
+    const finalLocal = levelChanged
+      ? updateEffectiveLevel(claudeLocal, newLevel)
+      : claudeLocal;
+    fs.writeFileSync(CLAUDE_LOCAL_PATH, finalLocal);
   }
 
   console.log(
@@ -156,6 +188,7 @@ function main() {
       oldLevel,
       newLevel,
       levelChanged,
+      effectiveLevelInitialized,
     }),
   );
 }

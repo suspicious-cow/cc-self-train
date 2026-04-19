@@ -93,16 +93,25 @@ def _run_module_boundary(cwd: pathlib.Path) -> subprocess.CompletedProcess:
     )
 
 
-def _seed_claude_local(cwd: pathlib.Path, experience: str = "beginner", effective: str = None) -> None:
+def _seed_claude_local(
+    cwd: pathlib.Path,
+    experience: str = "beginner",
+    effective: str | None = None,
+    omit_effective: bool = False,
+) -> None:
+    """Seed CLAUDE.local.md. Pass `omit_effective=True` to scaffold a file
+    with Experience Level but NO Effective Level line — used to test
+    module-boundary.js's self-healing initialization."""
     effective = effective if effective is not None else experience
-    content = (
-        "# Active Project\n"
-        "Project: Canvas | Language: HTML/CSS/JS | OS: Windows | Directory: workspace/x | Current Module: 2\n"
-        f"Experience Level: {experience}\n"
-        f"Effective Level: {effective}\n"
-        "Engagement Trend: not yet measured\n"
-    )
-    (cwd / "CLAUDE.local.md").write_text(content, encoding="utf-8")
+    lines = [
+        "# Active Project",
+        "Project: Canvas | Language: HTML/CSS/JS | OS: Windows | Directory: workspace/x | Current Module: 2",
+        f"Experience Level: {experience}",
+    ]
+    if not omit_effective:
+        lines.append(f"Effective Level: {effective}")
+    lines.append("Engagement Trend: not yet measured")
+    (cwd / "CLAUDE.local.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _profile(cwd: pathlib.Path) -> dict:
@@ -685,6 +694,54 @@ def test_module_boundary_queues_banner_on_level_change(tmp_path):
     assert b["payload"]["oldLevel"] == "beginner"
     assert b["payload"]["newLevel"] == "intermediate"
     assert b["acknowledged"] is False
+
+
+def test_module_boundary_initializes_effective_level_from_experience(tmp_path):
+    """Consolidated-signals T4.2. If CLAUDE.local.md has Experience Level
+    but no Effective Level (e.g., the learner edited the file and removed
+    the field), the script should initialize Effective Level from
+    Experience Level on first run so subsequent adaptive tuning has a
+    field to update."""
+    _seed_claude_local(tmp_path, experience="intermediate", omit_effective=True)
+    _seed_profile(
+        tmp_path,
+        currentModule=2,
+        moduleAverageQuality=3.0,
+        moduleInteractions={
+            "concept_question": 1,
+            "independent_exploration": 0,
+            "debug_attempt": 0,
+            "answer_seeking": 0,
+            "passive_acceptance": 0,
+            "neutral": 0,
+        },
+    )
+
+    result = _run_module_boundary(tmp_path)
+
+    assert result.returncode == 0, result.stderr
+    summary = json.loads(result.stdout)
+    assert summary["status"] == "ok"
+    assert summary["effectiveLevelInitialized"] is True
+    claude_local = (tmp_path / "CLAUDE.local.md").read_text(encoding="utf-8")
+    assert "Effective Level: intermediate" in claude_local
+    # Experience Level line should still be present and unchanged.
+    assert "Experience Level: intermediate" in claude_local
+
+
+def test_module_boundary_does_not_reinitialize_when_effective_already_present(tmp_path):
+    """Regression guard: if Effective Level is already set, the
+    initialization path must not fire (effectiveLevelInitialized is false)."""
+    _seed_claude_local(tmp_path, experience="beginner", effective="intermediate")
+    _seed_profile(tmp_path, currentModule=2, moduleAverageQuality=3.0)
+
+    result = _run_module_boundary(tmp_path)
+
+    summary = json.loads(result.stdout)
+    assert summary["effectiveLevelInitialized"] is False
+    # Effective Level should NOT have been forced back to Experience Level.
+    claude_local = (tmp_path / "CLAUDE.local.md").read_text(encoding="utf-8")
+    assert "Effective Level: intermediate" in claude_local
 
 
 def test_module_boundary_skips_when_no_profile(tmp_path):
