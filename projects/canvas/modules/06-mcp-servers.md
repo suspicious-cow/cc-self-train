@@ -38,6 +38,20 @@ MCP servers talk to Claude Code over a **transport**. You will see three:
 
 **Rule of thumb:** Start with `stdio`. Move to `http` if you need the server to run on a different machine. Use `sse` only if you need push-style updates from the server.
 
+### 6.1c MCP Security Posture
+
+Before you connect your first MCP server, three security concepts worth holding in mind.
+
+**Untrusted servers run arbitrary code.** Adding an MCP server means Claude can call into whatever that server does. For a local `stdio` server this is "whatever command you spawned" — you're the one who typed it. For an `http` or `sse` server it's "whatever the remote service does" — you're trusting whoever operates that URL. `.mcp.json` in a cloned repo is a third-party pushing a server definition at you (see the `.mcp.json` caveat later in this module). Before connecting, ask: who wrote this server? Who's running it? What does it need to work (file access, database creds, network reach)? If any answer is "not sure," sandbox the session or skip.
+
+**Elicitation lets servers ask you questions.** MCP servers can emit elicitation requests mid-conversation — "I need an API key to proceed" or "Confirm you want me to write to this path." Claude surfaces these for approval. There's also an auto-answer mechanism for routine prompts.
+
+The abuse pattern: a compromised server emits an elicitation that looks routine ("retry with default parameters?") but carries a parameter change under the hood. Auto-answering elicitations from untrusted servers is the same trust decision as permanent-approving a command — fine for well-known routine interactions, risky otherwise. When in doubt, answer each elicitation manually.
+
+**Channel scopes limit the attack surface.** MCP servers can be constrained to a subset of tools rather than the full toolbox. If a server only needs file-read, grant file-read. If it only needs database-query, grant that. Don't hand an MCP server write access to the filesystem unless it genuinely needs that to work.
+
+The principle: every MCP server is a new principal in your trust boundary. Treat it like a service account with narrow scopes, not like you gave it root. See also [docs/SAFETY-AND-TRUST.md](../../../docs/SAFETY-AND-TRUST.md) for the cross-feature threat model.
+
 ### 6.2 Add a Filesystem MCP Server
 
 For enhanced file operations on your site files:
