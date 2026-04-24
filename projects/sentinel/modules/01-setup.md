@@ -247,9 +247,31 @@ Claude Code evolves between releases. Here's what's changed recently that's wort
 - **PowerShell tool (v2.1.111, Windows):** Set `CLAUDE_CODE_USE_POWERSHELL_TOOL=1` to route Claude's Bash tool through PowerShell. Experimental — Git Bash is still the default and what this curriculum assumes.
 - **`/ultrareview` (v2.1.111):** A cloud-based multi-agent code review command. Module 10 walks through it.
 
-If something in a later module doesn't match what you see, check `/help` — the curriculum is synced to CC v2.1.114, but releases keep coming.
+If something in a later module doesn't match what you see, check `/help` — the curriculum is synced to CC v2.1.119, but releases keep coming.
 
 > **STOP** — Try `Ctrl+A` then `Ctrl+E` in your session. Small thing, but muscle memory here saves keystrokes in every future module.
+
+### 1.10 Session craft updates (v2.1.115 – v2.1.119)
+
+Claude Code ships small session-interaction improvements between releases. Here's a digest of what's landed since v2.1.114 — skim it once, then move on. You'll hit most of these naturally in later modules.
+
+**Usage dashboard unified.** `/cost` and `/stats` are merged into `/usage` (v2.1.115). Old commands still work as aliases. `/usage` now shows plan limits, token cost, 5-hour + weekly usage, session history, and model preferences in one place.
+
+**Vim visual modes.** If you use vim input mode, `v` enters character-wise visual mode and `V` enters line-wise visual mode (v2.1.115). Esc in INSERT no longer pulls queued messages back into the buffer (v2.1.119).
+
+**Theme customization.** `/theme` creates and switches named custom themes; plugins can ship themes via a `themes/` directory (v2.1.115). `/color` syncs the per-session accent color to claude.ai/code.
+
+**Model selection persists.** `/model` remembers your choice across restarts (v2.1.117). Set `ANTHROPIC_DEFAULT_OPUS_MODEL_NAME` / `ANTHROPIC_DEFAULT_SONNET_MODEL_NAME` / `ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME` to pin a specific point release. Pro/Max users on Opus and Sonnet now default to `high` effort. The startup header flags when your active model was selected by project or managed settings.
+
+**`/config` persists.** As of v2.1.119, `/config` changes (theme, editor mode, verbose output) write to `~/.claude/settings.json` instead of reverting on restart.
+
+**Session resume smarter.** `--continue` and `--resume` now find sessions registered via `/add-dir` (v2.1.115). `/resume` offers a summarized restore for stale, large sessions (v2.1.117), and runs up to 67% faster on large sessions (v2.1.116).
+
+**Two new env vars.**
+- `CLAUDE_CODE_HIDE_CWD=1` hides your cwd from the prompt bar — useful when screen-sharing or pairing over a call.
+- `DISABLE_UPDATES=1` blocks every update path (`claude update`, background checks, plugin auto-updates). Stricter than `CLAUDE_CODE_DISABLE_AUTOUPDATER` (which only blocks automatic upgrades).
+
+Run `/usage` now to see the merged dashboard.
 
 ### Shell tools you'll need later
 
@@ -313,3 +335,4 @@ You just set up a code analysis project, configured Claude Code's memory, learne
 - [ ] You had at least one conversation with Claude about the project
 - [ ] Tried `/color` and `/effort` to customize your session
 - [ ] Tried one of the new readline shortcuts (`Ctrl+A`, `Ctrl+E`, or `Ctrl+U`)
+- [ ] Ran `/usage` (replaces `/cost` + `/stats`) and spotted the 5-hour + weekly indicators

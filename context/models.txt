@@ -61,7 +61,11 @@ Configure effort level via:
 - `/effort` command — set effort level directly from any session (v2.1.76). Since v2.1.80, also shows what "auto" currently resolves to. Since **v2.1.111**, running `/effort` **without arguments** opens an interactive slider for quick adjustment
 - `effort` frontmatter in skills — override the model effort level when a skill is invoked. Available since v2.1.80
 
-Default effort level changed from medium to high for API-key, Bedrock/Vertex/Foundry, Team, and Enterprise users (v2.1.94). Pro/Max users were already on high.
+Default effort level changed from medium to high for API-key, Bedrock/Vertex/Foundry, Team, and Enterprise users (v2.1.94). As of v2.1.117, Pro/Max users on Opus and Sonnet also default to `high`.
+
+`/model` selections persist across restarts as of v2.1.117 — previously the selection reverted on new session launch. The `/model` picker honors `ANTHROPIC_DEFAULT_OPUS_MODEL_NAME`, `ANTHROPIC_DEFAULT_SONNET_MODEL_NAME`, and `ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME` environment overrides as of v2.1.115 — set these to pin a specific point release across sessions.
+
+The startup header shows a small indicator when the active model was chosen by project settings or managed settings (not by the user's global default) — added in v2.1.117 so you notice when a repo's `.claude/settings.json` is selecting a different model than your usual.
 
 ### Auto mode (automatic effort selection)
 

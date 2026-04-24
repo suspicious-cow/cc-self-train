@@ -275,6 +275,8 @@ Statusline scripts now have access to a `rate_limits` field that displays Claude
 `refreshInterval` status line setting (v2.1.97): Re-runs the status line command every N seconds. Set this in your statusline configuration to keep the status line data fresh without manual refresh.
 
 `workspace.git_worktree` field (v2.1.97): Added to the status line JSON input. This field is set when running inside a linked git worktree, letting your statusline script display worktree-specific information.
+
+`effort.level` and `thinking.enabled` fields (v2.1.119): Added to the status line JSON input. `effort.level` mirrors the current effort level (low/medium/high/xhigh/max, or "auto" resolved to a concrete level). `thinking.enabled` is true when extended thinking is active. Lets statusline scripts show a compact indicator like `[hi]` or `[think]` without re-querying /config.
 Rules Structure
 markdown
 ~/.claude/rules/

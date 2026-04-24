@@ -362,6 +362,8 @@ For more control over the process, guide Claude through it step-by-step or [crea
 
 When you create a PR using `gh pr create`, the session is automatically linked to that PR. You can resume it later with `claude --from-pr <number>`.
 
+As of v2.1.119, `--from-pr` also accepts a full URL instead of just a number — GitLab merge-request URLs, Bitbucket pull-request URLs, and GitHub Enterprise PR URLs all work in addition to github.com. Example: `claude --from-pr https://gitlab.mycorp.internal/backend/api/-/merge_requests/42`. Useful if you work across multiple forges.
+
 <Tip>
   Review Claude's generated PR before submitting and ask Claude to highlight potential risks or considerations.
 </Tip>

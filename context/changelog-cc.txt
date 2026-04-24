@@ -1,4 +1,56 @@
 Changelog
+2.1.119
+/config settings (theme, editor mode, verbose, etc.) now persist to ~/.claude/settings.json
+prUrlTemplate setting for custom code-review URLs
+CLAUDE_CODE_HIDE_CWD environment variable hides cwd from prompts
+--from-pr now accepts GitLab merge-request, Bitbucket pull-request, and GitHub Enterprise PR URLs (in addition to github.com)
+--print mode now honors the agent's tools: and disallowedTools: frontmatter
+--agent <name> now honors the agent definition's permissionMode
+PowerShell tool commands can now be auto-approved in permission mode
+Hooks: PostToolUse and PostToolUseFailure payloads now include duration_ms
+Status line stdin JSON includes effort.level and thinking.enabled
+Security: blockedMarketplaces now correctly enforces hostPattern and pathPattern
+Vim mode: Esc in INSERT no longer pulls queued messages back
+
+2.1.118
+(duplicate content with 2.1.115 — same day re-release; see 2.1.115 below for full list)
+
+2.1.117
+Forked subagents enabled on external builds with CLAUDE_CODE_FORK_SUBAGENT=1
+Agent frontmatter mcpServers now loaded for main-thread sessions (previously subagent-only)
+/model selections persist across restarts
+Startup header shows when active model comes from project or managed settings
+/resume now offers to summarize stale, large sessions
+plugin install now installs missing dependencies automatically
+claude plugin marketplace add auto-resolves missing dependencies
+Managed-settings blockedMarketplaces and strictKnownMarketplaces now enforced
+cleanupPeriodDays retention sweep now covers tasks and shell-snapshots (previously conversations only)
+Default effort for Pro/Max on Opus/Sonnet is now high
+
+2.1.116
+/resume on large sessions significantly faster (up to 67%)
+Agent frontmatter hooks: now fire in main-thread mode (previously subagent-only)
+/reload-plugins auto-installs missing dependencies
+/doctor can now be opened while Claude is responding
+Bash tool hints when gh commands hit GitHub rate limit
+Usage tab shows 5-hour and weekly usage immediately
+Security: sandbox auto-allow bypasses dangerous-path check for root
+
+2.1.115
+Added vim visual mode (v) and visual-line mode (V)
+Merged /cost and /stats into /usage
+Create and switch between named custom themes from /theme
+Plugins can ship themes via themes/ directory
+Hooks can invoke MCP tools directly via type: "mcp_tool"
+Added DISABLE_UPDATES env var to block all update paths
+WSL on Windows can inherit Windows-side managed settings
+Auto mode: include "$defaults" in autoMode.allow to layer custom rules on built-in defaults
+Added "Don't ask again" option to auto mode opt-in prompt
+Added claude plugin tag for plugin release git tags
+--continue/--resume now find sessions with /add-dir
+/color now syncs session accent color to claude.ai/code
+/model picker honors ANTHROPIC_DEFAULT_*_MODEL_NAME overrides
+
 2.1.114
 Fixed crash in permission dialog when an agent teams teammate requested tool permission
 

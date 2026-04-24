@@ -148,6 +148,9 @@ Deploy via your configuration management system (MDM, Group Policy, Ansible, etc
 ​
 Drop-in policy fragments with managed-settings.d/
 Teams can deploy independent policy fragments using the `managed-settings.d/` directory alongside `managed-settings.json`. Each `.json` file in this directory is merged alphabetically with the main managed settings. This allows different teams or tools to ship their own policy files without editing a single shared config. Available since v2.1.83.
+
+/config changes persist to ~/.claude/settings.json (v2.1.119)
+As of v2.1.119, changes made via `/config` (theme, editor mode, verbose output, etc.) are written to `~/.claude/settings.json` instead of being session-only. Previously, toggling verbose mode in `/config` reverted on restart. Now it survives, matching the behavior users already expected. This also means settings you change via `/config` appear in `git log` if `~/.claude/settings.json` is under version control.
 ​
 CLAUDE.md behavior notes
 HTML comments (`<!-- ... -->`) in CLAUDE.md are now hidden from Claude when auto-injected. They remain visible when the file is read with the Read tool. Use HTML comments for internal notes that shouldn't influence Claude's behavior. Changed in v2.1.72.

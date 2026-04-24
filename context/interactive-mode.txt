@@ -76,11 +76,11 @@ Command	Purpose
 /btw	Ask a side question without interrupting Claude's current work. Available since v2.1.81
 /claude-api	Bundled skill for building apps with the Claude API and Anthropic SDK. Available since v2.1.69
 /clear	Clear conversation history
-/color	Set a prompt-bar color for your session. Use /color default to reset. Available since v2.1.75
+/color	Set a prompt-bar color for your session. Use /color default to reset. Available since v2.1.75. As of v2.1.115, /color also syncs the session accent color to claude.ai/code.
 /compact [instructions]	Compact conversation with optional focus instructions
 /config	Open the Settings interface (Config tab). Note: /output-style has been deprecated (v2.1.73) — use /config instead
 /context	Visualize current context usage as a colored grid
-/cost	Show session token usage and cost in USD (API key users)
+/cost	DEPRECATED as of v2.1.115 — merged into /usage. Kept as an alias that redirects.
 /copy [N]	Interactive picker to copy code blocks. Optional index copies Nth-latest response. Press w to write directly to a file. Updated in v2.1.77
 /doctor	Checks the health of your Claude Code installation
 /effort	Set model effort level (low/medium/high). Available since v2.1.76. Since v2.1.80, also shows what "auto" currently resolves to
@@ -97,21 +97,21 @@ Command	Purpose
 /reload-plugins	Activate pending plugin changes without restarting. Available since v2.1.69
 /plan [description]	Enter plan mode, optionally with an immediate prompt (e.g., /plan fix the auth bug). Updated in v2.1.72
 /rename <name>	Rename the current session for easier identification
-/resume [session]	Resume a conversation by ID or name, or open the session picker. Defaults to sessions from current directory; press Ctrl+A to show all projects
+/resume [session]	Resume a conversation by ID or name, or open the session picker. Defaults to sessions from current directory; press Ctrl+A to show all projects. As of v2.1.117, /resume offers to summarize stale, large sessions instead of loading the full transcript. --continue/--resume from the CLI also find sessions with /add-dir paths (v2.1.115). /resume on large sessions is significantly faster (up to 67%) as of v2.1.116.
 /rewind	Rewind the conversation and/or code
 /undo	Alias for /rewind
 /simplify	Simplify complex code or explanations. Bundled command available since v2.1.63
-/stats	Visualize daily usage, session history, streaks, and model preferences
+/stats	DEPRECATED as of v2.1.115 — merged into /usage. Kept as an alias that redirects.
 /status	Open the Settings interface (Status tab) showing version, model, account, and connectivity
 /statusline	Set up Claude Code’s status line UI
 /tasks	List and manage background tasks
 /teleport	Resume a remote session from claude.ai (subscribers only)
-/theme	Change the color theme. v2.1.111 adds "Auto (match terminal)" option that follows your terminal's dark/light mode.
+/theme	Change the color theme. v2.1.111 adds "Auto (match terminal)" option that follows your terminal's dark/light mode. As of v2.1.115, you can create and switch between named custom themes from /theme; plugins can also ship themes via a themes/ directory.
 /release-notes	View release notes for any version (interactive version picker). Available since v2.1.92
 /team-onboarding	Generates a teammate ramp-up guide from your local CC usage
 /todos	List current TODO items
 /proactive	Alias for /loop — run a prompt on a recurring interval
-/usage	For subscription plans only: show plan usage limits and rate limit status
+/usage	Unified dashboard covering plan limits, rate-limit status, token usage + cost, session history, streaks, and model preferences. As of v2.1.115, /cost and /stats are merged in here; the old commands are aliases. The Usage tab shows 5-hour and weekly usage immediately (v2.1.116).
 ​
 Session personalization
 /color	Set a prompt-bar color for your session. /color default or /color reset restores the default. Available since v2.1.75
@@ -277,4 +277,16 @@ Focus view
 /focus toggles focus view (minimal display — last prompt + final response). Previously part of Ctrl+O; now separated. Available since v2.1.105.
 ​
 /doctor improvements
-/doctor now shows status icons in its layout. Press f to have Claude fix reported issues. Available since v2.1.105.
+/doctor now shows status icons in its layout. Press f to have Claude fix reported issues. Available since v2.1.105. As of v2.1.116, /doctor can be opened while Claude is responding.
+
+Vim visual modes
+v enters visual (character-wise) mode; V enters visual-line mode. Available since v2.1.115. Esc in INSERT mode no longer pulls queued messages back into the buffer (v2.1.119).
+
+Hide cwd from prompts
+CLAUDE_CODE_HIDE_CWD environment variable hides the current working directory from the prompt bar and from the running-in banner. Available since v2.1.119. Useful when sharing a session recording or pair-programming over a call.
+
+Block updates
+DISABLE_UPDATES environment variable blocks all update paths (claude update, claude upgrade, background checks). Stricter than CLAUDE_CODE_DISABLE_AUTOUPDATER which only blocks automatic upgrades. Available since v2.1.115.
+
+WSL managed settings
+On Windows, WSL sessions can inherit Windows-side managed settings. Available since v2.1.115.

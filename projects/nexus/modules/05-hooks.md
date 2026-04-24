@@ -212,6 +212,36 @@ Create a FileChanged hook that validates the gateway config only when config fil
 
 > **STOP** -- Create a conditional hook using the `if` field and test a reactive event hook.
 
+### 5.9 MCP-tool hooks & PostToolUse duration (v2.1.115, v2.1.119)
+
+Two small hook updates worth knowing:
+
+**Hook `type: "mcp_tool"`.** In addition to `"command"`, `"prompt"`, and `"http"` hooks, you can now point a hook at an MCP tool directly. If one of your MCP servers exposes a validator or notifier, you don't need to write a bash wrapper — wire the MCP tool into the hook config:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "my-validator",
+            "tool": "validate_changed_file",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+The MCP call receives the same input a command hook would (tool_input, tool_response, etc.) and its response is treated like command stdout — structured JSON replies (e.g. `{"decision": "block"}`) work the same way.
+
+**PostToolUse duration.** `PostToolUse` and `PostToolUseFailure` payloads now include `duration_ms` (how long the tool call took). Useful if you want a hook that flags slow operations — e.g. log any Bash call over 5000ms for later review.
+
 ### Choose Your Battles (Hooks Edition)
 
 You've seen the full hook lifecycle. Resist the urge to instrument every event. Each hook runs on every matching tool call -- cumulative latency and complexity adds up fast.
@@ -232,3 +262,4 @@ Your gateway now has automated quality gates. Config validation, test runs, and 
 - [ ] `/hooks` shows your registered hooks
 - [ ] All hook scripts committed to git
 - [ ] Wired up a hook using one of the new hook events
+- [ ] Know when a `type: "mcp_tool"` hook is the right tool over a `"command"` wrapper

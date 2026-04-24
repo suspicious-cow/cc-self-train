@@ -166,6 +166,23 @@ Two small `/loop` refinements worth noting:
 
 If you wire a long-running `/loop` for TDD verification or deployment polling, these make the loop safe to interrupt without hunting for the right signal.
 
+### 9.8 `cleanupPeriodDays` retention + stable TaskList ordering (v2.1.117, v2.1.119)
+
+Two settings-layer updates that affect how task data ages:
+
+**`cleanupPeriodDays` now sweeps tasks and shell-snapshots too** (v2.1.117). The setting in `~/.claude/settings.json` controls how long Claude Code keeps local session artifacts before pruning them. It used to cover conversations only, so a long-running install could accumulate megabytes of dead `.claude/tasks/` metadata and shell snapshots that never got cleaned up. Now the same window applies to all three.
+
+```json
+// ~/.claude/settings.json
+{
+  "cleanupPeriodDays": 30
+}
+```
+
+30 days is a reasonable default for most work. If you rely on re-opening old tasks across months, bump it higher.
+
+**`TaskList` returns stable order** (v2.1.119). `TaskList` previously returned tasks in arbitrary filesystem order — "first" could be anything. Now it's a stable, deterministic sequence. Matters if you have scripts or skills that iterate `TaskList` and expect consistent results across runs.
+
 ### Checkpoint
 
 Task pipelines, TDD, and quality gates on subagent output. You are managing complex work the way professional teams do.
@@ -178,3 +195,4 @@ Task pipelines, TDD, and quality gates on subagent output. You are managing comp
 - [ ] You understand cross-session persistence with `CLAUDE_CODE_TASK_LIST_ID`
 - [ ] SubagentStop hook verifies subagent completion
 - [ ] Tried `/loop` for a recurring task
+- [ ] Set an appropriate `cleanupPeriodDays` value in `~/.claude/settings.json`

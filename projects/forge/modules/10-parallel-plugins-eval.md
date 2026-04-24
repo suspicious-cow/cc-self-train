@@ -236,6 +236,20 @@ New: `/ultrareview` runs a comprehensive multi-agent code review in the cloud. I
 
 Try it on one of your worktree branches. Compare the findings to what your local review flow caught.
 
+### 10.15 Plugin ecosystem updates (v2.1.115 – v2.1.119)
+
+A burst of plugin-layer polish worth skimming:
+
+- **Themes ship via plugins.** A plugin can include a `themes/` directory; every theme in there shows up in `/theme` once the plugin is enabled (v2.1.115). Brand palettes become a plugin, not a settings snippet.
+- **`claude plugin tag`.** Plugin authors: this command creates a git tag for the plugin's declared version so downstream marketplaces that pin by tag can find it (v2.1.115).
+- **Auto-install missing dependencies.** `/reload-plugins` (v2.1.116), `plugin install` (v2.1.117), and `claude plugin marketplace add` (v2.1.117) all now auto-resolve missing deps instead of erroring. Dependency errors distinguish "declared but not installed" from other failure modes. Plugins pinned by another plugin's version constraint auto-update when that constraint changes (v2.1.119).
+- **Plugin skip reasons in `/doctor`** (v2.1.115). If a plugin is disabled, incompatible, or waiting on an unmet dep, `/doctor` now tells you which.
+- **`prUrlTemplate` setting** (v2.1.119). Custom code-review URLs for internal forges. Example: `"prUrlTemplate": "https://code.mycorp.internal/{repo}/mr/{n}"` rewrites `owner/repo#42` shorthand links to open your internal GitLab instead of github.com.
+- **Managed-settings enforcement.** `blockedMarketplaces` and `strictKnownMarketplaces` are enforced at plugin install time (v2.1.117); `blockedMarketplaces` now correctly honors both `hostPattern` and `pathPattern` (v2.1.119).
+- **`DISABLE_UPDATES`** (v2.1.115). Env var that blocks *every* update path — `claude update`, background checks, plugin auto-updates. Stricter than `CLAUDE_CODE_DISABLE_AUTOUPDATER` (which only blocks automatic upgrades).
+
+None of this requires action. Surface-level awareness so when you hit a weird plugin state, you know where to look.
+
 ### Checkpoint
 
 You made it. A complete toolkit, built from scratch, using every major Claude Code feature.
@@ -285,6 +299,7 @@ Confirm you have touched every major Claude Code feature across all 10 modules:
 - [ ] Evaluation -- test specs for skills and agents
 - [ ] PermissionRequest hooks -- auto-approval for eval automation
 - [ ] Continuous learning -- updated CLAUDE.md with project insights
+- [ ] Skimmed the plugin-ecosystem updates (themes via plugins, `prUrlTemplate`, `DISABLE_UPDATES`, deps auto-install)
 
 ---
 

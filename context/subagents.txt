@@ -845,3 +845,17 @@ The `/agents` command now has a tabbed layout: the **Running** tab shows live su
 ### Subagent stall timeout (v2.1.113)
 
 Subagents that stall mid-stream now fail with a clear error after **10 minutes** instead of hanging silently. Previously, a subagent that stopped producing output could sit indefinitely without surfacing the failure. The 10-minute threshold is a safety net, not a normal failure mode — if you see it, the subagent got stuck on something (network, model unavailable, input deadlock) and the parent conversation can now recover and retry instead of waiting forever.
+
+### Agent frontmatter in main-thread sessions (v2.1.116 + v2.1.117)
+
+Agent-frontmatter `hooks:` and `mcpServers:` now load for main-thread sessions, not just subagents. Previously these fields only fired when the agent was invoked as a subagent — the main conversation ignored them. Now they apply uniformly: an agent that declares `mcpServers: [my-validator]` in its frontmatter has that server available whether you talk to it as a subagent or as the main chat.
+
+### --print and --agent honor agent frontmatter (v2.1.119)
+
+`--print` mode now honors the agent's `tools:` and `disallowedTools:` frontmatter. Previously `--print` ignored these constraints, which meant agents designed for restricted tool use could accidentally run with full tool access in print mode. The agent's declared surface is now authoritative.
+
+`--agent <name>` now honors the agent definition's `permissionMode` too. Set `permissionMode: acceptAll` in an agent's frontmatter and launching it via `--agent` preserves that mode, useful for trusted non-interactive runs.
+
+### Forked subagents on external builds (v2.1.117)
+
+Set `CLAUDE_CODE_FORK_SUBAGENT=1` to enable forked subagents on external builds (Bedrock, Vertex AI, Foundry). "Forked" here means the subagent inherits the parent session's model/effort/settings instead of spawning a fresh session — lower latency, lower token cost, but coupled lifecycle. Available on official builds by default; the env var flips it on for everyone else.

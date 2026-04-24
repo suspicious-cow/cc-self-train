@@ -79,7 +79,7 @@ Simple strings match exactly: Write matches only the Write tool
 Supports regex: Edit|Write or Notebook.*
 Use * to match all tools. You can also use empty string ("") or leave matcher blank.
 hooks: Array of hooks to execute when the pattern matches
-type: Hook execution type - "command" for bash commands, "prompt" for LLM-based evaluation, or "http" for HTTP webhook calls
+type: Hook execution type - "command" for bash commands, "prompt" for LLM-based evaluation, "http" for HTTP webhook calls, or "mcp_tool" for direct MCP tool invocation (v2.1.115)
 command: (For type: "command") The bash command to execute (can use $CLAUDE_PROJECT_DIR environment variable)
 prompt: (For type: "prompt") The prompt to send to the LLM for evaluation
 timeout: (Optional) How long a hook should run, in seconds, before canceling that specific hook
@@ -205,6 +205,31 @@ Component-scoped hooks follow the same configuration format as settings-based ho
 Additional option for skills:
 once: Set to true to run the hook only once per session. After the first successful execution, the hook is removed. Note: This option is currently only supported for skills, not for agents.
 ​
+MCP Tool Hooks
+In addition to command/prompt/http hooks, Claude Code supports MCP tool hooks (type: "mcp_tool") that invoke an MCP tool directly instead of spawning a subprocess. Available since v2.1.115. Useful when you already have an MCP server exposing a validator, classifier, or notifier — you can wire that tool into the hook pipeline without duplicating the logic in a shell script.
+Configuration:
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "my-validator",
+            "tool": "validate_changed_file",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
+server: The MCP server name (must match an entry in .mcp.json or user-level MCP config)
+tool: The tool name exposed by that server
+timeout: (Optional) seconds before the invocation is canceled
+The hook input (tool_input, tool_response, etc.) is passed to the MCP tool as its argument. The tool's result is treated the same way a command hook's stdout is — structured JSON responses (e.g. {"decision": "block"}) work identically. Errors from the MCP call surface as hook failures.
+​
 Prompt-Based Hooks
 In addition to bash command hooks (type: "command"), Claude Code supports prompt-based hooks (type: "prompt") that use an LLM to evaluate whether to allow or block an action. Prompt-based hooks are currently only supported for Stop and SubagentStop hooks, where they enable intelligent, context-aware decisions.
 ​
@@ -327,6 +352,7 @@ Recognizes the same matcher values as PreToolUse.
 PostToolUse
 Runs immediately after a tool completes successfully.
 Recognizes the same matcher values as PreToolUse.
+As of v2.1.119, PostToolUse and PostToolUseFailure payloads include a `duration_ms` field (how long the tool call took, in milliseconds). Useful for metrics hooks that flag slow operations — e.g. a PostToolUse hook that logs any Bash call taking over 5000 ms for later review.
 ​
 Notification
 Runs when Claude Code sends notifications. Supports matchers to filter by notification type.

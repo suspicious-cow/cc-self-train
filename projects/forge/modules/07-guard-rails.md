@@ -139,6 +139,30 @@ Cross-reference: `context/security.txt` for the threat → section lookup table.
 
 > **STOP** — If you set `sandbox.network.deniedDomains` alongside an allow rule, write a one-line test that confirms the deny wins. Same pattern as the guard-denies-and-allows check below — precedence bugs hide in the "looks right in the happy case" gap.
 
+### 7.11 Auto-mode `"$defaults"` and PowerShell auto-approve (v2.1.115, v2.1.119)
+
+Three permission-model refinements worth knowing:
+
+**`autoMode.allow` accepts `"$defaults"`** (v2.1.115). Previously, setting `autoMode.allow` in `settings.json` *replaced* the built-in default rules. Now the literal string `"$defaults"` can appear in the array to layer your custom rules on top of the built-ins rather than replace them:
+
+```json
+{
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Bash(pytest)",
+      "Bash(npm test)"
+    ]
+  }
+}
+```
+
+Before this change you had to re-enumerate every built-in rule or accept replacement semantics. Now you just add.
+
+**"Don't ask again" on auto-mode opt-in** (v2.1.115). The first time you enable auto mode in a session, Claude Code asks for confirmation. That prompt now has a "Don't ask again" option that persists your choice so subsequent sessions don't re-prompt.
+
+**PowerShell commands can be auto-approved** (v2.1.119). If you opted into the Windows PowerShell tool (`CLAUDE_CODE_USE_POWERSHELL_TOOL=1`), PowerShell tool calls can now be auto-approved in permission mode — previously only Bash was eligible. Same rule syntax: `PowerShell(Get-Process)`, `PowerShell(git status)`, etc.
+
 ### Verify your guard denies as well as allows
 
 **Security footgun:** a PreToolUse guard that accidentally always returns `{"permissionDecision": "allow"}` looks identical to a working guard at the exit-code level. If you only test the allow case, a silently-broken guard reads as green. Module 7's guards must be tested on **both** paths before you trust them.
@@ -172,5 +196,6 @@ Four guard patterns, all wired up. Your toolkit now prevents bad data, enforces 
 - [ ] Reviewed new sandbox settings: `allowRead` and `enableWeakerNetworkIsolation`
 - [ ] Created a PermissionDenied hook
 - [ ] Tested PreToolUse hook with `updatedInput` for AskUserQuestion
+- [ ] Know how `"$defaults"` layers custom rules on top of built-in auto-mode rules
 
 **STOP -- What you just did in this module:** You built a complete guard rail system with four distinct mechanisms: `deny` blocks bad actions, `additionalContext` injects reminders, `updatedInput` silently modifies tool inputs, and prompt-based hooks use AI judgment for nuanced checks. Together, these form a safety layer that runs automatically on every tool call. In real projects, guard rails like these prevent data corruption, enforce conventions, and catch quality issues -- all without you having to remember to check.

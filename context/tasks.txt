@@ -100,3 +100,7 @@ Monitor tool (v2.1.99): Streams events from background scripts. Each stdout line
 `--resume`/`--continue` scheduled tasks (v2.1.105): `--resume` and `--continue` now resurrect unexpired scheduled tasks, so recurring prompts survive session restarts.
 
 `/loop` Esc cancellation (v2.1.113): pressing Esc now cancels pending `/loop` wakeups mid-session. Wakeups display as "Claude resuming /loop wakeup" so you can tell when the schedule is firing rather than fresh input. Makes it safe to interrupt a long-running `/loop` without having to hunt for the right signal.
+
+`cleanupPeriodDays` retention covers tasks + shell-snapshots (v2.1.117): the `cleanupPeriodDays` setting (which controls how long Claude Code keeps local conversation history) now also prunes old task files and shell snapshots on the same schedule. Previously these accumulated independently — a machine with a year-old `.claude/tasks/` directory could carry many megabytes of dead task metadata. Set `cleanupPeriodDays: 30` in `~/.claude/settings.json` to sweep conversations, tasks, and shell snapshots on a 30-day window.
+
+`TaskList` ordering fix (v2.1.119): `TaskList` previously returned tasks in arbitrary filesystem order. Now it returns them in a stable order — matters for any workflow that iterates `TaskList` output expecting a deterministic sequence.

@@ -171,6 +171,18 @@ Subagents that hang mid-stream now surface a clear error after 10 minutes instea
 
 No action required — this is a behavioral change you inherit automatically. Worth knowing when you're debugging a "why is my agent still running?" case: check the session log first, then re-invoke with fresh input if the prior run timed out.
 
+### 8.12 Main-thread frontmatter, forked subagents, `--print` / `--agent` honors (v2.1.116 – v2.1.119)
+
+Four subagent-related refinements in this window:
+
+**Agent frontmatter fires in main-thread mode** (v2.1.116 + v2.1.117). If an agent's frontmatter declares `hooks:` or `mcpServers:`, those entries used to load *only* when the agent was invoked as a subagent — the main conversation ignored them. That's changed. Now an agent-frontmatter declaration applies uniformly whether you talk to the agent as a subagent or as the main chat. If you had workarounds duplicating hooks/MCP servers in both agent frontmatter and `settings.json`, you can clean those up.
+
+**`CLAUDE_CODE_FORK_SUBAGENT=1`** (v2.1.117). On external builds (Bedrock, Vertex AI, Foundry), set this env var to enable *forked* subagents — the subagent inherits the parent session's model/effort/settings instead of spawning a fresh session. Cheaper, faster, coupled lifecycle. Available on official builds by default; the env var flips it on for everyone else.
+
+**`--print` honors agent `tools:` / `disallowedTools:`** (v2.1.119). Previously, `--print` mode ignored an agent's tool frontmatter, which meant restricted agents could accidentally run with full tool access in non-interactive mode. The agent's declared surface is now authoritative.
+
+**`--agent <name>` honors `permissionMode`** (v2.1.119). Set `permissionMode: acceptAll` (or any other mode) in an agent's frontmatter and launching it via `--agent` preserves that mode — useful for trusted non-interactive runs.
+
 ### Checkpoint
 
 Three specialized agents for your gateway. Routing, caching, and security -- each one focused on what it does best.
@@ -184,3 +196,4 @@ Three specialized agents for your gateway. Routing, caching, and security -- eac
 - [ ] Subagent files committed to git
 - [ ] Understand SendMessage replaces Agent resume parameter
 - [ ] Tested `initialPrompt` frontmatter on an agent
+- [ ] Know that agent `hooks:` / `mcpServers:` now fire in main-thread mode too

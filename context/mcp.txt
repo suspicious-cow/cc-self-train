@@ -943,3 +943,8 @@ Option 1 and Option 2 can be combined: If managed-mcp.json exists, it has exclus
 Denylist takes absolute precedence: If a server matches a denylist entry (by name, command, or URL), it will be blocked even if it’s on the allowlist
 Name-based, command-based, and URL-based restrictions work together: a server passes if it matches either a name entry, a command entry, or a URL pattern (unless blocked by denylist)
 When using managed-mcp.json: Users cannot add MCP servers through claude mcp add or configuration files. The allowedMcpServers and deniedMcpServers settings still apply to filter which managed servers are actually loaded.
+
+MCP tools from hooks (v2.1.115)
+Hooks can now invoke MCP tools directly using type: "mcp_tool". This lets you wire an MCP server's validator/classifier/notifier into the hook pipeline without writing a shell wrapper. See hooks.txt "MCP Tool Hooks" for the full configuration. Typical pattern: expose a `validate_file` tool from your MCP server, then add it as a PostToolUse hook on Write|Edit — the hook passes the tool_input to the MCP call and treats the response the same way it treats a command hook's stdout.
+
+Subagent and SDK MCP server reconfiguration connects servers in parallel as of v2.1.119 — restarting or reconfiguring an environment with many MCP servers is noticeably faster.

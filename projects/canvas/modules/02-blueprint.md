@@ -196,6 +196,20 @@ Two workflow tricks to try now:
 
 > **STOP** -- Try `/plan add a contact form to the homepage` to test the quick-plan workflow.
 
+### 2.12 `--from-pr` across multiple PR providers (v2.1.119)
+
+`claude --from-pr <N>` now also accepts full URLs for GitLab merge-requests, Bitbucket pull-requests, and GitHub Enterprise PRs — not just github.com numbers.
+
+Examples of what now works:
+
+```
+claude --from-pr https://gitlab.mycorp.internal/backend/api/-/merge_requests/42
+claude --from-pr https://bitbucket.org/myteam/website/pull-requests/7
+claude --from-pr https://github.mycorp.com/platform/svc/pull/118
+```
+
+Before this, only `github.com` URLs and bare numbers resolved. If your team hosts code somewhere other than github.com, you can now resume a CC session linked to any PR across your forges with the same flag.
+
 ### Heads Up — What's Coming in Module 3
 
 Module 3 introduces **rule files** — small Markdown files in `.claude/rules/` that tell Claude how to write code for different parts of your project. You will see files that start with `---` marks at the top, followed by lines like `name: react` or `paths: ["*.py"]`.
