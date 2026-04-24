@@ -12,7 +12,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const PROFILE_PATH = path.join(process.cwd(), "learner-profile.json");
+const PROJECT_DIR = process.env.CLAUDE_PROJECT_DIR || process.cwd();
+const PROFILE_PATH = path.join(PROJECT_DIR, "learner-profile.json");
 const BANNER_TTL_MS = 24 * 60 * 60 * 1000;
 const LEVELS = ["beginner", "intermediate", "advanced"];
 

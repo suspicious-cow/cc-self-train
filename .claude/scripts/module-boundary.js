@@ -23,8 +23,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const PROFILE_PATH = path.join(process.cwd(), "learner-profile.json");
-const CLAUDE_LOCAL_PATH = path.join(process.cwd(), "CLAUDE.local.md");
+const PROJECT_DIR = process.env.CLAUDE_PROJECT_DIR || process.cwd();
+const PROFILE_PATH = path.join(PROJECT_DIR, "learner-profile.json");
+const CLAUDE_LOCAL_PATH = path.join(PROJECT_DIR, "CLAUDE.local.md");
 const LEVELS = ["beginner", "intermediate", "advanced"];
 
 function computeNewLevel(currentLevel, profile) {

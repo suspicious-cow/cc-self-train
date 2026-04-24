@@ -852,3 +852,144 @@ def test_end_to_end_observe_then_streak_then_context(tmp_path):
     context_result = _run_context(tmp_path)
     assert "LEARNER PROFILE" in context_result.stdout
     assert "STRUGGLE STREAK" in context_result.stdout
+
+
+# --- cwd-independence (CLAUDE_PROJECT_DIR honored over cwd) ----------------
+#
+# The scripts previously resolved learner-profile.json etc. via process.cwd().
+# That only worked when CC's cwd was the project root. These tests lock in
+# the documented pattern: when CLAUDE_PROJECT_DIR is set, the scripts must
+# resolve their I/O against THAT path regardless of the cwd the process was
+# launched with. See CC hooks docs: "CLAUDE_PROJECT_DIR environment variable
+# is available and contains the absolute path to the project root directory
+# (where Claude Code was started)".
+
+
+def _run_with_env(
+    script: pathlib.Path,
+    launch_cwd: pathlib.Path,
+    project_dir: pathlib.Path,
+    stdin: str = "",
+) -> subprocess.CompletedProcess:
+    import os
+
+    env = os.environ.copy()
+    env["CLAUDE_PROJECT_DIR"] = str(project_dir)
+    return subprocess.run(
+        [NODE, str(script)],
+        cwd=launch_cwd,
+        input=stdin,
+        capture_output=True,
+        text=True,
+        timeout=10,
+        env=env,
+    )
+
+
+def test_observe_honors_claude_project_dir_over_cwd(tmp_path):
+    """observe-interaction.js must write to $CLAUDE_PROJECT_DIR, not cwd."""
+    project = tmp_path / "project"
+    launcher = tmp_path / "elsewhere"
+    project.mkdir()
+    launcher.mkdir()
+
+    transcript = project / "transcript.jsonl"
+    _write_transcript(transcript, "explain hooks")
+
+    payload = json.dumps({"transcript_path": str(transcript)})
+    result = _run_with_env(OBSERVE, launcher, project, stdin=payload)
+
+    assert result.returncode == 0, result.stderr
+    assert (project / "learner-profile.json").is_file(), (
+        "observe-interaction.js must write learner-profile.json into "
+        "CLAUDE_PROJECT_DIR, not into cwd"
+    )
+    assert not (launcher / "learner-profile.json").exists(), (
+        "learner-profile.json leaked into the launcher cwd — script is "
+        "still using process.cwd() instead of CLAUDE_PROJECT_DIR"
+    )
+
+
+def test_context_honors_claude_project_dir_over_cwd(tmp_path):
+    """learner-context.js must read from $CLAUDE_PROJECT_DIR, not cwd."""
+    project = tmp_path / "project"
+    launcher = tmp_path / "elsewhere"
+    project.mkdir()
+    launcher.mkdir()
+
+    # Seed a profile in the project dir only.
+    (project / "learner-profile.json").write_text(
+        json.dumps({
+            "interactions": {"concept_question": 10},
+            "totalInteractions": 10,
+            "qualityScores": [5] * 10,
+        }),
+        encoding="utf-8",
+    )
+
+    result = _run_with_env(CONTEXT, launcher, project)
+    assert result.returncode == 0, result.stderr
+    assert "LEARNER PROFILE" in result.stdout, (
+        "learner-context.js read an empty cwd profile instead of the "
+        "seeded CLAUDE_PROJECT_DIR profile"
+    )
+
+
+def test_streak_check_honors_claude_project_dir_over_cwd(tmp_path):
+    """learner-streak-check.js must read from $CLAUDE_PROJECT_DIR, not cwd."""
+    project = tmp_path / "project"
+    launcher = tmp_path / "elsewhere"
+    project.mkdir()
+    launcher.mkdir()
+
+    (project / "learner-profile.json").write_text(
+        json.dumps({
+            "struggleStreak": True,
+            "lastAnnouncedStreak": "none",
+        }),
+        encoding="utf-8",
+    )
+
+    result = _run_with_env(STREAK_CHECK, launcher, project)
+    assert result.returncode == 0, result.stderr
+    assert "STRUGGLE STREAK" in result.stdout, (
+        "learner-streak-check.js didn't see the struggle streak seeded in "
+        "CLAUDE_PROJECT_DIR — still using process.cwd()"
+    )
+
+
+def test_module_boundary_honors_claude_project_dir_over_cwd(tmp_path):
+    """module-boundary.js must read/write $CLAUDE_PROJECT_DIR, not cwd."""
+    project = tmp_path / "project"
+    launcher = tmp_path / "elsewhere"
+    project.mkdir()
+    launcher.mkdir()
+
+    (project / "learner-profile.json").write_text(
+        json.dumps({
+            "currentModule": 2,
+            "moduleInteractions": {"concept_question": 5},
+            "moduleQualityScores": [5, 5, 5, 5, 5],
+            "moduleAverageQuality": 5.0,
+        }),
+        encoding="utf-8",
+    )
+    (project / "CLAUDE.local.md").write_text(
+        "Effective Level: intermediate\nExperience Level: intermediate\n",
+        encoding="utf-8",
+    )
+
+    result = _run_with_env(MODULE_BOUNDARY, launcher, project)
+    assert result.returncode == 0, result.stderr
+
+    # The module counter should have advanced in the PROJECT dir, not the
+    # launcher cwd.
+    updated = json.loads(
+        (project / "learner-profile.json").read_text(encoding="utf-8")
+    )
+    assert updated["currentModule"] == 3, (
+        "module-boundary.js didn't bump currentModule in CLAUDE_PROJECT_DIR"
+    )
+    assert not (launcher / "learner-profile.json").exists(), (
+        "learner-profile.json leaked into the launcher cwd"
+    )

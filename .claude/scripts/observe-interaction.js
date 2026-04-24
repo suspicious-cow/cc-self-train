@@ -9,8 +9,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const PROFILE_PATH = path.join(process.cwd(), "learner-profile.json");
-const LOCK_PATH = path.join(process.cwd(), ".observe-lock");
+const PROJECT_DIR = process.env.CLAUDE_PROJECT_DIR || process.cwd();
+const PROFILE_PATH = path.join(PROJECT_DIR, "learner-profile.json");
+const LOCK_PATH = path.join(PROJECT_DIR, ".observe-lock");
 
 // Prevent re-entrancy
 if (fs.existsSync(LOCK_PATH)) process.exit(0);
