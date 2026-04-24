@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.27.1 (2026-04-24)
+
+**Hook command portability fix (Windows + paths with spaces).** Reported by Dimitri Zarkadoulas, who hit this on his Windows laptop.
+
+- `.claude/settings.json`: all 5 hook commands (welcome, check-updates, learner-context, learner-streak-check, observe-interaction) now use `node "$CLAUDE_PROJECT_DIR/.claude/scripts/X.js"` instead of `node .claude/scripts/X.js`. The bare relative-path form only worked when CC's cwd was the project root — launching from a subdirectory or through some terminal integrations could silently fail the hook. The new form is cwd-independent and handles paths with spaces (e.g., `Dropbox\Personal\Data Science Projects\...`). This aligns with the CC docs' own "Use absolute paths" best practice (`context/hooks.txt` line 998).
+- `projects/sentinel/modules/05-hooks.md`: the two concrete hook examples in Module 5 (§5.2, §5.3) now show the quoted `"$CLAUDE_PROJECT_DIR"/.claude/scripts/X.sh` form so students copy the correct pattern.
+- `tests/test_hooks.py`: `test_hook_scripts_referenced_exist` updated to strip surrounding quotes and resolve `$CLAUDE_PROJECT_DIR` before the file-exists check. New `test_hook_commands_use_claude_project_dir` locks the pattern in — any future regression to bare relative paths fails the suite. Total: 634 tests.
+
 ## v2.27.0 (2026-04-19)
 
 **PR-PERSONA: level-gated module content.** Shipped across two PRs — infrastructure (#12) and content (#13). Advanced learners now see a tighter, action-focused version of every module; beginner and intermediate learners see the same full scaffolding they saw before. 633 tests pass.
