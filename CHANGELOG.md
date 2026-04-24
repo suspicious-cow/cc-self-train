@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.27.2 (2026-04-24)
+
+**Hook portability — deeper fix: scripts + docs now all use `$CLAUDE_PROJECT_DIR`.** Follow-up to v2.27.1 after auditing every surface where the repo tells CC to invoke a script. The shallow `settings.json` fix shipped in v2.27.1 wasn't sufficient — even with the correct spawn command, the scripts themselves resolved their I/O through `process.cwd()`, so if a user launched CC from a subdirectory the hook would spawn but then read/write `learner-profile.json` in the wrong place.
+
+- `.claude/scripts/observe-interaction.js`, `learner-context.js`, `learner-streak-check.js`, `module-boundary.js`: now resolve `learner-profile.json`, `.observe-lock`, and `CLAUDE.local.md` via `process.env.CLAUDE_PROJECT_DIR || process.cwd()` instead of plain `process.cwd()`. Matches the pattern `render-module.js` already uses. `render-module-headers.js` was already correct (`__dirname`-based); `welcome.js` and `check-updates.js` do no file I/O.
+- `CLAUDE.md`: two `node .claude/scripts/…` instructions (Module Boundary Assessment, "next module" rule) now use `node "$CLAUDE_PROJECT_DIR/.claude/scripts/…"`. Claude's Bash tool expands the variable identically, but we now model the pattern we want users to copy.
+- `.claude/skills/sync/SKILL.md` and `.claude/skills/release/SKILL.md`: script invocations quoted against `$CLAUDE_PROJECT_DIR`.
+- `tests/test_adaptive_system.py`: four new cwd-independence tests. Each seeds a profile in a tmp `project/` dir, launches the script from a sibling `elsewhere/` dir (so `process.cwd()` would point to the wrong place), sets `CLAUDE_PROJECT_DIR=project/`, and asserts both that the script reads/writes the project dir AND that nothing leaks into the launcher cwd. Suite: 638 tests (was 634).
+- Also restored an `assert "STRUGGLE STREAK" in context_result.stdout` in the end-to-end integration test that had been dropped in an earlier edit.
+
 ## v2.27.1 (2026-04-24)
 
 **Hook command portability fix (Windows + paths with spaces).** Reported by Dimitri Zarkadoulas, who hit this on his Windows laptop.
