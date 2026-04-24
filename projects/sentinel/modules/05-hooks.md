@@ -96,7 +96,7 @@ The configuration should look like:
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/scripts/session-summary.sh"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/scripts/session-summary.sh"
           }
         ]
       }
@@ -139,7 +139,7 @@ The settings.json entry:
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/scripts/validate-rules.sh"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/scripts/validate-rules.sh"
           }
         ]
       }

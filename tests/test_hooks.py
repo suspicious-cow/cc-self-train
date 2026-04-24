@@ -36,20 +36,51 @@ class TestSettingsJson:
             f"Expected 3 SessionStart hooks, got {len(hooks)}"
 
     def test_hook_scripts_referenced_exist(self):
-        """Every script referenced in settings.json must exist."""
+        """Every script referenced in settings.json must exist.
+
+        Commands use the documented `"$CLAUDE_PROJECT_DIR"/.claude/...` pattern,
+        so we strip surrounding quotes and resolve the env var to REPO_ROOT
+        before checking the file exists.
+        """
         path = REPO_ROOT / ".claude" / "settings.json"
         data = json.loads(path.read_text(encoding="utf-8"))
         for event_hooks in data["hooks"].values():
             for matcher_block in event_hooks:
                 for hook in matcher_block.get("hooks", []):
                     cmd = hook.get("command", "")
-                    # Extract the script path from the command
-                    # e.g., "node .claude/scripts/welcome.js" → ".claude/scripts/welcome.js"
                     parts = cmd.split()
-                    if len(parts) >= 2:
-                        script_path = parts[-1]  # last arg is the file
-                        assert (REPO_ROOT / script_path).is_file(), \
-                            f"Hook script not found: {script_path} (from command: {cmd})"
+                    if len(parts) < 2:
+                        continue
+                    script_path = parts[-1].strip('"').strip("'")
+                    script_path = script_path.replace(
+                        "$CLAUDE_PROJECT_DIR/", ""
+                    ).replace("${CLAUDE_PROJECT_DIR}/", "")
+                    assert (REPO_ROOT / script_path).is_file(), (
+                        f"Hook script not found: {script_path} "
+                        f"(from command: {cmd})"
+                    )
+
+    def test_hook_commands_use_claude_project_dir(self):
+        """All hook script commands must use the "$CLAUDE_PROJECT_DIR" pattern.
+
+        Bare relative paths work only when cwd is the project root, which
+        is brittle on Windows and fails when CC is launched from a
+        subdirectory. See CC hooks docs: "Use absolute paths — Specify
+        full paths for scripts (use '$CLAUDE_PROJECT_DIR' for the project
+        path)".
+        """
+        path = REPO_ROOT / ".claude" / "settings.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for event_hooks in data["hooks"].values():
+            for matcher_block in event_hooks:
+                for hook in matcher_block.get("hooks", []):
+                    cmd = hook.get("command", "")
+                    if ".claude/scripts/" in cmd or ".claude\\scripts\\" in cmd:
+                        assert "$CLAUDE_PROJECT_DIR" in cmd, (
+                            f"Hook command must reference "
+                            f'"$CLAUDE_PROJECT_DIR" for cwd-independence: '
+                            f"{cmd}"
+                        )
 
 
 class TestWelcomeScript:

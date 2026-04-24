@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/scripts/welcome.js"
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/scripts/welcome.js\""
           }
         ]
       },
@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/scripts/check-updates.js",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/scripts/check-updates.js\"",
             "timeout": 15
           }
         ]
@@ -25,7 +25,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/scripts/learner-context.js",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/scripts/learner-context.js\"",
             "timeout": 5
           }
         ]
@@ -36,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/scripts/learner-streak-check.js",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/scripts/learner-streak-check.js\"",
             "timeout": 5
           }
         ]
@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/scripts/observe-interaction.js",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/scripts/observe-interaction.js\"",
             "timeout": 10
           }
         ]
