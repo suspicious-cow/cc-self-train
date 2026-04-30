@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.29.0 (2026-04-30)
+
+**Curriculum sync to CC v2.1.123.** Four changelog versions (v2.1.120–v2.1.123). 9 user-facing features kept; ~38 entries dropped as bug fixes, telemetry tweaks, or platform-specific cosmetics.
+
+- **Context files (6 updated):** `changelog-cc.txt`, `skillsmd.txt`, `hooks.txt`, `mcp.txt`, `plugins.txt`, `anthropic-basics.txt`. Highlights: `${CLAUDE_EFFORT}` skill substitution variable, MCP `alwaysLoad` server config field (skips tool-search deferral), PostToolUse `hookSpecificOutput.updatedToolOutput` now works for all tools (was MCP-only), `claude ultrareview [target]` and `claude plugin prune` non-interactive CLI subcommands, `claude plugin validate` accepts top-level `$schema`/`version`/`description`, `--dangerously-skip-permissions` no longer prompts for `.claude/{skills,agents,commands}/` writes, `/resume` finds sessions by PR URL (GitHub/GitHub Enterprise/GitLab/Bitbucket), Windows PowerShell auto-fallback when Git Bash absent.
+- **Module steps (5 new steps × 5 projects = 25 module-file edits):** Module 1 (session-craft updates digest), Module 4 (`${CLAUDE_EFFORT}`), Module 5 (PostToolUse `updatedToolOutput`), Module 6 (MCP `alwaysLoad`), Module 10 (new CLI subcommands). One Checkpoint checkbox added per module per project.
+- **Health check:** Module 10 now 16 steps (1.78× of smallest module 9 at 9 steps), still under 2× bloat threshold.
+- **Verification:** `render-module-headers.js` reports `{"unchanged": 50}`; canvas modules 1, 4, 5, 6, 10 render cleanly through `render-module.js` with no marker imbalance.
+
+See `.claude/sync-report.md` for the full per-file change list and per-project step numbers.
+
 ## v2.28.0 (2026-04-24)
 
 **Curriculum sync to CC v2.1.119.** Five changelog versions (v2.1.115–v2.1.119); v2.1.115 and v2.1.118 overlapped ~100% (same-day re-release), deduped to one feature list.
