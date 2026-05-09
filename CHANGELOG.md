@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.30.0 (2026-05-09)
+
+**Curriculum sync to CC v2.1.138.** Nine published changelog versions (v2.1.126, 128, 129, 131, 132, 133, 136, 137, 138); v2.1.124, 125, 127, 130, 134, 135 had no public changelog. 22 user-facing features kept; ~125 entries skipped as bug fixes, telemetry tweaks, and cosmetic UI polish.
+
+- **Context files (8 updated):** `changelog-cc.txt`, `interactive-mode.txt`, `hooks.txt`, `skillsmd.txt`, `mcp.txt`, `plugins.txt`, `models.txt`, `security.txt`. Highlights: `settings.autoMode.hard_deny` (unconditional auto-mode classifier blocks, user-tier only), `worktree.baseRef` setting + the v2.1.128→v2.1.133 default-flip story, `--plugin-url` and `--plugin-dir` accepting `.zip` archives, `claude project purge` subcommand, `effort.level` JSON field + `$CLAUDE_EFFORT` env var + `$CLAUDE_CODE_SESSION_ID` reaching hooks and Bash subprocesses, `--dangerously-skip-permissions` expanded bypass (now skips `.claude/`/`.git/`/`.vscode/`/`.idea/`/`.husky/`/shell-config writes), `skillOverrides` three-value semantics (`off`/`user-invocable-only`/`name-only`), `/mcp` per-server tool counts + `--channels` with API-key auth + `workspace` reserved server name, three new tuning env vars (`CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN`, `CLAUDE_CODE_FORCE_SYNC_OUTPUT`, `CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE`), Windows PowerShell-as-primary-shell + expanded PS7 detection.
+- **Module steps (10 new steps × 5 projects = 50 module-file edits):** Module 1 (3 steps: env vars, `claude project purge`, Windows PowerShell), Module 4 (`skillOverrides`), Module 5 (effort/session ID in hooks & subprocesses), Module 6 (MCP polish), Module 7 (2 steps: `hard_deny` + `--dangerously-skip-permissions` blast radius), Module 10 (2 steps: `worktree.baseRef` + plugin distribution). One Checkpoint checkbox added per new step.
+- **Health check:** Module 1 and Module 10 now sit at 18 steps each — exactly 2.0× the smallest module (M9 at 9 steps), the bloat-warning ceiling. Workable, but the next sync that adds steps to either module should plan a split or rebalance instead of further appending.
+- **Verification:** `render-module-headers.js` reports `{"unchanged": 50}`; all 30 modified module files pass sequential numbering, Checkpoint integrity, and code-fence balance checks. No reverts.
+
+See `.claude/sync-report.md` for the full per-file change list and per-project step numbers.
+
 ## v2.29.1 (2026-05-01)
 
 **Docs-only patch.** Switch README from local PDF reference to arXiv link.
