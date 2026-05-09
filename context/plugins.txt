@@ -313,3 +313,40 @@ MCP: external tool integration
 **`claude plugin prune`** (v2.1.121). Removes orphaned auto-installed plugin dependencies — plugins that were pulled in only to satisfy another plugin's `dependencies` field but are no longer needed. Directly-installed plugins are never touched. Flags: `-s, --scope <user|project|local>` (default `user`), `--dry-run` to list what would be removed, `-y, --yes` to skip confirmation (required for non-TTY stdin). The companion `plugin uninstall <name> --prune` cascades — uninstalls the named plugin AND cleans up its now-orphaned dependencies in one command, whereas `plugin prune` is a standalone sweep across all plugins.
 
 **`claude plugin validate` accepts top-level metadata** (v2.1.120). The validator no longer treats `$schema`, `version`, and `description` at the top level of `marketplace.json` as errors, and `$schema` is also allowed at the top level of `plugin.json`. Useful for marketplaces that pin to a JSON Schema for IDE autocomplete.
+
+**`--plugin-url <url>`** (v2.1.129). New CLI flag that fetches a plugin `.zip` archive from a URL for the current session only — useful for quick try-out without committing the plugin to user/project settings or a marketplace. The plugin is loaded into the running session and discarded when the session ends. Pair with `--plugin-dir` for local archives.
+
+**`--plugin-dir` accepts `.zip` archives** (v2.1.128). The `--plugin-dir <path>` flag now accepts a path to a `.zip` plugin archive in addition to a directory. Together with `--plugin-url`, this gives you three ways to load a plugin without registering it: directory, local zip, or remote zip URL.
+
+**Plugin manifest: `themes` and `monitors` under `experimental`** (v2.1.129). The plugin manifest schema now expects experimental plugin component types (`themes`, `monitors`) to be declared under an `"experimental": { ... }` block instead of at the top level. Top-level declarations still work for now but `claude plugin validate` will warn. Migrate to the nested form before these warnings become errors.
+
+```json
+{
+  "name": "my-plugin",
+  "version": "1.0.0",
+  "skills": ["./skills/foo"],
+  "experimental": {
+    "themes": ["./themes/dark.json"],
+    "monitors": ["./monitors/build.js"]
+  }
+}
+```
+
+**`worktree.baseRef` setting** (v2.1.133). Controls which ref new worktrees branch from. Two values:
+- `"fresh"` (default) — new worktrees branch from `origin/<default-branch>`, dropping any local unpushed commits. Best for clean isolation.
+- `"head"` — new worktrees branch from local HEAD, preserving uncommitted changes and unpushed commits. Best when subagents need to operate on in-progress work.
+
+Affects:
+- `claude --worktree <name>` CLI flag
+- `EnterWorktree` tool (used by Claude during the session)
+- Subagent worktrees created with `isolation: worktree`
+
+History: between v2.1.128 and v2.1.132, `EnterWorktree` branched from local HEAD by default. v2.1.133 introduces this setting and reverts the default to `origin/<default>`. Set `worktree.baseRef: "head"` in `~/.claude/settings.json` (or project/local settings) to keep the v2.1.128–2.1.132 behavior.
+
+```json
+{ "worktree": { "baseRef": "head" } }
+```
+
+Pitfalls:
+- "fresh" doesn't copy your working directory — use `.worktreeinclude` to carry `.env` and gitignored configs.
+- Setting "head" globally then forgetting to push: subagent worktrees will see local-only commits.

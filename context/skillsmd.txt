@@ -517,3 +517,20 @@ Hooks: automate workflows around tool events
 Memory: manage CLAUDE.md files for persistent context
 Interactive mode: built-in commands and shortcuts
 Permissions: control tool and skill access
+
+skillOverrides setting (v2.1.129)
+Per-skill visibility control in settings.json. Lets you keep a skill installed but partially or fully hidden, without uninstalling. Three values per skill:
+- `off` — skill is hidden from the model AND from /-completion. Effectively disabled.
+- `user-invocable-only` — model cannot proactively invoke the skill (it doesn't appear in the available-skills list), but the user can still type /skill-name to run it manually.
+- `name-only` — skill's description is collapsed in the available-skills list (model sees only the name, not what it does). Reduces context usage for skills you rarely need but want to remain auto-invocable.
+
+Example:
+{
+  "skillOverrides": {
+    "code-review": "user-invocable-only",
+    "noisy-formatter": "off",
+    "rare-skill": "name-only"
+  }
+}
+
+Hierarchy: user, project, and local settings stack normally. Set in ~/.claude/settings.json to apply across all projects, or in project .claude/settings.json for per-repo overrides. The setting was introduced earlier but became fully functional in v2.1.129.

@@ -151,3 +151,12 @@ Opus 4.6 defaults to 1M context window for Max, Team, and Enterprise plans (v2.1
 - **Subagent models**: When creating agents in `.claude/agents/`, you can specify which model each agent uses in its frontmatter.
 - **Plan mode**: Pairs naturally with Opus — deeper reasoning during planning, then switch to Sonnet for execution.
 - **Effort frontmatter**: Skills can set `effort:` in their SKILL.md frontmatter to override the effort level when invoked (v2.1.80).
+
+## Gateway model discovery
+
+If you point `ANTHROPIC_BASE_URL` at an Anthropic-compatible gateway (e.g., a self-hosted proxy, LiteLLM, etc.) that exposes a `/v1/models` endpoint, the `/model` picker can list those models alongside the built-in tiers.
+
+- **v2.1.126**: discovery happened automatically whenever `ANTHROPIC_BASE_URL` was set
+- **v2.1.129+**: discovery is **opt-in** via `CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1`
+
+Set the env var when you want gateway models to populate `/model`. Without it, the picker shows only the standard tiers (Haiku/Sonnet/Opus) regardless of `ANTHROPIC_BASE_URL`.

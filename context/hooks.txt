@@ -1127,3 +1127,16 @@ Security-posture refinements (v2.1.113):
 - `Bash(find:*)` allow rules no longer auto-approve `find -exec` or `find -delete` — those require a separate explicit allow. Find's `-exec` is a remote-code-execution primitive and should never be blanket-approved.
 - On macOS, `/private/{etc,var,tmp,home}` paths are now treated as dangerous removal targets under `Bash(rm:*)` — previously only the canonical `/etc`, `/var`, `/tmp`, `/home` were protected. macOS routes the canonical paths through `/private`, so both sets need protection.
 - Fix: `Bash dangerouslyDisableSandbox` now correctly requires a permission prompt when running commands outside sandbox (previously ran without prompting).
+
+Effort exposed to hooks and Bash subprocesses (v2.1.133)
+- Hooks now receive the active effort level via the `effort.level` JSON input field (alongside existing fields like `cwd`, `agent_id`, etc.). Read it with the JSON-parsing pattern your language uses; for shell hooks, `jq -r .effort.level` extracts the value.
+- Hooks also receive `$CLAUDE_EFFORT` as an environment variable, set to the same level string ("low", "medium", "high").
+- Bash tool commands invoked by Claude (and shell scripts they call) can also read `$CLAUDE_EFFORT`. Useful for tests/scripts that should adapt their thoroughness to the current effort.
+- Note: changing `/effort` mid-session updates the value passed to subsequent hook invocations and Bash calls.
+
+Session ID in Bash subprocess (v2.1.132)
+- `CLAUDE_CODE_SESSION_ID` environment variable is now set in the Bash tool subprocess environment, matching the `session_id` field passed to hooks. Useful for correlating Bash-tool side effects with the session that triggered them (logs, audit trails, dashboards).
+
+OTEL_* env vars no longer inherited by subprocesses (v2.1.128)
+- Subprocesses spawned by the Bash tool, hooks, MCP servers, and LSP servers no longer inherit `OTEL_*` environment variables from the CLI's own environment. Previously, OTEL-instrumented apps run via the Bash tool would pick up the CLI's own OTLP endpoint and send their telemetry there.
+- If you need the subprocess to use the same OTEL endpoint, set the `OTEL_*` variables explicitly in the hook command or in `CLAUDE_ENV_FILE`.

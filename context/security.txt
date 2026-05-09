@@ -114,3 +114,57 @@ When in doubt
 The cross-cutting principle is in SAFETY-AND-TRUST.md: slow down. A
 permission prompt you read is a dozen times safer than one you
 approved.
+
+
+Settings additions (v2.1.126 → v2.1.138)
+----------------------------------------
+
+--dangerously-skip-permissions: expanded path bypass (v2.1.126)
+    The flag now bypasses prompts for writes to .claude/, .git/,
+    .vscode/, .idea/, .husky/, and shell config files (~/.bashrc,
+    ~/.zshrc, etc.). Catastrophic removals — rm -rf / and rm -rf ~ —
+    still prompt as a circuit breaker, regardless of the flag.
+    Use only in isolated environments (containers, VMs, ephemeral CI
+    agents). For finer-grained delegation, prefer explicit allow rules
+    in .claude/settings.json or the managed-settings
+    `disableBypassPermissionsMode` to block this flag org-wide.
+
+settings.autoMode.hard_deny (v2.1.138)
+    User-tier setting (NOT inherited from project or managed settings,
+    by design). Adds a list of prose rules (natural language, not glob
+    patterns) that the auto-mode classifier blocks unconditionally —
+    no soft-deny prompt, no allow override, no exception.
+    Use for org policies that must never be bypassed even when the
+    user wants to override.
+    Example:
+        {
+          "autoMode": {
+            "hard_deny": [
+              "Modifying production secrets",
+              "Deleting backups",
+              "Running destructive database commands"
+            ]
+          }
+        }
+    Differs from soft_deny: soft_deny flags risk and prompts; hard_deny
+    blocks silently.
+
+sandbox.bwrapPath / sandbox.socatPath (v2.1.133)
+    Managed settings (Linux/WSL only) for specifying custom paths to
+    the bubblewrap (bwrap) and socat binaries used by Claude Code's
+    sandboxing layer. Useful for:
+    - Hardened distros where bwrap lives outside standard PATH
+    - Air-gapped builds with vendored binary directories
+    - Compliance/audit scenarios where binary paths are pinned
+    Set in managed-settings policy files; not user-configurable.
+
+parentSettingsBehavior (v2.1.133)
+    Admin-tier key with two values:
+    - 'first-wins' (default) — SDK-supplied managedSettings (parent
+      tier) take precedence; the local managed-settings policy is
+      ignored where they overlap.
+    - 'merge' — both tiers participate in the policy merge, with
+      managed settings still winning on conflict per the normal
+      precedence rules.
+    Lets admins opt SDK managed settings into the policy merge instead
+    of having them blanket-override.

@@ -195,6 +195,43 @@ echo "exit: $?"
 
 **Stuck?** `/stuck` walks you through isolating the bug — compare what Claude's seeing vs. what your script is actually evaluating.
 
+### 7.12 Auto-mode `hard_deny` rules
+
+`settings.autoMode.hard_deny` (v2.1.138) is a user-tier list of prose rules that the auto-mode classifier blocks unconditionally -- no soft-deny prompt, no user override, no allow-rule exceptions. Use it for org policies that must never be bypassed.
+
+```json
+{
+  "autoMode": {
+    "hard_deny": [
+      "Modifying production secrets",
+      "Deleting backup files",
+      "Running destructive database commands"
+    ]
+  }
+}
+```
+
+Rules are natural language (not regex/glob) -- be descriptive ("Modifying secrets" beats "secrets"). User-only by design: not inherited from project or managed settings.
+
+Difference from `soft_deny`: soft-deny flags risk and prompts you to override. `hard_deny` blocks silently.
+
+> **STOP** -- Add a `hard_deny` rule to your user `~/.claude/settings.json` (e.g., `"Deleting any file matching .env*"`). Switch to auto mode with Shift+Tab and try a benign trigger that matches your rule. Confirm the block.
+
+### 7.13 `--dangerously-skip-permissions`: expanded bypass
+
+The flag's bypass scope expanded in v2.1.126. It now skips prompts for writes to:
+- `.claude/`
+- `.git/`
+- `.vscode/` and `.idea/`
+- `.husky/`
+- Shell config files (`~/.bashrc`, `~/.zshrc`, etc.)
+
+Only `rm -rf /` and `rm -rf ~` still circuit-break with a mandatory prompt. Everything else is fair game when the flag is set.
+
+This makes the flag dramatically more dangerous on shared workstations. Use it ONLY in containers, VMs, or ephemeral CI agents -- anywhere Claude can't damage persistent systems. For finer-grained delegation, prefer explicit `allow` rules. To prevent the flag entirely org-wide, set `disableBypassPermissionsMode` in managed settings.
+
+> **STOP** -- Don't run the flag. Just understand the new blast radius. Open `~/.claude/settings.json` and confirm you don't have it set as a default permission mode.
+
 ### Checkpoint
 
 Full guard rail system in place. Config validation, context injection, and AI-powered security review -- all running on every tool call.
@@ -211,3 +248,5 @@ Full guard rail system in place. Config validation, context injection, and AI-po
 - [ ] Created a PermissionDenied hook
 - [ ] Tested PreToolUse hook with `updatedInput` for AskUserQuestion
 - [ ] Know how `"$defaults"` layers custom rules on top of built-in auto-mode rules
+- [ ] Added a `hard_deny` rule, triggered it in auto mode, and confirmed the unconditional block
+- [ ] Understand the new `--dangerously-skip-permissions` blast radius (and confirmed it's not your default permission mode)

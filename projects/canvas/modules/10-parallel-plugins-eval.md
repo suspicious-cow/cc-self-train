@@ -294,6 +294,42 @@ Two non-interactive CLI subcommands worth knowing for scripted workflows.
 
 Skim the changelog for both -- you'll find them when you need them.
 
+### 10.17 Worktree base ref: `fresh` vs `head`
+
+`worktree.baseRef` (v2.1.133) controls which ref new worktrees branch from:
+
+- `"fresh"` (default) -- branch from `origin/<default-branch>`. Drops local unpushed commits. Best for clean isolation.
+- `"head"` -- branch from local HEAD. Preserves uncommitted changes and unpushed commits. Best when subagents need in-progress work.
+
+Affects `claude --worktree`, the `EnterWorktree` tool, and subagent worktrees with `isolation: worktree`.
+
+```json
+{ "worktree": { "baseRef": "head" } }
+```
+
+History: between v2.1.128 and v2.1.132, `EnterWorktree` defaulted to `head`. v2.1.133 reverted to `fresh` -- if you depended on the old behavior (or your subagents are dropping unpushed work), opt in with `worktree.baseRef: "head"`.
+
+### 10.18 Plugin distribution: `--plugin-url` and `.zip` archives
+
+Three ways to load a plugin without registering it (all session-scoped):
+
+- `--plugin-dir <path>` -- local directory
+- `--plugin-dir <path/to/file.zip>` -- local zip archive (v2.1.128)
+- `--plugin-url <url>` -- remote zip archive (v2.1.129)
+
+Useful for trying a plugin without committing to user/project settings or a marketplace.
+
+Plugin manifest update (v2.1.129): declare experimental component types (`themes`, `monitors`) under `experimental: { ... }` instead of at the top level. Top-level still works but `claude plugin validate` will warn.
+
+```json
+{
+  "experimental": {
+    "themes": ["./themes/dark.json"],
+    "monitors": ["./monitors/build.js"]
+  }
+}
+```
+
 ### Checkpoint
 
 You made it. Every major Claude Code feature, learned by building something real.
@@ -347,6 +383,8 @@ Confirm you have touched every major Claude Code feature across all 10 modules:
 - [ ] Continuous learning -- updated CLAUDE.md with project insights
 - [ ] Skimmed the plugin-ecosystem updates (themes via plugins, `prUrlTemplate`, `DISABLE_UPDATES`, deps auto-install)
 - [ ] Know that `claude ultrareview` and `claude plugin prune` exist for scripted workflows
+- [ ] Know what `worktree.baseRef` does and which mode keeps unpushed commits in new worktrees
+- [ ] Know the three ways to load a plugin without registering it (`--plugin-dir` directory, `--plugin-dir` zip, `--plugin-url`)
 
 ---
 

@@ -961,3 +961,12 @@ Each MCP server entry in .mcp.json (or any MCP config file) accepts an alwaysLoa
     }
   }
 }
+
+/mcp tool count display (v2.1.128)
+The /mcp panel now shows the per-server tool count for connected servers (e.g., "github · 14 tools"). Servers that connected but failed `tools/list` are flagged as "connected · tools fetch failed" instead of silently appearing with 0 tools. Servers that connect with 0 tools (legitimately) are flagged so you can spot misconfiguration.
+
+--channels with API-key authentication (v2.1.128)
+The `--channels` flag previously required OAuth authentication. It now also works when authenticated with `ANTHROPIC_API_KEY` (console / API-key auth). Console organizations with managed settings must explicitly set `channelsEnabled: true` to enable; consumer/individual API-key users get it automatically.
+
+`workspace` is a reserved MCP server name (v2.1.128)
+You can no longer name a server `workspace` in `.mcp.json`, project settings, or user settings. Existing servers with that name are skipped at startup with a warning. The name is reserved for the workspace channel feature. If you have a server named `workspace`, rename it (and update any allowMcpServers/deniedMcpServers references).

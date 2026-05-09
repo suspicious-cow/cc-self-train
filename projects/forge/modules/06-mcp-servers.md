@@ -254,6 +254,18 @@ Use it for small, frequently-needed servers (the toolkit's SQLite store, a proje
 
 > **STOP** -- Pick one of your MCP servers, add `"alwaysLoad": true` to it in `.mcp.json`, restart Claude Code, and confirm via `/mcp` that its tools are loaded immediately.
 
+### 6.11 MCP polish: tool counts, channels-with-API, reserved names
+
+Three small MCP changes since v2.1.122:
+
+**`/mcp` shows per-server tool counts** (v2.1.128). Each connected server now displays its tool count (e.g., "github · 14 tools"). Servers that connected but failed `tools/list` show "connected · tools fetch failed" instead of silently appearing with 0 tools -- much easier to spot misconfiguration.
+
+**`--channels` works with API-key auth** (v2.1.128). Previously OAuth-only. Now also works with `ANTHROPIC_API_KEY` / `ANTHROPIC_AUTH_TOKEN`. Console organizations with managed settings must explicitly set `channelsEnabled: true`; consumer/individual API-key users get it automatically.
+
+**`workspace` is now a reserved server name** (v2.1.128). If you have a server named `workspace` in `.mcp.json` or your settings, rename it -- it'll be skipped at startup with a warning. The name is reserved for the workspace channel feature.
+
+> **STOP** -- Run `/mcp` and check that your servers show tool counts. If any show 0 tools (legitimately), or "connected · tools fetch failed", that's a misconfiguration to investigate.
+
 ### Checkpoint
 
 Your toolkit just got a real database. MCP servers let Claude reach beyond local files into databases, APIs, and tools you already use.
@@ -268,3 +280,4 @@ Your toolkit just got a real database. MCP servers let Claude reach beyond local
 - [ ] Understand MCP elicitation and channels
 - [ ] (Optional) You connected an MCP server for a tool you actually use
 - [ ] Set `"alwaysLoad": true` on at least one server in `.mcp.json`
+- [ ] Ran `/mcp` and confirmed each connected server shows a tool count (no silent 0-tool servers)

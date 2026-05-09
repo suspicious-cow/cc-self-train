@@ -302,6 +302,20 @@ The shape:
 
 > **STOP** -- Wire up a PostToolUse hook on `Read` that replaces matches of `API_KEY=\w+` with `API_KEY=<redacted>` before Claude sees the file content. Verify by writing a test file with a fake key and reading it.
 
+### 5.12 Effort and session ID in hooks & subprocesses
+
+Three runtime values now flow into hooks and Bash subprocesses:
+
+**`effort.level` in hook JSON** (v2.1.133). Hooks receive the active effort level in their JSON input as `"effort": {"level": "low|medium|high"}`. In a shell hook, extract it with `jq -r .effort.level`.
+
+**`$CLAUDE_EFFORT` env var** (v2.1.133). Hooks AND Bash tool commands get `$CLAUDE_EFFORT` set in their environment. Useful for scripts that should adapt thoroughness to the current effort.
+
+**`$CLAUDE_CODE_SESSION_ID`** (v2.1.132). The Bash tool subprocess gets the same `session_id` that hooks see -- correlate Bash side effects with the session that triggered them.
+
+Also worth knowing (v2.1.128): subprocesses no longer inherit `OTEL_*` env vars from the CLI. If your hook needs the same OTEL endpoint, set it explicitly via `CLAUDE_ENV_FILE` or in the hook command.
+
+> **STOP** -- Modify your existing PostToolUse hook (or one from earlier in this module) to log `$CLAUDE_EFFORT` and `$CLAUDE_CODE_SESSION_ID`. Trigger it, then check the log to confirm both values appear.
+
 ### Checkpoint
 
 Your project now has automated quality gates. Hooks catch mistakes the moment they happen -- you will never go back to checking manually.
@@ -316,3 +330,4 @@ Your project now has automated quality gates. Hooks catch mistakes the moment th
 - [ ] Wired up a hook using one of the new hook events
 - [ ] Know when a `type: "mcp_tool"` hook is the right tool over a `"command"` wrapper
 - [ ] Built a PostToolUse hook that rewrites tool output via `updatedToolOutput`
+- [ ] Logged `$CLAUDE_EFFORT` and `$CLAUDE_CODE_SESSION_ID` from a hook and verified both appear

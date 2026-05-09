@@ -354,6 +354,44 @@ A few small but useful improvements have shipped since v2.1.119:
 
 > **STOP** -- If you have any past PRs, try pasting one into `/resume` and confirm it finds the session. Otherwise, just run `/resume` once to see the picker.
 
+### 1.13 Env vars that tune the CLI
+
+Three new environment variables for fine-tuning the CLI:
+
+**`CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1`** (v2.1.132). Opts out of the fullscreen alternate-screen renderer and keeps the conversation in the terminal's native scrollback. Useful when you rely on terminal scrollback to search or copy past output.
+
+**`CLAUDE_CODE_FORCE_SYNC_OUTPUT=1`** (v2.1.129). Force-enables synchronized terminal output on terminals where auto-detection misses (Emacs `eat`, certain hosted terminals). Set this if you see flicker or torn output.
+
+**`CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE`** (v2.1.129). On Homebrew or WinGet installations, Claude Code runs the upgrade command in the background and prompts to restart when a new version is ready. No effect on npm-installed deployments.
+
+> **STOP** -- Pick whichever feels useful (or skip all if none apply) and add it to your shell profile (`~/.bashrc`, `~/.zshrc`, or PowerShell `$PROFILE`). Restart your session to verify.
+
+### 1.14 Cleanup with `claude project purge`
+
+`claude project purge [path]` (v2.1.126) deletes all Claude Code state for a project -- transcripts, tasks, file history, and the project's config entry under `~/.claude/projects/<hash>/`. It does NOT touch your code, your project's `.claude/` directory, or `CLAUDE.md`.
+
+Flags:
+- `--dry-run` previews what would be deleted
+- `-y` / `--yes` skips confirmation
+- `-i` / `--interactive` walks each deletion category
+- `--all` purges every project's state (deletes the entire `~/.claude/projects/` tree)
+
+Useful when archiving completed toolkit utilities, freeing disk after long sessions, or scrubbing transcripts before handing off code.
+
+> **STOP** -- Run `claude project purge --dry-run` from your project directory. Read the output. Confirm nothing in your project tree itself shows up -- only state under `~/.claude/projects/`.
+
+### 1.15 Windows: PowerShell as primary shell
+
+(Mac/Linux learners: skim and continue.)
+
+Two recent Windows-shell changes:
+
+**PowerShell 7 detection expanded** (v2.1.126). Claude Code now finds `pwsh` installations from Microsoft Store, MSI installs without PATH, and .NET global tool installs -- not just standard PATH entries.
+
+**PowerShell as primary shell** (v2.1.126). When the PowerShell tool is enabled (set `CLAUDE_CODE_USE_POWERSHELL_TOOL=1`), Claude treats PowerShell as the primary shell instead of defaulting to Bash. Bash tool calls run via PowerShell where applicable. Combined with v2.1.120's PowerShell fallback (Git Bash optional), this is the path to a Bash-free Windows setup.
+
+> **STOP** -- Windows users: if you want a pure-PowerShell setup, run `setx CLAUDE_CODE_USE_POWERSHELL_TOOL 1` in PowerShell and restart your CLI. Mac/Linux users: continue.
+
 ### Checkpoint
 
 You just set up your toolkit project, configured Claude Code's memory, learned the keyboard shortcuts, and made your first commit. That's a real foundation -- everything from here builds on it.
@@ -368,3 +406,6 @@ You just set up your toolkit project, configured Claude Code's memory, learned t
 - [ ] Tried one of the new readline shortcuts (`Ctrl+A`, `Ctrl+E`, or `Ctrl+U`)
 - [ ] Ran `/usage` (replaces `/cost` + `/stats`) and spotted the 5-hour + weekly indicators
 - [ ] Tried `/resume` (the picker, or paste a PR URL to find the session that built it)
+- [ ] Considered the new tuning env vars (`CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN`, `CLAUDE_CODE_FORCE_SYNC_OUTPUT`, `CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE`) and set or skipped each
+- [ ] Ran `claude project purge --dry-run` and reviewed what would be deleted
+- [ ] (Windows) Tried PowerShell as primary shell, or read through and decided to skip

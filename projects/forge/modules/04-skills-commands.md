@@ -226,6 +226,28 @@ Summarize the requested item. Current effort: **${CLAUDE_EFFORT}**.
 
 > **STOP** -- Add `${CLAUDE_EFFORT}` to one of the skills you built earlier and confirm it interpolates when you switch between effort levels via `/effort`.
 
+### 4.12 Hide skills with `skillOverrides`
+
+The `skillOverrides` setting in `~/.claude/settings.json` (or project `.claude/settings.json`) lets you keep a skill installed but partially or fully hidden, without uninstalling. Three values per skill:
+
+- `off` -- hidden from the model AND from `/`-completion. Effectively disabled.
+- `user-invocable-only` -- model can't invoke it proactively, but you can still type `/skill-name`.
+- `name-only` -- collapses the description in the available-skills list (saves context tokens for skills the model rarely needs but should still be auto-invocable).
+
+```json
+{
+  "skillOverrides": {
+    "noisy-formatter": "off",
+    "review": "user-invocable-only",
+    "rare-skill": "name-only"
+  }
+}
+```
+
+The setting was introduced earlier but became fully functional in v2.1.129.
+
+> **STOP** -- Pick one of the skills you built earlier (or a built-in like `/recap`). Add a `skillOverrides` entry, restart your session, and verify with `/help` or by asking the model to use it. Then revert.
+
 ### Checkpoint
 
 You just built your own commands. These skills encode your workflow -- use them every time you add or search items.
@@ -240,3 +262,4 @@ You just built your own commands. These skills encode your workflow -- use them 
 - [ ] Issue template skill outputs raw text without Claude processing
 - [ ] Tested `effort` frontmatter and `${CLAUDE_SKILL_DIR}` in a skill
 - [ ] Used `${CLAUDE_EFFORT}` in a skill and saw it interpolate at different effort levels
+- [ ] Added a `skillOverrides` entry, verified the change, and reverted

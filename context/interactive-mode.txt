@@ -290,3 +290,36 @@ DISABLE_UPDATES environment variable blocks all update paths (claude update, cla
 
 WSL managed settings
 On Windows, WSL sessions can inherit Windows-side managed settings. Available since v2.1.115.
+
+Bare /color picks a random session color
+Running /color with no arguments now picks a random color for the session, instead of opening the color picker. Pass an explicit name (e.g., /color blue) to pick deliberately. Available since v2.1.128.
+
+Ctrl+R history picker default
+Ctrl+R now defaults to searching prompts across ALL projects (matching pre-2.1.124 behavior). Press Ctrl+S inside the picker to narrow to the current project or session. Available since v2.1.129.
+
+Disable alternate-screen renderer
+CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN=1 environment variable opts out of the fullscreen alternate-screen renderer and keeps the conversation in the terminal's native scrollback. Useful if you rely on terminal scrollback for searching/copying past output. Available since v2.1.132.
+
+Force synchronized output
+CLAUDE_CODE_FORCE_SYNC_OUTPUT=1 environment variable force-enables synchronized output on terminals where auto-detection misses (e.g., Emacs eat). Available since v2.1.129.
+
+Package-manager auto-update
+CLAUDE_CODE_PACKAGE_MANAGER_AUTO_UPDATE: when set on Homebrew or WinGet installations, Claude Code runs the package manager's upgrade command in the background and prompts to restart when a newer version is ready. No effect on npm-installed deployments. Available since v2.1.129.
+
+claude project purge subcommand
+Deletes all Claude Code state for a project — transcripts, tasks, file history, and the project's config entry under ~/.claude/projects/<hash>/. Does NOT touch the project's .claude/ directory, CLAUDE.md, code, or git history. Cloud-side API logs are unaffected (Anthropic retains server-side records).
+Flags:
+- --dry-run — preview what would be deleted without removing anything
+- -y / --yes — skip confirmation (for automation)
+- -i / --interactive — step through each deletion category for approval
+- --all — purge state across every project (deletes the entire ~/.claude/projects/ tree)
+Common uses: free disk space from archived projects, reset transcripts before reproducing a bug, remove sensitive prompts before handing off a codebase, clean state on machine migration. Available since v2.1.126.
+
+claude auth login: paste-OAuth-code flow
+When the browser callback can't reach localhost (WSL2, SSH, sandboxed containers, IPv6-only devcontainers), claude auth login now prompts you to paste the OAuth code returned in the browser URL instead of failing with a timeout. Available since v2.1.126.
+
+Windows: PowerShell 7 detection expanded
+The PowerShell 7 (pwsh) detection now finds installations beyond standard PATH entries: Microsoft Store installs, MSI installs without PATH registration, and .NET global tool installs. Available since v2.1.126.
+
+Windows: PowerShell as primary shell
+When the PowerShell tool is enabled (via CLAUDE_CODE_USE_POWERSHELL_TOOL=1 or by default for users in the rollout), Claude now treats PowerShell as the primary shell instead of defaulting to Bash. Bash tool calls run via PowerShell when applicable. Available since v2.1.126.
