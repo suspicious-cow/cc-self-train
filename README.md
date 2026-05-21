@@ -39,7 +39,7 @@ If any of these feel unfamiliar, spend an hour with a basic terminal tutorial be
 npm install -g @anthropic-ai/claude-code
 
 # 2. Clone this repo
-git clone https://github.com/suspicious-cow/cc-self-train.git
+git clone https://github.com/zainnab-sparq/cc-self-train.git
 cd cc-self-train
 
 # 3. Launch Claude Code

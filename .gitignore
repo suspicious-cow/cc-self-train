@@ -7,3 +7,7 @@ workspace/
 CLAUDE.local.md
 learner-profile.json
 .observe-lock
+
+# Maintainer-only tooling: not shipped to learners
+.claude/skills/release/
+.claude/scripts/sync-sparq.sh
