@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.31.0 (2026-05-21)
+
+**Curriculum sync to CC v2.1.145.** Seven published changelog versions (v2.1.139–v2.1.145). ~24 user-facing features kept; ~115 entries skipped as bug fixes, cosmetic polish, VS Code-only UI fixes, and telemetry internals. Headline: agent view + background sessions (`claude agents`), a new way to run Claude that landed as a Foundational Feature in Module 8.
+
+- **Context files (11 updated + 1 new):** new `context/agent-view.txt` (agent view, `claude --bg`/`/bg`/`←`, `attach`/`logs`/`respawn`/`rm`/`daemon`, `worktree.bgIsolation`, and the mental model vs. subagents/`/loop`/agent teams). Updated `changelog-cc.txt`, `subagents.txt`, `tasks.txt` (`/goal`), `hooks.txt` (exec-form `args`, PostToolUse `continueOnBlock`, `terminalSequence`, Stop/SubagentStop `background_tasks`+`session_crons`), `models.txt` (fast mode → Opus 4.7), `interactive-mode.txt` (`/scroll-speed`, transcript nav, `/usage-credits`, PowerShell `-ExecutionPolicy Bypass`), `mcp.txt` (`CLAUDE_PROJECT_DIR` for stdio servers, `/mcp` live reconnect), `plugins.txt` (`claude plugin details`, dependency enforcement, `CLAUDE_CODE_PLUGIN_PREFER_HTTPS`), `ide-integration.txt` (API-key gating of Remote Control), `sl-guide.txt` (GitHub/PR status-line fields), `security.txt` (`Skill(name *)` prefix-match, env-var-assignment bypass fix).
+- **Module steps (40 new steps across all 5 projects):** Module 8 gained a 3-step agent-view section (`claude agents`, dispatch/monitor background sessions, `worktree.bgIsolation`); Module 5 (2 steps: exec-form `args`/`continueOnBlock`, `terminalSequence`/background visibility), Module 6 (`CLAUDE_PROJECT_DIR` + live reconnect), Module 7 (`Skill(name *)` + env-var bypass fix), Module 9 (`/goal`). One Checkpoint checkbox per new step.
+- **Health check:** M1- and M10-bound features were routed to context files only (both modules sit at the 18-step ceiling). Adding `/goal` to M9 raised the floor from 9 to 10 steps, so M1 and M10 drop from 2.00× to **1.80×** — the prior sync's bloat warning is cleared. No module is flagged.
+- **Verification:** `render-module-headers.js` reports `{"unchanged": 50}`; all 25 modified module files pass sequential numbering, Checkpoint integrity (1 per file), and code-fence balance. No reverts.
+
+See `.claude/sync-report.md` for the full per-file change list and per-project step numbers.
+
 ## v2.30.0 (2026-05-09)
 
 **Curriculum sync to CC v2.1.138.** Nine published changelog versions (v2.1.126, 128, 129, 131, 132, 133, 136, 137, 138); v2.1.124, 125, 127, 130, 134, 135 had no public changelog. 22 user-facing features kept; ~125 entries skipped as bug fixes, telemetry tweaks, and cosmetic UI polish.
