@@ -121,6 +121,7 @@ Run `claude` in each pane for independent CLI sessions. Useful for:
 - **Push notification tool (v2.1.105)**: Claude can send mobile push notifications when Remote Control and "Push when Claude decides" config are enabled.
 - **Write tool IDE feedback (v2.1.105)**: The Write tool now informs the model when the user edits the proposed content in the IDE diff before accepting, so Claude is aware of manual adjustments.
 - **Remote Control expansion (v2.1.105)**: `/autocompact`, `/context`, `/exit`, and `/reload-plugins` now work from Remote Control (mobile/web) clients.
+- **API-key gating of Remote Control (v2.1.139)**: Remote Control, `/schedule`, claude.ai MCP connectors, and notification preferences are disabled when `ANTHROPIC_API_KEY`, `apiKeyHelper`, or `ANTHROPIC_AUTH_TOKEN` is set — even if you are also logged into Claude.ai. These features route through Claude.ai, so an API-key auth context turns them off. Unset the API key (rely on your Claude.ai login) to use them.
 
 ## Troubleshooting
 

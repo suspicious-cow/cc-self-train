@@ -350,3 +350,15 @@ History: between v2.1.128 and v2.1.132, `EnterWorktree` branched from local HEAD
 Pitfalls:
 - "fresh" doesn't copy your working directory — use `.worktreeinclude` to carry `.env` and gitignored configs.
 - Setting "head" globally then forgetting to push: subagent worktrees will see local-only commits.
+
+### Plugin ecosystem updates (v2.1.139 – v2.1.143)
+
+**`claude plugin details <name>`** (v2.1.139). Shows a plugin's component inventory (commands, agents, skills, hooks, MCP/LSP servers) and a projected per-session token cost before you commit to it. The `/plugin` Discover and Browse screens show the same inventory before installation (v2.1.145), and the browse/discover panes show when a plugin was last updated (v2.1.144).
+
+**Plugin dependency enforcement** (v2.1.143). `claude plugin disable` now refuses when another enabled plugin depends on the target, printing a copy-pasteable disable-chain hint; `claude plugin enable` force-enables transitive dependencies so an enabled plugin's needs are always satisfied. (Companion to the auto-install resolution added in v2.1.116–119 above.)
+
+**`CLAUDE_CODE_PLUGIN_PREFER_HTTPS`** (v2.1.141). Clone GitHub plugin sources over HTTPS instead of SSH, for environments without a GitHub SSH key. Plugin marketplace add/update respects it too (v2.1.144).
+
+**Root-level `SKILL.md` surfaced as a skill** (v2.1.142). A plugin that ships a `SKILL.md` at its root with no `skills/` subdirectory is now surfaced as a skill instead of being ignored.
+
+**`worktree.bgIsolation`** (v2.1.143). Controls whether background sessions auto-isolate into a worktree before editing. See `context/agent-view.txt` for the full treatment; distinct from `worktree.baseRef` above.

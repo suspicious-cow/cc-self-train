@@ -323,3 +323,18 @@ The PowerShell 7 (pwsh) detection now finds installations beyond standard PATH e
 
 Windows: PowerShell as primary shell
 When the PowerShell tool is enabled (via CLAUDE_CODE_USE_POWERSHELL_TOOL=1 or by default for users in the rollout), Claude now treats PowerShell as the primary shell instead of defaulting to Bash. Bash tool calls run via PowerShell when applicable. Available since v2.1.126.
+
+/scroll-speed command
+Tune mouse-wheel scroll speed with a live preview. Run /scroll-speed and adjust; useful in fullscreen/alternate-screen mode where the default wheel steps feel too fast or slow. Available since v2.1.139.
+
+Transcript view navigation
+In transcript mode (Ctrl+O), new keys: ? shows the keyboard-shortcut panel, { and } jump between user prompts, and v toggles the shortcut panel. Adds to the existing / search and n/N step-to-match. Available since v2.1.139.
+
+/usage-credits (renamed from /extra-usage)
+"Extra usage" is now "usage credits" across the CLI. The /extra-usage command is now /usage-credits; the old name still works as an alias. Available since v2.1.144.
+
+Rewind: "Summarize up to here"
+The rewind menu (Esc Esc) gained a "Summarize up to here" option that compresses earlier context while keeping recent turns intact — a middle ground between a full rewind and /compact. Available since v2.1.141.
+
+PowerShell -ExecutionPolicy Bypass (Windows)
+The PowerShell tool now runs with -ExecutionPolicy Bypass so scripts run without a machine policy blocking them. Opt out with CLAUDE_CODE_POWERSHELL_RESPECT_EXECUTION_POLICY=1. Separately, the PowerShell tool is now enabled by default on Windows for Bedrock, Vertex, and Foundry users (opt out with CLAUDE_CODE_USE_POWERSHELL_TOOL=0). Available since v2.1.143.

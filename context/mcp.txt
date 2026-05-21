@@ -970,3 +970,9 @@ The `--channels` flag previously required OAuth authentication. It now also work
 
 `workspace` is a reserved MCP server name (v2.1.128)
 You can no longer name a server `workspace` in `.mcp.json`, project settings, or user settings. Existing servers with that name are skipped at startup with a warning. The name is reserved for the workspace channel feature. If you have a server named `workspace`, rename it (and update any allowMcpServers/deniedMcpServers references).
+
+CLAUDE_PROJECT_DIR for stdio servers (v2.1.139)
+MCP stdio servers now receive the `CLAUDE_PROJECT_DIR` environment variable, matching what hooks already get. Plugin MCP configs can reference `${CLAUDE_PROJECT_DIR}` in their `command` and `args`, letting a server resolve project-relative paths regardless of Claude's current directory. (This complements `${CLAUDE_PLUGIN_ROOT}`, which points at the plugin directory.)
+
+/mcp Reconnect picks up .mcp.json edits (v2.1.139)
+The Reconnect action in the `/mcp` panel now re-reads `.mcp.json` before reconnecting, so edits to a server's config apply without restarting the session. When a reconnect fails, the panel shows the HTTP status and URL instead of a generic failure message.

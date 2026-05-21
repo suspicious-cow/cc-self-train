@@ -277,6 +277,8 @@ Statusline scripts now have access to a `rate_limits` field that displays Claude
 `workspace.git_worktree` field (v2.1.97): Added to the status line JSON input. This field is set when running inside a linked git worktree, letting your statusline script display worktree-specific information.
 
 `effort.level` and `thinking.enabled` fields (v2.1.119): Added to the status line JSON input. `effort.level` mirrors the current effort level (low/medium/high/xhigh/max, or "auto" resolved to a concrete level). `thinking.enabled` is true when extended thinking is active. Lets statusline scripts show a compact indicator like `[hi]` or `[think]` without re-querying /config.
+
+GitHub repo and PR fields (v2.1.145): The status line JSON input now includes GitHub repository and pull-request information when detected, so a statusline script can show the repo name and live PR number/state without shelling out to `gh` itself.
 Rules Structure
 markdown
 ~/.claude/rules/

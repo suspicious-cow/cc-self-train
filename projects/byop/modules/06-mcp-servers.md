@@ -286,6 +286,16 @@ Three small MCP changes since v2.1.122:
 
 > **STOP** -- Run `/mcp` and check that your servers show tool counts. If any show 0 tools (legitimately), or "connected · tools fetch failed", that's a misconfiguration to investigate.
 
+### 6.12 `CLAUDE_PROJECT_DIR` in MCP & live reconnect
+
+Two v2.1.139 MCP conveniences:
+
+**`CLAUDE_PROJECT_DIR` reaches stdio servers.** MCP stdio servers now get `CLAUDE_PROJECT_DIR` in their environment (matching hooks), and plugin MCP configs can use `${CLAUDE_PROJECT_DIR}` in `command`/`args`. A server can resolve project-relative paths no matter what directory Claude is in -- this complements `${CLAUDE_PLUGIN_ROOT}`, which points at the plugin directory.
+
+**`/mcp` Reconnect hot-reloads `.mcp.json`.** The Reconnect action now re-reads `.mcp.json` before reconnecting, so config edits apply without restarting the session. A failed reconnect now shows the HTTP status and URL instead of a generic error.
+
+> **STOP** -- Edit a server entry in your `.mcp.json` (for example, change an env var or arg), then use `/mcp` -> Reconnect and confirm the change took effect without restarting Claude Code.
+
 ### Checkpoint
 
 Claude Code now reaches beyond your local files. MCP servers give it access to databases, APIs, and tools you already use -- that's a big expansion of what's possible.
@@ -299,3 +309,4 @@ Claude Code now reaches beyond your local files. MCP servers give it access to d
 - [ ] (Optional) You connected an MCP server for a cloud tool you actually use
 - [ ] Set `"alwaysLoad": true` on at least one server in `.mcp.json`
 - [ ] Ran `/mcp` and confirmed each connected server shows a tool count (no silent 0-tool servers)
+- [ ] Reconnected an MCP server via `/mcp` after editing `.mcp.json` (no restart), and know stdio servers now receive `CLAUDE_PROJECT_DIR`

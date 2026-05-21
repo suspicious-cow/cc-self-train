@@ -316,6 +316,34 @@ Also worth knowing (v2.1.128): subprocesses no longer inherit `OTEL_*` env vars 
 
 > **STOP** -- Modify your existing PostToolUse hook (or one from earlier in this module) to log `$CLAUDE_EFFORT` and `$CLAUDE_CODE_SESSION_ID`. Trigger it, then check the log to confirm both values appear.
 
+### 5.13 New hook fields: exec-form `args` & `continueOnBlock`
+
+Two v2.1.139 additions to hook configuration:
+
+**Exec-form `args`.** A command hook can take an `args: string[]` array next to `command`. With it, the command runs directly (no shell), so each array element is exactly one argument and `$`, `*`, spaces, and `${CLAUDE_PROJECT_DIR}` pass through verbatim -- no quoting headaches. Without `args`, the `command` string still goes through the shell. Prefer exec form on Windows (`.cmd`/`.bat` shims) and whenever a path contains spaces.
+
+```json
+{
+  "type": "command",
+  "command": "node",
+  "args": ["${CLAUDE_PROJECT_DIR}/.claude/check.js", "--fix"]
+}
+```
+
+**`continueOnBlock` for PostToolUse.** Set `"continueOnBlock": true` on a PostToolUse matcher entry to feed the hook's block reason back to Claude and keep the turn going, instead of ending it. PostToolUse fires after the tool ran, so the block can't undo anything -- this only decides whether Claude reacts to the feedback inline.
+
+> **STOP** -- Convert one of your existing command hooks to exec form (`command` + `args`). Trigger it and confirm it still fires with the arguments passed correctly.
+
+### 5.14 Hook notifications & background visibility
+
+Two more hook capabilities land in this window:
+
+**`terminalSequence` output** (v2.1.141). A hook can return a `terminalSequence` string in its JSON output to fire a desktop notification, window title, or bell -- even with no controlling terminal (sandboxed/headless runs). Only allowlisted OSC sequences are honored (titles 0/1/2; notifications 9, 99, 777; bare BEL).
+
+**Stop/SubagentStop see background work** (v2.1.145). Stop and SubagentStop hook input now include `background_tasks` (id/command/status for each background shell or task) and `session_crons` (id/schedule/command for scheduled jobs). A Stop hook can refuse to stop while work is still running, or log and clean up outstanding tasks at session end.
+
+> **STOP** -- Add a `terminalSequence` to a hook's JSON output that rings the bell when it fires. Trigger it and confirm you get the bell.
+
 ### Checkpoint
 
 Your project now has automated quality gates. Hooks catch mistakes the moment they happen -- you will never go back to checking manually.
@@ -331,3 +359,6 @@ Your project now has automated quality gates. Hooks catch mistakes the moment th
 - [ ] Know when a `type: "mcp_tool"` hook is the right tool over a `"command"` wrapper
 - [ ] Built a PostToolUse hook that rewrites tool output via `updatedToolOutput`
 - [ ] Logged `$CLAUDE_EFFORT` and `$CLAUDE_CODE_SESSION_ID` from a hook and verified both appear
+- [ ] Converted a command hook to exec form with `args` (and know when to prefer it over shell form)
+- [ ] Know `continueOnBlock` keeps the turn going after a PostToolUse block
+- [ ] Emitted a `terminalSequence` notification, and know Stop hooks now see `background_tasks`/`session_crons`

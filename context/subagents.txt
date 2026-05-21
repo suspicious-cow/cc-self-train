@@ -859,3 +859,15 @@ Agent-frontmatter `hooks:` and `mcpServers:` now load for main-thread sessions, 
 ### Forked subagents on external builds (v2.1.117)
 
 Set `CLAUDE_CODE_FORK_SUBAGENT=1` to enable forked subagents on external builds (Bedrock, Vertex AI, Foundry). "Forked" here means the subagent inherits the parent session's model/effort/settings instead of spawning a fresh session — lower latency, lower token cost, but coupled lifecycle. Available on official builds by default; the env var flips it on for everyone else.
+
+### Agent view: `claude agents` repurposed (v2.1.139)
+
+As of v2.1.139, running `claude agents` with no subcommand opens the **agent view** dashboard for managing background sessions (a Research Preview) — a different surface from the v2.1.50 agent listing described above. For the full feature (dispatching, attaching, `claude --bg`, `/bg`, and worktree isolation), see `context/agent-view.txt`. To browse and run your configured agent definitions in-session, use `/agents`.
+
+### Case- and separator-insensitive subagent_type (v2.1.140)
+
+The Agent tool's `subagent_type` now matches case- and separator-insensitively: `"Code Reviewer"`, `"code-reviewer"`, and `"code_reviewer"` all resolve to the same agent. Natural-language agent references work without exact-string matching.
+
+### Subagent request attribution (v2.1.139, v2.1.145)
+
+API requests made by subagents now carry `x-claude-code-agent-id` and `x-claude-code-parent-agent-id` headers, and the `claude_code.llm_request` and `claude_code.tool` OpenTelemetry spans include `agent_id` / `parent_agent_id` attributes. Background subagent spans nest under the dispatching Agent tool span (trace-parenting fix, v2.1.145). Useful for cost attribution and tracing which subagent issued which request.

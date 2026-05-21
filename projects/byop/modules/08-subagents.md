@@ -212,6 +212,53 @@ Four subagent-related refinements in this window:
 
 **`--agent <name>` honors `permissionMode`** (v2.1.119). Set `permissionMode: acceptAll` (or any other mode) in an agent's frontmatter and launching it via `--agent` preserves that mode — useful for trusted non-interactive runs.
 
+### 8.13 Agent view: `claude agents`
+
+Module 8 so far has been about *subagents* -- workers that live inside this session and report back to it. v2.1.139 adds a third way to run Claude: **background sessions**, managed from a dashboard called **agent view**. The mental model matters here, so go slow.
+
+A **background session** is a full, independent Claude Code conversation running under a supervisor daemon -- not a worker inside your session. You dispatch it, it runs without a terminal attached, and it does *not* report results back to a parent. **Agent view** (`claude agents`) is the single screen listing every background session across your projects: which are running, which are blocked waiting on you, which are done.
+
+Three forms of "more than one Claude," kept distinct:
+- **Subagents** (Module 8 so far): inside one session, report back, isolate verbose output.
+- **Background sessions** (this step): separate sessions you dispatch and monitor from agent view.
+- **`/loop` and tasks** (Module 9): time-driven polling inside one session.
+
+`claude agents --cwd <path>` scopes the dashboard to one directory; `claude agents --json` prints the session list for scripting (v2.1.145).
+
+> **STOP** -- Open a second terminal and run `claude agents`. It will likely be empty (no background sessions yet) -- that's expected; you'll populate it next. Confirm the dashboard opens and you can read its layout.
+
+### 8.14 Dispatch and monitor background sessions
+
+Now create one. Two ways to start a background session:
+- `claude --bg "<prompt>"` from the shell -- starts a fresh background session.
+- `/bg` (or `/background`) inside an interactive session -- backgrounds *this* conversation; text after `/bg` is an extra instruction. Pressing `←` on an empty prompt does the same and jumps into agent view.
+
+Manage them from the shell or the dashboard:
+- `claude attach <id>` -- open it in your terminal; `←` (or `/exit`, Ctrl+C) detaches without stopping it.
+- `claude logs <id>` -- print recent output for a quick status check.
+- `claude respawn <id>` -- restart with the conversation intact (e.g., after a CC update); `--all` restarts everything.
+- `claude rm <id>` -- remove it from the list.
+
+Backgrounding carries the transcript plus `--mcp-config`, `--settings`, `--add-dir`, `--plugin-dir`, and the current permission mode; it does *not* carry running subagents or an active `/loop`. `/resume` lists background sessions alongside interactive ones, marked `bg` (v2.1.144).
+
+> **STOP** -- Dispatch a small background task (e.g., `claude --bg "list every TODO comment in your project"`). Switch to your `claude agents` terminal, watch it appear and finish, then `claude attach <id>` to read the result.
+
+### 8.15 Background-session worktree isolation
+
+By default, before a background session edits files it moves into an isolated git worktree, so parallel sessions can't clobber each other's work. In a git repo this runs `git worktree add` for you; in a non-git repo you'd wire a `WorktreeCreate` hook (Module 5).
+
+`worktree.bgIsolation` (v2.1.143) controls this:
+- default -- create a worktree before editing.
+- `"none"` -- edit the working copy directly, no worktree.
+
+```json
+{ "worktree": { "bgIsolation": "none" } }
+```
+
+Use `"none"` only when worktrees are impractical or you run one background session at a time -- two sessions editing the same working copy can overwrite each other. (This is separate from `worktree.baseRef`, which sets *which ref* a worktree branches from -- see Module 10.)
+
+> **STOP** -- Decide which isolation fits your workflow. For most single-author projects, the default worktree isolation is fine -- confirm you understand why `"none"` would be risky with two background sessions running at once.
+
 ### Checkpoint
 
 Three specialized agents, all yours. You can chain them, run them in parallel, and resume where they left off.
@@ -225,3 +272,6 @@ Three specialized agents, all yours. You can chain them, run them in parallel, a
 - [ ] Understand SendMessage replaces Agent resume parameter
 - [ ] Tested `initialPrompt` frontmatter on an agent
 - [ ] Know that agent `hooks:` / `mcpServers:` now fire in main-thread mode too
+- [ ] Opened agent view with `claude agents` and can explain how a background session differs from a subagent
+- [ ] Dispatched a background session (`claude --bg` or `/bg`), monitored it in agent view, and attached to read the result
+- [ ] Understand background-session worktree isolation and when `worktree.bgIsolation: "none"` is risky

@@ -1140,3 +1140,26 @@ Session ID in Bash subprocess (v2.1.132)
 OTEL_* env vars no longer inherited by subprocesses (v2.1.128)
 - Subprocesses spawned by the Bash tool, hooks, MCP servers, and LSP servers no longer inherit `OTEL_*` environment variables from the CLI's own environment. Previously, OTEL-instrumented apps run via the Bash tool would pick up the CLI's own OTLP endpoint and send their telemetry there.
 - If you need the subprocess to use the same OTEL endpoint, set the `OTEL_*` variables explicitly in the hook command or in `CLAUDE_ENV_FILE`.
+
+Hook exec form: args field (v2.1.139)
+- A command hook can include an `args: string[]` array alongside `command`. When present, the command is spawned directly as an executable with each array element passed as exactly one argument — no shell, so `$`, `*`, spaces, and path placeholders like `${CLAUDE_PROJECT_DIR}` pass through verbatim without quoting.
+- Example:
+  {
+    "type": "command",
+    "command": "node",
+    "args": ["${CLAUDE_PROJECT_DIR}/.claude/format.js", "--fix"]
+  }
+- Without `args` (shell form), the whole `command` string goes through the shell with normal expansion. Prefer exec form on Windows (.cmd/.bat shims) and whenever paths contain spaces or shell metacharacters.
+
+PostToolUse continueOnBlock (v2.1.139)
+- Set `"continueOnBlock": true` on a PostToolUse matcher entry to feed the hook's block reason back to Claude and keep the turn going, so Claude reacts to the feedback mid-turn instead of the turn ending. Because PostToolUse fires after the tool already ran, the block cannot undo the action — `continueOnBlock` only decides whether the feedback loop happens inline.
+  {
+    "hooks": { "PostToolUse": [ { "matcher": "Edit", "hooks": [ { "type": "command", "command": "./validate.sh" } ], "continueOnBlock": true } ] }
+  }
+
+terminalSequence hook output (v2.1.141)
+- Hooks can return a `terminalSequence` string in their JSON output to emit a desktop notification, window title, or bell — even when the hook has no controlling terminal (sandboxed/headless). Allowlisted OSC sequences only (0/1/2 titles; 9, 99, 777 notifications; bare BEL); anything else is dropped.
+  { "terminalSequence": "]9;Build complete" }
+
+Stop / SubagentStop background visibility (v2.1.145)
+- Stop and SubagentStop hook input now includes two new arrays: `background_tasks` (background shells/tasks spawned during the session, each with id/command/status) and `session_crons` (scheduled cron jobs, each with id/schedule/command). A Stop hook can use these to refuse to stop while work is still running, or to log/clean up outstanding tasks at session end.

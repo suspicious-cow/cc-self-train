@@ -230,6 +230,18 @@ Two settings-layer updates that affect how task data ages:
 
 **`TaskList` returns stable order** (v2.1.119). `TaskList` previously returned tasks in arbitrary filesystem order — "first" could be anything. Now it's a stable, deterministic sequence. Matters if you have scripts or skills that iterate `TaskList` and expect consistent results across runs.
 
+### 9.11 `/goal`: work until a condition is met
+
+`/goal` (v2.1.139) sets a verifiable completion condition and Claude keeps working across turns until it's met -- a fast model checks after each turn and feeds its reasoning back if the condition fails. This is different from `/loop`, which reruns on a fixed *time interval* regardless of state.
+
+```
+/goal the coverage parser's tests all pass
+```
+
+A live overlay shows elapsed time, turns, and token spend. `/goal` (no args) reports status; `/goal clear` cancels an unmet goal. Write conditions Claude can prove from the transcript (e.g., "`npm test` exits 0") and bound long ones ("or stop after 20 turns"). Works in interactive, `-p`, and Remote Control. Gotcha: it's unavailable when `disableAllHooks` or `allowManagedHooksOnly` is set, since it relies on an internal Stop hook.
+
+> **STOP** -- Set a small `/goal` with a clear, provable end state (e.g., a specific test passing). Let it run a turn or two, then `/goal clear`.
+
 ### Checkpoint
 
 Task graphs, TDD, cross-session persistence, and subagent verification. This is how real multi-session projects get coordinated.
@@ -242,3 +254,4 @@ Task graphs, TDD, cross-session persistence, and subagent verification. This is 
 - [ ] `Ctrl+T` shows the task list in the terminal
 - [ ] Tried `/loop` for a recurring task
 - [ ] Set an appropriate `cleanupPeriodDays` value in `~/.claude/settings.json`
+- [ ] Used `/goal` with a provable condition and know how it differs from `/loop`

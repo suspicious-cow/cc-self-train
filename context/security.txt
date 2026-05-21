@@ -1,7 +1,7 @@
 Security reference index — cc-self-train curriculum
 ====================================================
 
-Last synced: 2026-04-19
+Last synced: 2026-05-21
 
 This file maps common AI-assisted-development security concerns to
 the curriculum sections that address them. Scannable when you hit a
@@ -168,3 +168,21 @@ parentSettingsBehavior (v2.1.133)
       precedence rules.
     Lets admins opt SDK managed settings into the policy merge instead
     of having them blanket-override.
+
+
+Permission-matching fixes (v2.1.139)
+-------------------------------------
+
+Skill(name *) wildcard now prefix-matches
+    Skill permission rules using the wildcard form (e.g. Skill(deploy *))
+    now work as a prefix match, matching Bash(ls *) behavior. Previously
+    the wildcard did not match as expected, so intended allow/deny rules
+    on families of skills could silently fail to apply. Re-check any
+    Skill(... *) rules you rely on after upgrading.
+
+Bare env-var assignment no longer auto-approved
+    A permission-prompt bypass was closed: Bash commands that are bare
+    assignments to non-allowlisted environment variables (e.g. FOO=bar)
+    were being auto-approved. They now go through the normal permission
+    check. Relatedly, autoAllowBashIfSandboxed now correctly handles
+    commands with shell expansions like $VAR and $(cmd).

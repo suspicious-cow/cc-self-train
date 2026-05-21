@@ -220,6 +220,16 @@ This makes the flag dramatically more dangerous on shared workstations. Use it O
 
 > **STOP** -- Don't run the flag. Just understand the new blast radius. Open `~/.claude/settings.json` and confirm you don't have it set as a default permission mode.
 
+### 7.14 Permission precision: `Skill(name *)` & the env-var bypass fix
+
+Two v2.1.139 permission-matching corrections worth knowing:
+
+**`Skill(name *)` wildcards now prefix-match** like `Bash(ls *)`. Before this, the wildcard form didn't match as expected, so allow/deny rules over families of skills could silently no-op. Re-check any `Skill(... *)` rules you depend on.
+
+**Bare env-var assignments no longer auto-approve.** A bypass where Bash commands that are bare assignments to non-allowlisted env vars (`FOO=bar`) skipped the permission prompt is closed -- they go through the normal check now. Relatedly, `autoAllowBashIfSandboxed` correctly handles `$VAR` / `$(cmd)` expansions.
+
+> **STOP** -- Audit your `permissions` rules for any `Skill(... *)` entries and confirm they still scope the way you intend now that the wildcard prefix-matches.
+
 ### Checkpoint
 
 Four guard patterns, all wired up. Your toolkit now prevents bad data, enforces conventions, and reviews quality -- without you asking.
@@ -236,5 +246,6 @@ Four guard patterns, all wired up. Your toolkit now prevents bad data, enforces 
 - [ ] Know how `"$defaults"` layers custom rules on top of built-in auto-mode rules
 - [ ] Added a `hard_deny` rule, triggered it in auto mode, and confirmed the unconditional block
 - [ ] Understand the new `--dangerously-skip-permissions` blast radius (and confirmed it's not your default permission mode)
+- [ ] Know `Skill(name *)` now prefix-matches and bare env-var assignments no longer auto-approve
 
 **STOP -- What you just did in this module:** You built a complete guard rail system with four distinct mechanisms: `deny` blocks bad actions, `additionalContext` injects reminders, `updatedInput` silently modifies tool inputs, and prompt-based hooks use AI judgment for nuanced checks. Together, these form a safety layer that runs automatically on every tool call. In real projects, guard rails like these prevent data corruption, enforce conventions, and catch quality issues -- all without you having to remember to check.

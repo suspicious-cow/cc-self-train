@@ -1,0 +1,119 @@
+# Agent view and background sessions
+
+> Reference for `claude agents`, background sessions (`claude --bg`, `/bg`), and
+> background-session worktree isolation. Introduced as a Research Preview in
+> v2.1.139 and developed through v2.1.145.
+> Official docs: https://code.claude.com/docs/en/agent-view
+
+## The mental model: a third form of parallelism
+
+Claude Code now has three distinct ways to run more than one unit of work. Keeping
+them straight is the whole point of this file.
+
+| Form | Scope | Who coordinates | File isolation | Use it for |
+|------|-------|-----------------|----------------|------------|
+| Subagents (Task tool) | Inside one session | Claude delegates automatically | Optional worktree per subagent | A side task whose verbose output would flood your main context |
+| Background sessions (agent view) | Separate, independent sessions | You dispatch and check back | Automatic worktree per session | Several independent tasks you hand off and monitor from one screen |
+| `/loop` and scheduled tasks | Inside one session, time-driven | Cron or chosen interval | None (writes to the session dir) | Polling: CI status, PR reviews, reminders |
+
+Subagents report results back to the conversation that spawned them. Background
+sessions do not report back to a parent: each is its own full Claude Code
+conversation that you supervise. Agent teams (separate feature) are multiple
+sessions that peer-communicate; background sessions do not message each other.
+
+## Agent view: `claude agents`
+
+`claude agents` opens a full-screen dashboard listing every background session
+across all your projects: which are running, which are blocked waiting on you, and
+which have finished. It solves the "fire and forget" problem: dispatch tasks, let
+them run without a terminal attached, and glance at one screen to see who needs
+attention.
+
+Background sessions run under a per-user supervisor daemon that starts
+automatically the first time you background a session. The daemon keeps sessions
+alive even if you close agent view or exit your shell, and reconnects after Claude
+Code auto-updates.
+
+### Launching and dispatching
+
+| Command | What it does |
+|---------|--------------|
+| `claude agents` | Open the dashboard (all projects) |
+| `claude agents --cwd <path>` | Scope the list to sessions under `<path>` (v2.1.141) |
+| `claude agents --json` | Print live sessions as JSON and exit, for scripting (v2.1.145) |
+| `claude --bg "<prompt>"` | Start a new background session from the shell |
+| `/bg` or `/background` | Background the current interactive session (text after `/bg` is an extra instruction) |
+| `←` (left arrow on empty prompt) | Background the current session and open agent view with that row selected (v2.1.140) |
+
+### Configuring dispatched sessions (v2.1.142–143)
+
+`claude agents` accepts flags that set defaults for every session dispatched from
+the dashboard: `--add-dir`, `--settings`, `--mcp-config`, `--plugin-dir`,
+`--permission-mode`, `--model`, `--effort`, and `--dangerously-skip-permissions`.
+Background sessions launched from the dashboard honor `permissions.defaultMode`
+from settings.json (v2.1.143).
+
+### Managing sessions from the shell
+
+| Command | What it does |
+|---------|--------------|
+| `claude attach <id>` | Open a background session in this terminal |
+| `claude logs <id>` | Print a session's recent output (a quick status check, not the full transcript) |
+| `claude stop <id>` | Stop a session |
+| `claude respawn <id>` | Restart a session (running or stopped) with conversation intact, e.g. after a CC update. `claude respawn --all` restarts every running session |
+| `claude rm <id>` | Remove from the list; keeps the worktree if it has uncommitted changes |
+| `claude daemon status` | Supervisor state, version, and active session count |
+
+Detaching is not stopping. `←`, `Ctrl+C`, `Ctrl+D`, `/exit` detach and leave the
+session running; `/stop` ends it. Attaching shows a short recap of what happened
+while you were away.
+
+### What carries into a backgrounded session
+
+`/bg` and `←`-detach preserve the conversation transcript plus `--mcp-config`,
+`--settings`, `--add-dir`, `--plugin-dir`, `--strict-mcp-config`,
+`--fallback-model`, and the current permission mode. They do NOT carry running
+subagents, background monitors, or an active `/loop` (Claude warns if subagents
+are running). The backgrounded session can spawn fresh subagents, monitors, and
+loops that survive later detach/reattach. `/resume` lists background sessions
+alongside interactive ones, marked `bg` (v2.1.144).
+
+## Background-session worktree isolation
+
+Before editing files, a background session automatically moves into an isolated
+git worktree so parallel sessions cannot overwrite each other. This is the
+default. In a git repo the default implementation runs `git worktree add`
+internally; in a non-git repo (Perforce, Mercurial), configure a `WorktreeCreate`
+hook to produce the isolated directory.
+
+### `worktree.bgIsolation` setting (v2.1.143)
+
+Controls whether background sessions auto-isolate into a worktree.
+
+| Value | Behavior |
+|-------|----------|
+| (default) | Create a worktree before editing files |
+| `"none"` | Edit the working copy directly, no worktree |
+
+```json
+{ "worktree": { "bgIsolation": "none" } }
+```
+
+Use `"none"` when worktrees are impractical (heavy symlinks, monorepo) or when you
+run a single background session per repo so file conflicts are not a concern.
+Pitfall: with `"none"`, two background sessions editing overlapping files in the
+same working copy can clobber each other. Only use it when you dispatch one
+session at a time or have partitioned the work by hand.
+
+This setting is distinct from `worktree.baseRef` (which ref new worktrees branch
+from). See `plugins.txt` for `worktree.baseRef`.
+
+## Common pitfalls
+
+- Confusing subagents with background sessions. To run 5 independent fixes in
+  parallel and watch them from one screen, use `claude agents`, not subagents.
+- Worktree accumulation. `claude rm <id>` keeps worktrees with uncommitted
+  changes; old ones pile up under the worktrees directory. Clean with
+  `git worktree list` / `git worktree remove`.
+- `/loop` is session-scoped: a loop you start in an interactive session dies when
+  you exit. Backgrounding (`/bg`) keeps a session and its loop alive.

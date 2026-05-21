@@ -160,3 +160,11 @@ If you point `ANTHROPIC_BASE_URL` at an Anthropic-compatible gateway (e.g., a se
 - **v2.1.129+**: discovery is **opt-in** via `CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1`
 
 Set the env var when you want gateway models to populate `/model`. Without it, the picker shows only the standard tiers (Haiku/Sonnet/Opus) regardless of `ANTHROPIC_BASE_URL`.
+
+## Fast mode default model (v2.1.142)
+
+`/fast` mode now uses **Opus 4.7** by default (previously Opus 4.6). Fast mode keeps the same model quality but optimizes for faster output. To pin fast mode to the older Opus 4.6, set `CLAUDE_CODE_OPUS_4_6_FAST_MODE_OVERRIDE=1`.
+
+## Per-session /model vs. setting a default (v2.1.144)
+
+`/model` now changes the model for the **current session only**. To set a default for all new sessions, open the `/model` picker and press `d` on the model you want. This separates "switch right now" from "change my baseline," so a one-off switch in one session no longer becomes your global default.
