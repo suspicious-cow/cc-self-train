@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.31.1 (2026-05-21)
+
+**Repo hygiene.** Maintainer-only tooling no longer ships to learner clones, and the quick-start clone URL now points at the public distribution repo.
+
+- **Untracked maintainer tooling:** `.claude/skills/release/` and `.claude/scripts/sync-sparq.sh` are now gitignored. They remain on the maintainer's machine (so `/release` keeps working locally) but are removed from the git index, so fresh clones no longer receive them.
+- **Clone URL:** the README quick-start now clones from the public `github.com/zainnab-sparq/cc-self-train` repo.
+
 ## v2.31.0 (2026-05-21)
 
 **Curriculum sync to CC v2.1.145.** Seven published changelog versions (v2.1.139–v2.1.145). ~24 user-facing features kept; ~115 entries skipped as bug fixes, cosmetic polish, VS Code-only UI fixes, and telemetry internals. Headline: agent view + background sessions (`claude agents`), a new way to run Claude that landed as a Foundational Feature in Module 8.
